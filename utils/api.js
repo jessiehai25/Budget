@@ -66,3 +66,13 @@ export function saveBudget (name, budget){
     }
   }))
 }
+
+export function removeBudget (bud) {
+  return AsyncStorage.getItem(BUDGETS_KEY)
+  .then ((results) => {
+    const data = JSON.parse(results)
+    data[bud] = undefined
+    delete data[bud]
+    AsyncStorage.setItem(BUDGETS_KEY, JSON.stringify(data))
+  })
+}

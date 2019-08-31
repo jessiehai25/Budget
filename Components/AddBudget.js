@@ -29,6 +29,7 @@ class AddBudget extends Component {
 	    		name: '',
 	    		budget: ''
 	    	}))
+	    	this.props.navigation.goBack()
 
 	    }
     }

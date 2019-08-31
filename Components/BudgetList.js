@@ -1,26 +1,59 @@
 import React, {Component} from 'react'
-import {View, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform} from 'react-native'
+import {View, ScrollView, Text, TextInput, StyleSheet, TouchableOpacity, Platform, Alert} from 'react-native'
 import {connect} from 'react-redux'
-import {handleInitialData} from '../actions/'
 import {blue, grey, white, darkBlue} from '../utils/colors'
 import AddBudget from './AddBudget'
-import {Feather, AntDesign} from '@expo/vector-icons'
+import BudgetRow from './BudgetRow'
+import EditBudget from './EditBudget'
+import {deleteBudget} from '../actions/budgets'
+import {removeBudget} from '../utils/api'
 
 
-class SetBudget extends Component {
+class BudgetList extends Component {
 
+    add = () =>{
+        this.props.navigation.navigate('AddBudget')
+    }
 
+    edit = (bud)=>{
+        this.props.navigation.navigate('EditBudget', {bud: bud})
+    }
+
+    delete = (bud) => {
+        const {dispatch} = this.props
+        Alert.alert(
+            `Are you sure to delete ${bud}?`,
+            "",
+            [
+                
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('cancel'),
+                    style: 'cancel',
+                },
+                {
+                    text: 'Delete',
+                    onPress: () => {
+                        console.log('delete', bud)
+                        dispatch(deleteBudget(bud))
+                        removeBudget(bud)
+                    }
+
+                },
+            ]
+        )
+    }
 	render(){
-		const {user, budgets} = this.props
-        console.log(user)
-        console.log(budgets)
+		const {user, budgets, budgetList} = this.props
+        console.log(budgetList)
 		let budgetsSum = 0
         Object.keys(budgets).map((bud)=> {
             const budgetInNumber = parseInt(budgets[bud].budget)
             return(
             budgetsSum = budgetsSum+budgetInNumber
         )})
-		console.log(budgetsSum)
+		
+
         return(
 			<View style = {styles.container}>
 				<Text style = {[styles.textBeforeInput, {width:'90%',marginLeft: 15, marginTop:15}]}>
@@ -29,17 +62,8 @@ class SetBudget extends Component {
 				<Text style = {[styles.textBeforeInput, {width:'90%',marginLeft: 15, marginTop:15}]}>
 					Existing Budgets:
 				</Text>
-				{Object.keys(budgets).map((bud)=>(
-					<View key = {budgets[bud].name} style = {styles.budgetContainer}>
-						<Text style = {[styles.textBeforeInput, {flex:1, padding:10}]}>{budgets[bud].name}</Text>
-						<Text style = {[styles.textBeforeInput, {flex:1, padding:10}]}>${budgets[bud].budget}</Text>
-						<TouchableOpacity>
-							<Feather name = 'edit' size = {25} style = {{color: blue, flex: 1, marginRight: 5}}/>
-						</TouchableOpacity>
-                        <TouchableOpacity>
-                            <AntDesign name = 'delete' size = {25} style = {{color: blue, flex: 1, marginRight: 5}}/>
-                        </TouchableOpacity>
-					</View>
+				{budgetList.map((bud)=>(
+    					<BudgetRow bud = {bud} key = {budgets[bud].name} edit = {this.edit} del = {this.delete}/>
 				))}
                 <Text style = {[styles.textBeforeInput, {width:'90%',marginLeft: 15, marginTop:15}]}>
                     You can save:
@@ -47,9 +71,16 @@ class SetBudget extends Component {
                 <View style = {styles.budgetContainer}>
                     <Text style = {[styles.textBeforeInput, {flex:1, padding:10}]}>Saving</Text>
                     <Text style = {[styles.textBeforeInput, {flex:1, padding:10}]}>${user.salary*12-budgetsSum}</Text>
-                    <Feather name = 'thumbs-up' size = {30} style = {{color: blue, flex: 1, marginRight: 5}}/>
                 </View>
-				<AddBudget addBudget = {this.addBudget}/>
+                <View>
+                    <TouchableOpacity
+                        onPress = {() => this.add()}
+                    >
+                        <View style = {[styles.budgetContainer,{backgroundColor:blue}]}>
+                            <Text style = {[styles.textBeforeInput, {flex:1, padding:10, color:white}]}>Add a Budget</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
 			</View>
 			)
 	}
@@ -110,8 +141,10 @@ const styles = StyleSheet.create({
 function mapStateToProps({user, budgets}){
   return{
     user,
-    budgets
+    budgets,
+    budgetList: Object.keys(budgets)
+        .sort((a,b)=>budgets[b].name.toLowerCase() < budgets[a].name.toLowerCase())
   }
 }
 
-export default connect(mapStateToProps)(SetBudget)
+export default connect(mapStateToProps)(BudgetList)

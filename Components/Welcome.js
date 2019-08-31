@@ -40,7 +40,7 @@ class Welcome extends Component {
             ))
 
             setUser({user})
-            this.props.navigation.navigate('SetBudget')
+            this.props.navigation.navigate('BudgetList')
 
         }
         

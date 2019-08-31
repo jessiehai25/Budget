@@ -9,7 +9,9 @@ import {createBottomTabNavigator, createMaterialTopTabNavigator, createAppContai
 import {FontAwesome, Ionicons} from '@expo/vector-icons'
 import Welcome from './Components/Welcome'
 import AddEntry from './Components/AddEntry'
-import SetBudget from './Components/SetBudget'
+import BudgetList from './Components/BudgetList'
+import AddBudget from './Components/AddBudget'
+import EditBudget from './Components/EditBudget'
 
 const RouteConfigs = {
   Home:{
@@ -65,13 +67,25 @@ const MainNavigator = createStackNavigator({
   AddEntry:{
     screen: AddEntry,
   },
-  SetBudget:{
-    screen: SetBudget,
+  BudgetList:{
+    screen: BudgetList,
     navigationOptions:{
       title: "Set Your Budget"
     }
   },
-
+  AddBudget:{
+    screen: AddBudget,
+    navigationOptions:{
+      title: "Add a Budget"
+    }
+  },
+  EditBudget:{
+    screen: EditBudget,
+    navigationOptions:{
+      title: "Edit Your Budget"
+    }
+  },
+  
 })
 
 

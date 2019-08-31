@@ -1,4 +1,4 @@
-import {RECEIVE_BUDGETS, ADD_BUDGET} from '../actions/budgets'
+import {RECEIVE_BUDGETS, ADD_BUDGET, DELETE_BUDGET} from '../actions/budgets'
 
 
 export default function budgets (state = {}, action) {
@@ -16,8 +16,20 @@ export default function budgets (state = {}, action) {
 					name,
 					budget,
 					entries: []
-				}
 			}
+		}
+		case DELETE_BUDGET :
+			const {bud} = action
+			const newState = Object.keys(state).reduce((object, key) => {
+					if (key !== bud){
+						console.log(key)
+						object[key] = state[key]
+					}
+					return object
+			}, {})
+		return {
+			...newState,
+		}
 		
 		default :
 			return state
