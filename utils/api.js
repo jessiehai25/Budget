@@ -58,11 +58,12 @@ export function saveUser (user){
   }))
 }
 
-export function saveBudget (name, budget){
+export function saveBudget (name, budget, entries = []){
   return AsyncStorage.mergeItem(BUDGETS_KEY, JSON.stringify({
     [name]:{
       name,
-      budget
+      budget,
+      entries
     }
   }))
 }
@@ -74,5 +75,19 @@ export function removeBudget (bud) {
     data[bud] = undefined
     delete data[bud]
     AsyncStorage.setItem(BUDGETS_KEY, JSON.stringify(data))
+  })
+}
+
+export function modifyBudget (name, budget, originalName){
+  return AsyncStorage.getItem(BUDGETS_KEY)
+  .then((results) => {
+    const data = JSON.parse(results)
+    const bud = data[originalName]
+    const entries = bud.entries
+    removeBudget(originalName)
+    .then(()=>
+      saveBudget (name, budget, entries)
+      )
+    
   })
 }

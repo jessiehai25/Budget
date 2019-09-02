@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import {View, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform} from 'react-native'
 import {connect} from 'react-redux'
 import {blue, grey, white, darkBlue} from '../utils/colors'
+import {editBudget} from '../actions/budgets'
+import {modifyBudget} from '../utils/api'
 
 class EditBudget extends Component {
 	state = {
@@ -17,12 +19,30 @@ class EditBudget extends Component {
 			budget: props.budgets[bud].budget.toString()
 		} 
 	} 
+	edit = (originalName)=>{
+        const {name, budget} = this.state
+    	const budgetInNumber = parseInt(budget)
+    	const bud = {name, budgetInNumber}
+    	const {dispatch} = this.props
+    	if (name === '' || budget===''){
+    		alert('You have not complete')
+    	}
+    	else{
+	    	dispatch(editBudget(name, budgetInNumber, originalName))
+	    	modifyBudget(name, budgetInNumber, originalName)
+	    	this.setState(()=>({
+	    		name: '',
+	    		budget: ''
+	    	}))
+	    	this.props.navigation.goBack()
+
+	    }
+    }
 
 	render(){
-		console.log(this.props)
 		const {user, budgets} = this.props
 		const {name, budget} = this.state
-		const bud = this.props.navigation.state.params.bud
+		const originalName = this.props.navigation.state.params.bud
 		return(
 			<View style = {{padding: 10}}>
 
@@ -51,7 +71,8 @@ class EditBudget extends Component {
 		        </View>
 		        
 			        <TouchableOpacity 
-						style = {{justifyContent:'center', alignItems:'center'}}	
+						style = {{justifyContent:'center', alignItems:'center'}}
+						onPress = {()=>this.edit(originalName)}	
 						>
 						<View style = {[styles.container,{backgroundColor:blue,justifyContent:'center', alignItems:'center'}]}>
 	                		<Text style = {[styles.inputS,{color:white}]} >

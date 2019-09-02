@@ -12,14 +12,24 @@ import AddEntry from './Components/AddEntry'
 import BudgetList from './Components/BudgetList'
 import AddBudget from './Components/AddBudget'
 import EditBudget from './Components/EditBudget'
+import Dashboard from './Components/Dashboard'
 
 const RouteConfigs = {
   Home:{
-    screen: Welcome,
+    screen: Dashboard,
     navigationOptions: {
       tabBarLabel: "Home",
       tabBarIcon: ({ tintColor }) => (
         <FontAwesome name='home' size = {30} color={tintColor} />
+      )
+    }
+  },
+  BudgetList: {
+    screen: BudgetList,
+    navigationOptions: {
+      tabBarLabel: "Budget List",
+      tabBarIcon: ({ tintColor }) => (
+        <FontAwesome name='plus-square' size = {30} color={tintColor} />
       )
     }
   },
@@ -63,6 +73,9 @@ const Tabs =
 const MainNavigator = createStackNavigator({
   Home:{
     screen: Tabs,
+  },
+  Login:{
+    screen: Dashboard,
   },
   AddEntry:{
     screen: AddEntry,

@@ -9,6 +9,7 @@ import {deleteBudget} from '../actions/budgets'
 import {removeBudget} from '../utils/api'
 
 
+
 class BudgetList extends Component {
 
     add = () =>{
@@ -45,7 +46,7 @@ class BudgetList extends Component {
     }
 	render(){
 		const {user, budgets, budgetList} = this.props
-        console.log(budgetList)
+        console.log("users", user)
 		let budgetsSum = 0
         Object.keys(budgets).map((bud)=> {
             const budgetInNumber = parseInt(budgets[bud].budget)
@@ -92,6 +93,8 @@ const styles = StyleSheet.create({
         flex: 1,
         marginLeft: 10,
         marginRight: 10,
+        marginTop: 10,
+        padding: 10,
     },
     title:{
         color: blue,

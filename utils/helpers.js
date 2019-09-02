@@ -25,3 +25,9 @@ export function formatTweet (tweet, author, authedUser, parentTweet) {
 }
 
 export const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+export function timeToString (time = Date.now()) {
+  const date = new Date(time)
+  const todayUTC = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+  return todayUTC.toISOString().split('T')[0]
+}

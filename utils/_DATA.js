@@ -5,22 +5,22 @@ export const ENTRIES_KEY = 'Budget:entries'
 export const user = {
     	id: 'Jessie',
     	name: 'Jessie',
-    	salary: "10000",
+    	salary: 10000,
     	yearEnd: "March",
     	budgets: ["clothes","transport","misc"],
 }
 export const budgets = {
-	"clothes": {
+	clothes: {
 		name: "clothes",
 		budget: 4000,
 		entries: ["8xf0y6ziyjabvozdd253nd"],
 	},
-	"transport": {
+	transport: {
 		name: "transport",
 		budget: 5000,
 		entries: ["5c9qojr2d1738zlx09afby"],
 	},
-	"misc" : {
+	misc : {
 		name: 'misc',
 		budget: 4000,
 		entries: [],
