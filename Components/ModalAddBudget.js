@@ -39,7 +39,7 @@ class ModalAddBudget extends Component{
     	}
     	else{
     		add({title, category, price, timestamp})
-	    	console.log("Add ENTRY")
+	    	console.log("MODAL Add ENTRY")
 	    	this.setState(()=>({
 	    		id: '',
 				title: '',

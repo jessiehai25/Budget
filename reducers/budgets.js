@@ -1,4 +1,4 @@
-import {RECEIVE_BUDGETS, ADD_BUDGET, DELETE_BUDGET, EDIT_BUDGET} from '../actions/budgets'
+import {RECEIVE_BUDGETS, ADD_BUDGET, DELETE_BUDGET, EDIT_BUDGET, ADD_ENTRY_TO_BUDGET} from '../actions/budgets'
 
 
 export default function budgets (state = {}, action) {
@@ -52,6 +52,17 @@ export default function budgets (state = {}, action) {
 				entries
 			}
 		}
+
+		case ADD_ENTRY_TO_BUDGET :
+			const {category, id} = action
+			console.log("budget_add_entry", action)
+			return{
+				...state,
+				[category]:{
+					...state[category],
+					entries: state[category].entries.concat(id)
+				}
+			}
 
 		default :
 			return state

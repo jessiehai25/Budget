@@ -1,4 +1,4 @@
-import {RECEIVE_ENTRIES, } from '../actions/entries'
+import {RECEIVE_ENTRIES, ADD_ENTRY} from '../actions/entries'
 
 
 export default function entries (state = {}, action) {
@@ -7,6 +7,13 @@ export default function entries (state = {}, action) {
 		return {
 			...state,
 			...action.entries
+		}
+		case ADD_ENTRY:
+		console.log(action.entry)
+		return {
+			...state,
+			[action.entry.id]: action.entry
+			
 		}
 		
 		default :
