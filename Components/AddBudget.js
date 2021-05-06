@@ -88,13 +88,6 @@ const styles = StyleSheet.create({
         borderBottomColor: grey,
         borderBottomWidth: 0.5,
         borderRadius: Platform.OS === 'ios' ? 7 : 2,
-        shadowRadius: 3,
-		shadowOpacity: 0.8,
-		shadowColor: 'rgba(0,0,0,0.24)',
-		shadowOffset: {
-			width: 0,
-			height: 3,
-		},
     },
     inputContainer: {
         flexDirection: 'column',

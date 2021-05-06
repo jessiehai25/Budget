@@ -99,7 +99,7 @@ class ModalAddBudget extends Component{
 							onPress = {this.addEntry}
 						>
 			                	<FontAwesome name = 'plus-circle' size = {20} style = {{color: body}}/>
-			                	<Text style = {{color: {body}, fontWeight: 'bold'}}>  Save</Text>
+			                	<Text style = {{color: body, fontWeight: 'bold'}}>  Save</Text>
 			            </TouchableOpacity>
 			        </View>
 			</View>

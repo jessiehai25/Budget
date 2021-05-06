@@ -64,34 +64,28 @@ function formatEntry ({ timestamp, title, category, price }) {
   }
 }
 
-export function _saveEntry ({ timestamp, title, category, price }) {
+export function _saveEntry (entry) {
   return new Promise((res, rej) => {
-  	console.log("_saveEntry1", title)
-    const formattedEntry = formatEntry({ 
-    	timestamp, 
-    	title, 
-    	category, 
-    	price 
-    });
-    console.log("formattedEntry", formattedEntry, [formattedEntry.id])
+    const authedBudget = entry.title;
+    const formattedEntry = formatEntry(entry);
+
     setTimeout(() => {
       entries = {
         ...entries,
-        [formattedEntry.id]: formattedEntry,
+        [formattedEntry.id]: formattedEntry
       }
-      AsyncStorage.setItem(ENTRIES_KEY, JSON.stringify(entries))
-      console.log("_saveEntry3", entries)
+      
       budgets = {
         ...budgets,
-        [category]: {
-          ...budgets[category],
-          entries: budgets[category].entries.concat([formattedEntry.id])
+        [authedBudget]: {
+          ...budgets[authedBudget],
+          entries: budgets[authedBudget].entries.concat([formattedEntry.id])
         }
       }
-      AsyncStorage.setItem(BUDGETS_KEY, JSON.stringify(budgets))
 
       res(formattedEntry)
     }, 1000)
   })
 }
+
     

@@ -13,9 +13,8 @@ class Dashboard extends Component {
     /* No more header config here! */
   };
 	render() {
-		console.log("load Dashboard now!!")
-
 		const {budgets, entries} = this.props
+    console.log("load Dashboard now!!", budgets)
 		const {name, salary} = this.props.user
 		const budgetList = this.props.user.budgets
 		if(budgetList === null){

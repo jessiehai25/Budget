@@ -61,7 +61,7 @@ class BudgetList extends Component {
                 <View style = {{width: '95%', height: '95%'}}>
 
     				<Text style = {styles.textBeforeInput}>
-    					Yearly Income: ${user.salary*12}
+    					Monthly Income: ${user.salary}
     				</Text>
     				<Text style = {[styles.textBeforeInput]}>
     					Existing Budgets:
