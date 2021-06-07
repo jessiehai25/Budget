@@ -1,4 +1,4 @@
-import {RECEIVE_BUDGETS, ADD_BUDGET, DELETE_BUDGET, EDIT_BUDGET, ADD_ENTRY_TO_BUDGET} from '../actions/budgets'
+import {RECEIVE_BUDGETS, ADD_BUDGET, DELETE_BUDGET, EDIT_BUDGET, ADD_ENTRY_TO_BUDGET, DELETE_ENTRY_TO_BUDGET} from '../actions/budgets'
 
 
 export default function budgets (state = {}, action) {
@@ -9,27 +9,29 @@ export default function budgets (state = {}, action) {
 				...action.budgets
 			}
 		case ADD_BUDGET :
-			const {name, budget} = action
+			const {name, budget, date} = action
 			return {
 				...state,
 				[action.name]:{
 					name,
 					budget,
-					entries: []
+					start: date,
+					entries: [],
+					end: null,
 			}
 		}
 		case DELETE_BUDGET :
 			const {bud} = action
 			const newState = Object.keys(state).reduce((object, key) => {
 				if (key !== bud){
-					console.log(key)
 					object[key] = state[key]
 				}
 				return object
 			}, {})
-		return {
-			...newState,
-		}
+			console.log("REDUCER", newState)
+			return {
+				...newState,
+			}
 		case EDIT_BUDGET :
 			const {originalName} = action
 			const name1 = action.name
@@ -64,7 +66,19 @@ export default function budgets (state = {}, action) {
 				}
 			}
 
+		case DELETE_ENTRY_TO_BUDGET :
+			console.log("budget_delete_entry", action)
+			console.log("new_budget_check",state[action.category].entries.filter(ent => ent !== action.id))
+			return{
+				...state,
+				[action.category]:{
+					...state[action.category],
+					entries: state[action.category].entries.filter(ent => ent !== action.id)
+				}
+			}
+
 		default :
 			return state
 	}
 }
+

@@ -14,9 +14,15 @@ class ModalAddBudget extends Component{
 			timestamp: ''
     }
     componentDidMount(){
-		console.log("TEST")
-	    const {date} = this.props
-	    this.setState(()=> ({timestamp:date}))
+		console.log("TEST", showId)
+	    const {date, showId, entries} = this.props
+	    this.setState(()=> ({
+            timestamp:date,
+            id: showId,
+            title: entries[showId].title,
+            category: entries[showId].category,
+            price: entries[showId].price.toString(),
+        }))
 
     }
 
@@ -24,9 +30,9 @@ class ModalAddBudget extends Component{
    		this.setState({ category: keyword });
     };	
 
-    addEntry = () => {
+    editEntry = () => {
     	const {title, category, price, timestamp} = this.state
-    	const {add} = this.props
+    	const {edit, showId} = this.props
     	if (title === '' || category==='' || price ==='' ){
     		if (timestamp === '') {
     			alert('There are something wrong. Please exit and re-enter.')
@@ -36,8 +42,8 @@ class ModalAddBudget extends Component{
     		}
     	}
     	else{
-    		add({title, category, price, timestamp})
-	    	console.log("MODAL Add ENTRY")
+    		edit({showId, title, category, price, timestamp})
+	    	console.log("MODAL Edit ENTRY")
 	    	this.setState(()=>({
 	    		id: '',
 				title: '',
@@ -52,6 +58,7 @@ class ModalAddBudget extends Component{
 
 	render(){
 		const {title, category, price, timestamp} = this.state
+        console.log(this.state)
 		const {budgetList} = this.props
 		return(
 			<View style = {styles.container}>
@@ -79,7 +86,7 @@ class ModalAddBudget extends Component{
 	                <View style= {{flexDirection:"row", justifyContent: "space-around",flexWrap: "wrap",}}>
 
 	                	{budgetList.map((budget)=>(
-	                		<View style = {{padding:5}}>
+	                		<View style = {{padding:5}} key = {budget}>
 		                		<TouchableOpacity
 						            style={category == budget ? styles.selectedKeywordStyle : styles.buttonStyle}
 						            onPress={() => this.toggleKeyword(budget)}>
@@ -94,7 +101,7 @@ class ModalAddBudget extends Component{
 	                <View style={{alignItems:'center', width:'100%', marginTop:20}}>
 						<TouchableOpacity 
 							style = {[styles.button, {flexDirection:'row', width:'100%'}]}
-							onPress = {this.addEntry}
+							onPress = {this.editEntry}
 						>
 			                	<FontAwesome name = 'plus-circle' size = {20} style = {{color: body}}/>
 			                	<Text style = {{color: body, fontWeight: 'bold'}}>  Save</Text>

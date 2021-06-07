@@ -3,6 +3,7 @@ export const ADD_BUDGET = 'ADD_BUDGET'
 export const DELETE_BUDGET = 'DELETE_BUDGET'
 export const EDIT_BUDGET = 'EDIT_BUDGET'
 export const ADD_ENTRY_TO_BUDGET = 'ADD_ENTRY_TO_BUDGET'
+export const DELETE_ENTRY_TO_BUDGET = 'DELETE_ENTRY_TO_BUDGET'
 
 export function receiveBudgets (budgets) {
 	return {
@@ -11,11 +12,12 @@ export function receiveBudgets (budgets) {
 	}
 }
 
-export function addBudget (name, budget) {
+export function addBudget (name, budget, date) {
 	return{
 		type: ADD_BUDGET,
 		name,
-		budget
+		budget,
+		date
 	}
 }
 
@@ -40,5 +42,16 @@ export function addEntryToBudget(category, id) {
 		type: ADD_ENTRY_TO_BUDGET,
 		category,
 		id
+	}
+}
+
+export function deleteEntryToBudget(id, category) {
+	console.log("HERE")
+	return{
+		type: DELETE_ENTRY_TO_BUDGET,
+		id,
+		category,
+		
+
 	}
 }

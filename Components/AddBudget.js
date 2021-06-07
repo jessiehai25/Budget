@@ -1,47 +1,35 @@
 import React, {Component} from 'react'
 import {View, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform} from 'react-native'
-import {connect} from 'react-redux'
-import {handleInitialData} from '../actions/'
-import {blue, grey, white, body} from '../utils/colors'
+import {blue, grey, white, body, background} from '../utils/colors'
 import {FontAwesome} from '@expo/vector-icons'
-import {months} from '../utils/helpers'
-import {addBudget} from '../actions/budgets'
-import {addUserBudget} from '../actions/user'
-import {saveBudget, saveUserBudget} from '../utils/api'
-
+ 
 
 class AddBudget extends Component {
 	state = {
 		name:'',
-		budget:''
+		budget:'',
+        date: Date.now(),
     }
 
-    addBudget = () => {
-    	const {name, budget} = this.state
-    	const budgetInNumber = parseInt(budget)
-    	const bud = {name, budgetInNumber}
-    	const {dispatch} = this.props
+    addB = () => {
+    	const {name, budget, date} = this.state
+    	const {add} = this.props
     	if (name === '' || budget===''){
-    		alert('You have not complete')
+            alert('You have not complete')
+        }
+        else{
+        	add({name, budget, date})
+        	this.setState(()=>({
+                name: '',
+                budget: ''
+            }))
     	}
-    	else{
-	    	dispatch(addBudget(name, budgetInNumber))
-	    	dispatch(addUserBudget(name))
-	    	console.log("Add Budget")
-	    	saveUserBudget(name)
-	    	saveBudget(name, budgetInNumber)
-	    	this.setState(()=>({
-	    		name: '',
-	    		budget: ''
-	    	}))
-	    	this.props.navigation.goBack()
-
-	    }
-    }
+	}
+    
 
 
 	render(){
-		const {name, budget} = this.state
+		const {name, budget, date} = this.state
 
 		return(
 			<View style = {styles.container}>
@@ -65,12 +53,13 @@ class AddBudget extends Component {
 	                	equivalent to around ${Math.round(budget/30)} per day
 	                </Text>
 				</View>
-				<View style={{height:'100%', alignItems:'center'}}>
+				<View style={{alignItems:'center', marginTop:10}}>
 					<TouchableOpacity 
-						style = {{justifyContent:'center', alignItems:'flex-start'}}
-						onPress = {this.addBudget}
+						style = {{justifyContent:'center', alignItems:'center',flexDirection:'row'}}
+						onPress = {this.addB}
 					>
-		                	<FontAwesome name = 'plus-circle' size = {30} style = {{color: blue}}/>
+		                <FontAwesome name = 'plus-circle' size = {20} style = {{color: blue}}/>
+                        <Text style = {{fontSize:15, color: body}}>  Save</Text>
 		            </TouchableOpacity>
 	            </View>
 	        </View>
@@ -81,27 +70,26 @@ class AddBudget extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 10,
-        alignItems: 'flex-start',
-        justifyContent:'flex-start',
-        flexDirection: 'row',
-        borderBottomColor: grey,
-        borderBottomWidth: 0.5,
-        borderRadius: Platform.OS === 'ios' ? 7 : 2,
+        padding: 5,
+        alignItems: 'center',
+        justifyContent:'center',
+        flexDirection: 'column',
+        borderRadius: 10,
+        backgroundColor: 'white',
+
     },
     inputContainer: {
         flexDirection: 'column',
-        width: '90%',
+        width: '100%',
         justifyContent: 'flex-start'
     },
     textBeforeInput:{
         color: body,
         fontSize: 20,
-        marginLeft: 15,
     },
     inputS:{
         color: body,
-        fontSize: 20,
+        fontSize: 15,
         borderBottomColor: grey,
         borderBottomWidth: 0.5,
         marginLeft: 10,
@@ -117,4 +105,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default connect()(AddBudget)
+export default AddBudget

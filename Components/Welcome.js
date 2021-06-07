@@ -8,7 +8,6 @@ import {setUser} from '../actions/user'
 import PropTypes from 'prop-types';
 import {saveUser} from '../utils/api'
 import {handleInitialData} from '../actions/'
-import DateHeader from './DateHeader'
 
 class Welcome extends Component {
     state = {
@@ -34,7 +33,7 @@ class Welcome extends Component {
 
             saveUser(user)
             console.log("Welcome",user)
-            this.props.navigation.navigate('BudgetList')
+            this.props.navigation.navigate('Main')
 
         }
         

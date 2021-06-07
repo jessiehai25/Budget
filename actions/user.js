@@ -1,6 +1,7 @@
 export const RECEIVE_USER = 'RECEIVE_USER'
 export const SET_USER = 'SET_USER'
 export const ADD_USER_BUDGET = 'SAVE_USER_BUDGET'
+export const DELETE_USER_BUDGET = 'DELETE_USER_BUDGET'
 
 export function receiveUser (user) {
 	return {
@@ -22,3 +23,10 @@ export function addUserBudget (name) {
 		name
 	}
 }
+
+export function deleteUserBudget (budget) {
+	return {
+		type: DELETE_USER_BUDGET,
+		budget
+	}
+} 

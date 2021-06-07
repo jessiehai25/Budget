@@ -7,23 +7,29 @@ export const user = {
     	name: 'Jessie',
     	salary: 90000,
     	yearEnd: "March",
-    	budgets: ["clothes","transport","misc"],
+    	budgets: ["clothes","transport","misc"]
 }
 export const budgets = {
 	clothes: {
 		name: "clothes",
 		budget: 4000,
 		entries: ["8xf0y6ziyjabvozdd253nd"],
+		start: 1617235200000,
+		end: null
 	},
 	transport: {
 		name: "transport",
 		budget: 5000,
 		entries: ["5c9qojr2d1738zlx09afby", "3km0v4hf1ps92ajf4z2ytg"],
+		start: 1619782264000,
+		end: null
 	},
 	misc : {
 		name: 'misc',
 		budget: 4000,
 		entries: [],
+		start: 1619827200000,
+		end: null
 	},
 }
 export const entries = {

@@ -1,19 +1,36 @@
 import React, {Component} from 'react'
 import {View, ScrollView, Text, TextInput, StyleSheet, TouchableOpacity, Platform, Alert} from 'react-native'
 import {connect} from 'react-redux'
-import {blue, grey, white, body} from '../utils/colors'
+import {brown, grey, white, body, button, background} from '../utils/colors'
 import AddBudget from './AddBudget'
-import BudgetRow from './BudgetRow'
+import SwipeRow from './SwipeRow'
 import EditBudget from './EditBudget'
 import {deleteBudget} from '../actions/budgets'
-import {removeBudget} from '../utils/api'
-
-
+import {removeBudget, removeUserBudget} from '../utils/api'
+import Modal from 'react-native-modal';
+import {addBudget} from '../actions/budgets'
+import {addUserBudget, deleteUserBudget} from '../actions/user'
+import {saveBudget, saveUserBudget} from '../utils/api'
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 class BudgetList extends Component {
+    state = {
+        showAddBudget: false,
+    } 
 
-    add = () =>{
-        this.props.navigation.navigate('AddBudget')
+    add = ({name, budget, date}) => {
+        const budgetInNumber = parseInt(budget)
+        const bud = {name, budgetInNumber}
+        const {dispatch} = this.props
+        dispatch(addBudget(name, budgetInNumber, date))
+        dispatch(addUserBudget(name))
+        console.log("Add Budget")
+        saveUserBudget(name)
+        saveBudget(name, budgetInNumber, date)
+        this.setState(()=> ({
+            showAddBudget: false,
+        }))
+
     }
 
     edit = (bud)=>{
@@ -36,7 +53,10 @@ class BudgetList extends Component {
                     text: 'Delete',
                     onPress: () => {
                         console.log('delete', bud)
+                        dispatch(deleteUserBudget(bud))
                         dispatch(deleteBudget(bud))
+                        console.log("HERE DE:L")
+                        removeUserBudget(bud)
                         removeBudget(bud)
                     }
 
@@ -57,8 +77,17 @@ class BudgetList extends Component {
 		
 
         return(
-			<View style = {styles.container}>
-                <View style = {{width: '95%', height: '95%'}}>
+			<SafeAreaView style = {styles.container}>
+                 <Modal 
+                    isVisible={this.state.showAddBudget} 
+                    transparent = {true}
+                    onBackdropPress = {() => {this.setState({showAddBudget:false})}}
+                >
+                    <AddBudget
+                        add = {this.add}
+                    />
+                </Modal>
+                <View style = {{padding:5, width: '95%', height: '95%'}}>
 
     				<Text style = {styles.textBeforeInput}>
     					Monthly Income: ${user.salary}
@@ -66,30 +95,30 @@ class BudgetList extends Component {
     				<Text style = {[styles.textBeforeInput]}>
     					Existing Budgets:
     				</Text>
-    				{budgetList.map((bud)=>(
-        					<BudgetRow bud = {bud} key = {budgets[bud].name} edit = {this.edit} del = {this.delete}/>
-    				))}
-                     <View style = {{marginTop: 15}}>
-                     </View>
-                    <Text style = {[styles.textBeforeInput, {width:'90%',marginLeft: 15, marginTop:15}]}>
-                        By following the above budget each month, you can save:
-                    </Text>
-                    <View style = {styles.budgetContainer}>
-                        <Text style = {[styles.textBeforeInput, {flex:3, padding:10}]}>Saving</Text>
-                        <Text style = {[styles.textBeforeInput, {flex:1, padding:10}]}>${user.salary-budgetsSum}</Text>
-                    </View>
-                    <View style = {{marginTop: 15}}>
-                        <TouchableOpacity
-                            onPress = {() => this.add()}
-                            style = {styles.button}
-                        >
-                            <View style = {[styles.budgetContainer,{backgroundColor:blue}]}>
-                                <Text style = {[styles.textBeforeInput, {flex:1, padding:10, color:white, fontWeight: 'bold'}]}>Add a Budget</Text>
+                    <View style = {{alignItems:'center', justifyContent:'flex-start'}}>
+                        <ScrollView style = {{width:'100%'}}>
+                            <View style = {styles.swipeContainer}>
+                				{budgetList.map((bud)=>(
+                    					<SwipeRow removeItem = {bud} key = {bud} name = {budgets[bud].name} price = {budgets[bud].budget} edit = {this.edit} del = {this.delete}/>
+                				))}
                             </View>
-                        </TouchableOpacity>
+                            <Text style = {[styles.textBeforeInput, {marginTop: 15, width:'90%', marginTop:15}]}>
+                                By following the above budget each month, you can save: ${user.salary-budgetsSum}
+                            </Text>
+                            <View style = {{marginTop: 15}}>
+                                <TouchableOpacity
+                                    onPress = {() => {this.setState({showAddBudget:true})}}
+                                    style = {styles.button}
+                                >
+                                    <View style = {[styles.budgetContainer, {borderColor:grey, borderRadius:10, borderWidth: 0.8, backgroundColor:button}]}>
+                                        <Text style = {[styles.textBeforeInput, {padding:10, color:body, fontWeight: 'bold', alignItems:'center', justifyContent:'center'}]}>Add a Budget</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
                     </View>
                 </View>
-			</View>
+			</SafeAreaView>
 			)
 	}
 }
@@ -97,6 +126,7 @@ class BudgetList extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: background,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -113,29 +143,25 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     budgetContainer: {
-    	width: '95%',
+    	width: '100%',
         backgroundColor: white,
-        marginLeft: 10,
-        marginRight: 10,
-        alignItems: 'flex-start',
-        justifyContent:'flex-start',
         flexDirection: 'row',
-        borderBottomColor: grey,
-        borderBottomWidth: 0.1,
-        borderRadius: Platform.OS === 'ios' ? 2 : 2,
-        shadowRadius: 3,
-		shadowOpacity: 0.8,
-		shadowColor: 'rgba(0,0,0,0.24)',
-		shadowOffset: {
-			width: 0,
-			height: 3,
-		},
+        alignItems: 'center',
+        justifyContent:'center',
+        flexDirection: 'row',
+    },
+    swipeContainer:{
+        width:'100%',
+        padding:5,
+        alignItems: 'center',
+        justifyContent:'center',
 
     },
+
     textBeforeInput:{
         color: body,
         fontSize: 15,
-        marginLeft: 15,
+        
     },
     inputS:{
         color: body,

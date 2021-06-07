@@ -1,13 +1,13 @@
 import React, {Component} from 'react'
 import {View, ScrollView, Text, StyleSheet, Picker, TouchableOpacity, Platform} from 'react-native'
-import {blue, grey, white} from '../utils/colors'
+import {brown, grey, white} from '../utils/colors'
 
 
 export default function Chart({spent, total}){
-	const width = spent/total*100
+	const width = Math.min(spent/total*100, 100)
 	console.log(spent, total, width)
 	return(
-		<View style = {{flexDirection: 'row'}}>
+		<View style = {{flexDirection: 'row', alignItems:'center'}}>
 			<View style = {[styles.container, {backgroundColor: grey},{width:`${width}%`}]}>
 				<Text style={{fontSize:10, color: white}}>
 					{/*{spent}*/}
@@ -24,7 +24,7 @@ export default function Chart({spent, total}){
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: blue,
+        backgroundColor: brown,
         alignItems: 'center',
         justifyContent:'center',
         flexDirection: 'row',

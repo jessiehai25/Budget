@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, StatusBar, Platform } from 'react-native';
 import {connect} from 'react-redux'
 import {blue, grey, white, body, brown} from '../utils/colors'
 import {handleInitialData} from '../actions/'
-
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 class Loading extends Component {
 	state = {
@@ -38,12 +38,12 @@ class Loading extends Component {
 
   render() {
   	return(
-	        <View style={{flex:1}}>
+	        <SafeAreaView style={{flex:1}}>
 
 	          <Text>
 	          	Loading
 	          </Text>
-	        </View>
+	        </SafeAreaView>
 	)
   }
 }

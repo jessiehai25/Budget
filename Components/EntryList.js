@@ -1,19 +1,22 @@
 import React, {Component} from 'react'
-import {View, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform} from 'react-native'
+import {View, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform, Alert} from 'react-native'
 import {connect} from 'react-redux'
-import {handleInitialData} from '../actions/'
-import {blue, grey, white, body, brown, darkBrown, backgroundGrey} from '../utils/colors'
-import {AntDesign} from '@expo/vector-icons'
-import {months} from '../utils/helpers'
+import {blue, grey, white, body, brown, darkBrown, button, background} from '../utils/colors'
 import {formatDate, convertDate} from '../utils/helpers'
-import {Calendar, CalendarList, Agenda, Arrow} from 'react-native-calendars';
+import {CalendarList} from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons'
 import Modal from 'react-native-modal';
 import ModalAddBudget from'./ModalAddBudget'
-import {handleAddEntry} from '../actions/entries'
+import ModalEditEntry from './ModalEditEntry'
+import {handleAddEntry, handleDeleteEntry} from '../actions/entries'
+import SwipeRow from './SwipeRow'
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 class EntryList extends Component {
 	state = {
+		showAdd: false,
+		showEdit: false,
+		showId: null,
 		date: Date.now(),
 		markedDate : {},
 		selected: {}
@@ -38,7 +41,6 @@ class EntryList extends Component {
 				}
 			)
 		})
-		console.log(markedDate)
 		this.setState(()=> ({
 			markedDate:markedDate,
 			selected: {[formatted] : {selected: true, selectedColor: brown}}
@@ -55,7 +57,7 @@ class EntryList extends Component {
 		const {dispatch} = this.props
         dispatch(handleAddEntry(entry))
         this.setState(()=> ({
-        	show: false,
+        	showAdd: false,
         	markedDate: {
         		...markedDate,
         		[entryDate]:{
@@ -65,6 +67,79 @@ class EntryList extends Component {
         	}
         }))
     }
+
+    edit = ({showId, title, category, price, timestamp}) => {
+    	const {dispatch} = this.props
+    	const {entries} = this.props
+    	const showCategory = entries[showId].category
+    	console.log("PRESS EDIT",showId)
+    	dispatch(handleDeleteEntry(id = showId, category = showCategory))
+    	const entry = {
+    		title, 
+    		category, 
+    		price, 
+    		timestamp
+    	}
+    	this.add(entry)
+    	this.setState(()=> ({
+        	showEdit: false,
+        	
+        }))
+    }
+
+    delete = (id) => {
+    	const {dispatch} = this.props
+    	const {entries} = this.props
+    	const newEntries = Object.keys(entries).reduce((object, key) => {
+			if (key !== id){
+				object[key] = entries[key]
+			}
+			return object
+		}, {})
+    	console.log("ENTRY_DELETE", entries)
+    	const entryDate = convertDate(new Date(entries[id].timestamp))
+    	const mark = this.state.markedDate
+    	const category = entries[id].category
+    	var markedDate = {}
+    	Object.keys(newEntries).map((entry)=> {
+			var entryDate = convertDate(new Date(entries[entry].timestamp))
+			
+			return(
+				markedDate = {
+					...markedDate,
+					[entryDate]:{
+						...markedDate[entryDate],
+						marked: true, 
+						dotColor: 'red'}
+				}
+			)
+		})
+    	Alert.alert(
+            `Are you sure to delete ${id}?`,
+            "",
+            [
+                
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('cancel'),
+                    style: 'cancel',
+                },
+                {
+                    text: 'Delete',
+                    onPress: () => {
+                        console.log('delete', id, category)
+                        dispatch(handleDeleteEntry(id, category))
+                        this.setState(()=> ({
+				        	markedDate
+				        }))
+                    }
+
+                },
+            ]
+        )
+    }
+
+
     onDayPress = (day) => {
 		const d = formatDate(day)
 		return(
@@ -78,47 +153,44 @@ class EntryList extends Component {
 
 	render(){
 		const {user, entries, budgetList} = this.props
-		
 		const {date, markedDate, selected} = this.state
 		const sDate = Object.keys(selected)
 
 		return(
-			<View style = {[styles.container,{borderTopColor:body, borderTopWidth: 0.1,}]}>
+			<SafeAreaView style = {styles.container}>
 
-				<View style = {{height:'55%'}}>
+					<View style = {{width:'100%'}}>
 
-					<CalendarList
-						// Callback which gets executed when visible months change in scroll view. Default = undefined
-						
-						// Max amount of months allowed to scroll to the past. Default = 50
-						pastScrollRange={8}
-						// Max amount of months allowed to scroll to the future. Default = 50
-						futureScrollRange={9}
-						// Enable or disable scrolling of calendar list
-						scrollEnabled={true}
-						// Enable or disable vertical scroll indicator. Default = false
-						showScrollIndicator={true}
-						onDayPress = {this.onDayPress}
-						hideExtraDays={true}
-						pagingEnabled={true}
-						horizontal={true}
-						markedDates={{
-							...markedDate, 
-							[sDate]:{
-								...markedDate[sDate],
-								...selected[sDate]
-							}
-						}}
-					/>
+						<CalendarList
+							// Callback which gets executed when visible months change in scroll view. Default = undefined
+							
+							// Max amount of months allowed to scroll to the past. Default = 50
+							pastScrollRange={8}
+							// Max amount of months allowed to scroll to the future. Default = 50
+							futureScrollRange={9}
+							// Enable or disable scrolling of calendar list
+							scrollEnabled={true}
+							// Enable or disable vertical scroll indicator. Default = false
+							showScrollIndicator={true}
+							onDayPress = {this.onDayPress}
+							hideExtraDays={true}
+							pagingEnabled={true}
+							horizontal={true}
+							markedDates={{
+								...markedDate, 
+								[sDate]:{
+									...markedDate[sDate],
+									...selected[sDate]
+								}
+							}}
+						/>
 
 
-				</View>
-				
-				<View style = {{height:'38%', borderTopColor: grey, borderTopWidth: 0.1}}>
-					<Modal 
-						isVisible={this.state.show} 
+					</View>
+				<Modal 
+						isVisible={this.state.showAdd} 
 						transparent = {true}
-						onBackdropPress = {() => {this.setState({show:false})}}
+						onBackdropPress = {() => {this.setState({showAdd:false})}}
 					>
 						<ModalAddBudget
 							date = {date} 
@@ -126,63 +198,76 @@ class EntryList extends Component {
 							add = {this.add}
 						/>
 					</Modal>
-					<View style = {{alignItems:'center', justifyContent:'flex-start',width:'100%'}}>
-						<View style = {{padding:5}}>
-							<Text style = {{fontSize: 17, marginBottom: 5}}>
-								{formatDate(date)}
-							</Text>
-						</View>
-						<ScrollView style = {{width:'100%',}}>
-							{Object.keys(entries).map((entry)=>{
-								const title = entries[entry].title
-								const timestamp = entries[entry].timestamp
-								{if (formatDate(timestamp) === formatDate(date)) {
-									return(
-										<View style = {styles.entryContainer}>
-											<View style = {{padding:5}}>
-												<Text>
-													{entries[entry].category}
-												</Text>
 
-												<Text style = {styles.textBeforeInput}>
-													- {entries[entry].title}
-												</Text>
-											</View>
-											<View style = {{flex:1, alignItems: 'flex-end', padding:5}}>
-												<Text style = {styles.textBeforeInput}>
-													${entries[entry].price}
-												</Text>
-											</View>
-											
-											{/*<Text>
-												{formatDate(entries[entry].timestamp)}
-											</Text>*/}
-											
-								
-											
-										</View>
-
-									)}
-								}								
-							})}
-						</ScrollView>
+					<Modal 
+						isVisible={this.state.showEdit} 
+						transparent = {true}
+						onBackdropPress = {() => {this.setState({showEdit:false})}}
+					>
+						<ModalEditEntry
+							date = {date} 
+							budgetList = {budgetList} 
+							edit = {this.edit}
+							showId = {this.state.showId}
+							entries = {entries}
+						/>
+					</Modal>
+					<View style = {{padding:5}}></View>
+				<View style = {{alignItems:'center', height:'100%', width:'100%'}}>
+					<View style = {{padding:5,height:'38%', width:'95%', backgroundColor:'white', borderRadius:10,}}>
 						
+
+						<View style = {{width:'100%',width:'100%'}}>
+							<View style = {{alignItems:'center', width:'100%',padding:5,borderBottomColor: 'grey',borderBottomWidth: 0.5,}}>
+								<Text style = {{fontSize: 17, marginBottom: 5}}>
+									{formatDate(date)}
+								</Text>
+							</View>
+							<ScrollView style = {{width:'95%'}}>
+								{Object.keys(entries).map((entry)=>{
+									const title = entries[entry].title
+									const timestamp = entries[entry].timestamp
+									{if (formatDate(timestamp) === formatDate(date)) {
+										return(
+											<View style = {styles.entryContainer} key = {entry.id}>
+												<View style = {{padding:5, width:'100%'}}>
+													<SwipeRow 
+													removeItem = {entry} 
+													key = {entry} 
+													name = {entries[entry].category} 
+													description = {title} price = {entries[entry].price} 
+													edit = {() => {this.setState({
+														showEdit:true,
+														showId: entry,
+													})}} 
+													del = {this.delete}/>
+												</View>
+					
+											</View>
+
+										)}
+									}								
+								})}
+							</ScrollView>
+							
+						</View>
 					</View>
+
+					<View style = {{justifyContent:'flex-end'}}>
+						<TouchableOpacity
+	                            onPress = {() => {this.setState({showAdd:true})}}
+	                            style = {styles.button}
+	                    >
+	                        <View style = {{flexDirection:'row'}}>
+	                        	<Ionicons name="add-circle-sharp" size={40} color= {button} />
+	                        	{/*<View style = {{justifyContent: 'center'}}>
+	                            	<Text style = {{color: body, fontWeight: 'bold'}}>  New Record</Text>
+	                            </View>*/}
+	                        </View>
+	                    </TouchableOpacity>
+	                </View>
 				</View>
-				<View style = {{justifyContent:'flex-start'}}>
-					<TouchableOpacity
-                            onPress = {() => {this.setState({show:true})}}
-                            style = {styles.button}
-                    >
-                        <View style = {{flexDirection:'row'}}>
-                        	<Ionicons name="add-circle-sharp" size={20} color= {body} />
-                        	<View style = {{justifyContent: 'center'}}>
-                            	<Text style = {{color: body, fontWeight: 'bold'}}>  New Record</Text>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            </View>
+            </SafeAreaView>
 					
 				
 				
@@ -194,16 +279,14 @@ class EntryList extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor:background,
+        alignItems:'center'
     },
     entryContainer: {
         width: '100%',
         alignItems: 'flex-start',
         justifyContent:'flex-start',
         flexDirection: 'row',
-        borderTopColor: backgroundGrey,
-        borderTopWidth: 0.5,
-
-
     },
     textBeforeInput:{
         color: body,
@@ -211,13 +294,15 @@ const styles = StyleSheet.create({
         marginLeft: 15,
     },
     button: {
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
         alignItems: 'center',
-        backgroundColor: backgroundGrey,
-        height:'25%',
-        borderColor: body,
-        borderWidth: 0.4,
-        borderRadius: Platform.OS === 'ios' ? 2 : 2,
+        shadowColor: "rgba(0, 0, 0, 0.24)",
+      shadowOffset: {
+        width: 0,
+        height: 3
+      },
+    shadowRadius: 6,
+    shadowOpacity: 1
         
     },
 

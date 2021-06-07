@@ -5,7 +5,7 @@ import {
   user, 
   budgets, 
   entries,
-} from './_DATA'
+} from './DATA'
 import {AsyncStorage} from 'react-native'
   
 
@@ -28,10 +28,8 @@ export function saveEntry (entry) {
       AsyncStorage.getItem(ENTRIES_KEY),
       AsyncStorage.getItem(BUDGETS_KEY)
     ]).then((result) => {
-      console.log("API1", result)
       const entriesDataJ = JSON.parse(result[0])
       const budgetsDataJ = JSON.parse(result[1])
-      console.log("API2", entriesDataJ, budgetsDataJ, entry)
       const authedBudget = entry.category;
       console.log(authedBudget)
       const formattedEntry = formatEntry(entry)
@@ -55,7 +53,35 @@ export function saveEntry (entry) {
     
 }
 
+export function removeEntry (entry) {
+  return Promise.all([
+      AsyncStorage.getItem(ENTRIES_KEY),
+      AsyncStorage.getItem(BUDGETS_KEY)
+    ]).then((result) => {
+      const entriesDataJ = JSON.parse(result[0])
+      const budgetsDataJ = JSON.parse(result[1])
+      const authedBudget = entriesDataJ[entry].category
+      console.log(authedBudget, budgetsDataJ[authedBudget])
+      const entries = Object.keys(entriesDataJ).reduce((object, key) => {
+        if (key !== entry){
+          object[key] = entriesDataJ[key]
+        }
+        return object
+      }, {})
+      const budgets = {
+        ...budgetsDataJ,
+        [authedBudget]: {
+          ...budgetsDataJ[authedBudget],
+          entries: budgetsDataJ[authedBudget].entries.filter(ent => ent !== entry)
+        }
+      }
+      AsyncStorage.setItem(ENTRIES_KEY, JSON.stringify(entries))
+      AsyncStorage.setItem(BUDGETS_KEY, JSON.stringify(budgets))
+      
+      return ([entries, budgets])
+    })
     
+}
 
 
 
@@ -86,8 +112,20 @@ export function saveUserBudget (name) {
       const budgets = [...budgetList, name]
       const newUser = {...user, budgets}
       AsyncStorage.setItem(USER_KEY, JSON.stringify(newUser))
-    }3
+    }
   })
+}
+
+export function removeUserBudget (budget) {
+  return AsyncStorage.getItem(USER_KEY)
+  .then(results => {
+    const user = JSON.parse(results)
+    const budgetList = user["budgets"]
+    const budgets = user.budgets.filter(bud => bud !== budget)
+    const newUser = {...user, budgets}
+    AsyncStorage.setItem(USER_KEY, JSON.stringify(newUser))
+    }
+  )
 }
 
 export function getBudgets () {
@@ -136,12 +174,14 @@ export function saveUser (user){
   }))
 }
 
-export function saveBudget (name, budget, entries = []){
+export function saveBudget (name, budget, date, entries = []){
   return AsyncStorage.mergeItem(BUDGETS_KEY, JSON.stringify({
     [name]:{
       name,
       budget,
-      entries
+      start: date,
+      entries,
+      end: null
     }
   }))
 }
@@ -151,6 +191,7 @@ export function saveBudget (name, budget, entries = []){
 export function removeBudget (bud) {
   return AsyncStorage.getItem(BUDGETS_KEY)
   .then ((results) => {
+    console.log("API")
     const data = JSON.parse(results)
     data[bud] = undefined
     delete data[bud]

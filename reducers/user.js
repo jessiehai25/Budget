@@ -1,4 +1,4 @@
-import {RECEIVE_USER, SET_USER, ADD_USER_BUDGET} from '../actions/user'
+import {RECEIVE_USER, SET_USER, ADD_USER_BUDGET, DELETE_USER_BUDGET} from '../actions/user'
 
 export default function user (state = null, action){
 	switch(action.type){
@@ -22,6 +22,15 @@ export default function user (state = null, action){
 					...state.budgets,
 					name
 				]
+			}
+		case DELETE_USER_BUDGET:
+		console.log("!!!!")
+			const {budget} = action
+			const budgets = state.budgets.filter(bud => bud !== budget)
+			console.log("DELETE_USER_BUDGET", budgets)
+			return{
+				...state,
+				budgets
 			}
 		default:
 			return state
