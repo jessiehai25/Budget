@@ -36,6 +36,7 @@ export function handleAddEntry ({title, category, price, timestamp}){
 			timestamp
 		})
 		.then((entry) => {
+			 console.log("NEW add", entry)
 			dispatch(addEntry(entry))
 			dispatch(addEntryToBudget(entry.category, entry.id))
 		})

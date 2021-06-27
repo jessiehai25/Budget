@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@react-native-community/art": "^1.2.0",
+    "@react-navigation/bottom-tabs": "^5.11.11",
+    "@react-navigation/native": "^3.6.5",
     "expo": "^41.0.1",
     "node": "^15.14.0",
     "prop-types": "^15.7.2",

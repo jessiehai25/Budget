@@ -3,12 +3,12 @@ import {View, ScrollView, Text, StyleSheet, Picker, TouchableOpacity, Platform} 
 import {brown, grey, white} from '../utils/colors'
 
 
-export default function Chart({spent, total}){
+export default function Chart({spent, total, color}){
 	const width = Math.min(spent/total*100, 100)
-	console.log(spent, total, width)
+	/*console.log(spent, total, width)*/
 	return(
-		<View style = {{flexDirection: 'row', alignItems:'center'}}>
-			<View style = {[styles.container, {backgroundColor: grey},{width:`${width}%`}]}>
+		<View style = {{flexDirection: 'row', alignItems:'center', backgroundColor: grey, borderRadius:10,}}>
+			<View style = {[styles.container, {backgroundColor: color,width:`${width}%`, borderRadius:10}]}>
 				<Text style={{fontSize:10, color: white}}>
 					{/*{spent}*/}
 				</Text>
@@ -24,10 +24,11 @@ export default function Chart({spent, total}){
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: brown,
+        backgroundColor: grey,
         alignItems: 'center',
         justifyContent:'center',
         flexDirection: 'row',
+        borderRadius:10,
 
     },
 })

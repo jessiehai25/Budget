@@ -6,7 +6,7 @@ import {formatDate, convertDate} from '../utils/helpers'
 import {CalendarList} from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons'
 import Modal from 'react-native-modal';
-import ModalAddBudget from'./ModalAddBudget'
+import ModalAddEntry from'./ModalAddEntry'
 import ModalEditEntry from './ModalEditEntry'
 import {handleAddEntry, handleDeleteEntry} from '../actions/entries'
 import SwipeRow from './SwipeRow'
@@ -28,6 +28,11 @@ class EntryList extends Component {
 		const formatted = convertDate(t)
 		const selectedDate = {[formatted]: {selected: true, selectedColor: brown, marked: true, dotColor: body}}
 		var markedDate = {}
+		console.log(this.props.navigation)
+		this.props.navigation.setParams({
+
+	      scrollToTop: this.scrollToTop,
+	    });
 		Object.keys(entries).map((entry)=> {
 			var entryDate = convertDate(new Date(entries[entry].timestamp))
 			
@@ -48,10 +53,12 @@ class EntryList extends Component {
 
 
 	}
-
-
+	scrollToTop = ()=>{
+      this.setState(()=> ({
+        	showAdd: true,
+        }))
+  }
 	add = (entry) =>{
-        console.log("ADD FUNCTION in ENTRYLI", entry)
         const {markedDate} = this.state
         var entryDate = convertDate(new Date(entry.timestamp))
 		const {dispatch} = this.props
@@ -69,18 +76,24 @@ class EntryList extends Component {
     }
 
     edit = ({showId, title, category, price, timestamp}) => {
+    	console.log("PRESS EDIT 0", category)
     	const {dispatch} = this.props
     	const {entries} = this.props
     	const showCategory = entries[showId].category
-    	console.log("PRESS EDIT",showId)
-    	dispatch(handleDeleteEntry(id = showId, category = showCategory))
+    	console.log("PRESS EDIT",showCategory, category)
     	const entry = {
     		title, 
     		category, 
     		price, 
     		timestamp
     	}
-    	this.add(entry)
+   
+    		dispatch(handleAddEntry({title, category, price, timestamp}))
+  			.then(()=>
+  				dispatch(handleDeleteEntry(id = showId, category = showCategory))
+  			)
+    	
+    	console.log("PRESS EDIT2", entry)
     	this.setState(()=> ({
         	showEdit: false,
         	
@@ -92,11 +105,12 @@ class EntryList extends Component {
     	const {entries} = this.props
     	const newEntries = Object.keys(entries).reduce((object, key) => {
 			if (key !== id){
+				console.log(key, id)
 				object[key] = entries[key]
 			}
 			return object
 		}, {})
-    	console.log("ENTRY_DELETE", entries)
+    	console.log("ENTRY_DELETE", id, newEntries)
     	const entryDate = convertDate(new Date(entries[id].timestamp))
     	const mark = this.state.markedDate
     	const category = entries[id].category
@@ -158,121 +172,94 @@ class EntryList extends Component {
 
 		return(
 			<SafeAreaView style = {styles.container}>
-
-					<View style = {{width:'100%'}}>
-
-						<CalendarList
-							// Callback which gets executed when visible months change in scroll view. Default = undefined
-							
-							// Max amount of months allowed to scroll to the past. Default = 50
-							pastScrollRange={8}
-							// Max amount of months allowed to scroll to the future. Default = 50
-							futureScrollRange={9}
-							// Enable or disable scrolling of calendar list
-							scrollEnabled={true}
-							// Enable or disable vertical scroll indicator. Default = false
-							showScrollIndicator={true}
-							onDayPress = {this.onDayPress}
-							hideExtraDays={true}
-							pagingEnabled={true}
-							horizontal={true}
-							markedDates={{
-								...markedDate, 
-								[sDate]:{
-									...markedDate[sDate],
-									...selected[sDate]
-								}
-							}}
-						/>
-
-
-					</View>
+				<View style = {{width:'100%'}}>
+					<CalendarList
+						// Callback which gets executed when visible months change in scroll view. Default = undefined
+						// Max amount of months allowed to scroll to the past. Default = 50
+						pastScrollRange={8}
+						// Max amount of months allowed to scroll to the future. Default = 50
+						futureScrollRange={9}
+						// Enable or disable scrolling of calendar list
+						scrollEnabled={true}
+						// Enable or disable vertical scroll indicator. Default = false
+						showScrollIndicator={true}
+						onDayPress = {this.onDayPress}
+						hideExtraDays={true}
+						pagingEnabled={true}
+						horizontal={true}
+						markedDates={{
+							...markedDate, 
+							[sDate]:{
+								...markedDate[sDate],
+								...selected[sDate]
+							}
+						}}
+					/>
+				</View>
 				<Modal 
-						isVisible={this.state.showAdd} 
-						transparent = {true}
-						onBackdropPress = {() => {this.setState({showAdd:false})}}
-					>
-						<ModalAddBudget
-							date = {date} 
-							budgetList = {budgetList} 
-							add = {this.add}
-						/>
-					</Modal>
+					isVisible={this.state.showAdd} 
+					transparent = {true}
+					onBackdropPress = {() => {this.setState({showAdd:false})}}
+				>
+					<ModalAddEntry
+						date = {date} 
+						budgetList = {budgetList} 
+						add = {this.add}
+					/>
+				</Modal>
 
-					<Modal 
-						isVisible={this.state.showEdit} 
-						transparent = {true}
-						onBackdropPress = {() => {this.setState({showEdit:false})}}
-					>
-						<ModalEditEntry
-							date = {date} 
-							budgetList = {budgetList} 
-							edit = {this.edit}
-							showId = {this.state.showId}
-							entries = {entries}
-						/>
-					</Modal>
-					<View style = {{padding:5}}></View>
-				<View style = {{alignItems:'center', height:'100%', width:'100%'}}>
-					<View style = {{padding:5,height:'38%', width:'95%', backgroundColor:'white', borderRadius:10,}}>
-						
-
-						<View style = {{width:'100%',width:'100%'}}>
-							<View style = {{alignItems:'center', width:'100%',padding:5,borderBottomColor: 'grey',borderBottomWidth: 0.5,}}>
-								<Text style = {{fontSize: 17, marginBottom: 5}}>
-									{formatDate(date)}
-								</Text>
-							</View>
-							<ScrollView style = {{width:'95%'}}>
-								{Object.keys(entries).map((entry)=>{
-									const title = entries[entry].title
-									const timestamp = entries[entry].timestamp
-									{if (formatDate(timestamp) === formatDate(date)) {
-										return(
-											<View style = {styles.entryContainer} key = {entry.id}>
-												<View style = {{padding:5, width:'100%'}}>
-													<SwipeRow 
-													removeItem = {entry} 
-													key = {entry} 
-													name = {entries[entry].category} 
-													description = {title} price = {entries[entry].price} 
-													edit = {() => {this.setState({
-														showEdit:true,
-														showId: entry,
-													})}} 
-													del = {this.delete}/>
-												</View>
-					
+				<Modal 
+					isVisible={this.state.showEdit} 
+					transparent = {true}
+					onBackdropPress = {() => {this.setState({showEdit:false})}}
+				>
+					<ModalEditEntry
+						date = {date} 
+						budgetList = {budgetList} 
+						edit = {this.edit}
+						showId = {this.state.showId}
+						entries = {entries}
+					/>
+				</Modal>
+				<View style = {styles.secondContainer}>
+					<View style = {{height:'38%', width:'95%'}}>
+						<View style = {{alignItems:'center', width:'100%',padding:5,borderBottomColor: 'grey',borderBottomWidth: 0.5,}}>
+							<Text style = {{fontSize: 17, marginBottom: 5}}>
+								{formatDate(date)}
+							</Text>
+						</View>
+						<View style = {{alignItems: 'center'}}>
+						<ScrollView style = {{width:'100%'}}>
+							{Object.keys(entries).map((entry)=>{
+								const title = entries[entry].title
+								const timestamp = entries[entry].timestamp
+								{if (formatDate(timestamp) === formatDate(date)) {
+									return(
+										<View style = {styles.entryContainer} key = {entries[entry].id}>
+											<View style = {{width:'100%'}}>
+												<SwipeRow 
+												removeItem = {entry} 
+												key = {entry} 
+												name = {entries[entry].category} 
+												description = {title} price = {entries[entry].price} 
+												edit = {() => {this.setState({
+													showEdit:true,
+													showId: entry,
+												})}} 
+												del = {this.delete}/>
 											</View>
+				
+										</View>
 
-										)}
-									}								
-								})}
-							</ScrollView>
-							
+									)}
+								}								
+							})}
+						</ScrollView>
 						</View>
 					</View>
-
-					<View style = {{justifyContent:'flex-end'}}>
-						<TouchableOpacity
-	                            onPress = {() => {this.setState({showAdd:true})}}
-	                            style = {styles.button}
-	                    >
-	                        <View style = {{flexDirection:'row'}}>
-	                        	<Ionicons name="add-circle-sharp" size={40} color= {button} />
-	                        	{/*<View style = {{justifyContent: 'center'}}>
-	                            	<Text style = {{color: body, fontWeight: 'bold'}}>  New Record</Text>
-	                            </View>*/}
-	                        </View>
-	                    </TouchableOpacity>
-	                </View>
 				</View>
-            </SafeAreaView>
-					
-				
-				
-			)
-
+            </SafeAreaView>	
+		)
 	}
 }
 
@@ -282,8 +269,16 @@ const styles = StyleSheet.create({
         backgroundColor:background,
         alignItems:'center'
     },
+    secondContainer:{ 
+    	alignItems:'center', 
+    	height:'100%', 
+    	width:'100%'
+    },
+
     entryContainer: {
         width: '100%',
+        marginBottom:5,
+        marginTop:5,
         alignItems: 'flex-start',
         justifyContent:'flex-start',
         flexDirection: 'row',
@@ -292,18 +287,6 @@ const styles = StyleSheet.create({
         color: body,
         fontSize: 15,
         marginLeft: 15,
-    },
-    button: {
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        shadowColor: "rgba(0, 0, 0, 0.24)",
-      shadowOffset: {
-        width: 0,
-        height: 3
-      },
-    shadowRadius: 6,
-    shadowOpacity: 1
-        
     },
 
 })

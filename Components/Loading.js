@@ -10,7 +10,7 @@ class Loading extends Component {
 		loading: true
 	}
 	componentDidMount(){
-		console.log("TEST")
+		
 	    const {dispatch} = this.props
 	    dispatch(handleInitialData())
 	    .then(()=>this.setState(()=> ({loading:false})))
@@ -18,17 +18,13 @@ class Loading extends Component {
     }
 
     componentDidUpdate(){
-    	console.log("Test2")
 
-	    console.log("Loading", this.props.entries)
 	    if (this.state.loading === false){
 	    	console.log(this.state.loading)
 	    	if (this.props.user.name === null) {
-    		console.log("signin", this.props.user.name)
     		this.props.navigation.navigate('Signin')
 	    	}
 	    	else{
-	    		console.log("Main", this.props.user.name)
 	    		this.props.navigation.navigate('Main')
 	    	}
 	    }

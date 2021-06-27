@@ -6,6 +6,7 @@ import {createStore} from 'redux'
 import reducer from './reducers'
 import middleware from './middleware'
 import Container from './Navigation/Container'
+import {createStackNavigator} from 'react-navigation'
 
 
 

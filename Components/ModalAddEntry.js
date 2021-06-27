@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
-import {View, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform} from 'react-native'
+import {View, ScrollView, Text, TextInput, StyleSheet, Picker, Keyboard, TouchableOpacity, Platform} from 'react-native'
 import {blue, grey, white, body, brown, darkBrown, button} from '../utils/colors'
 import {formatDate, convertDate} from '../utils/helpers'
 import {FontAwesome } from '@expo/vector-icons'
 import Modal from 'react-native-modal';
  
-class ModalAddBudget extends Component{
+class ModalAddEntry extends Component{
 	state = {
 			id: '',
 			title: '',
@@ -14,19 +14,20 @@ class ModalAddBudget extends Component{
 			timestamp: ''
     }
     componentDidMount(){
-		console.log("TEST")
 	    const {date} = this.props
 	    this.setState(()=> ({timestamp:date}))
 
     }
 
     toggleKeyword = (keyword) => {
+        Keyboard.dismiss()
    		this.setState({ category: keyword });
     };	
 
     addEntry = () => {
     	const {title, category, price, timestamp} = this.state
     	const {add} = this.props
+
     	if (title === '' || category==='' || price ==='' ){
     		if (timestamp === '') {
     			alert('There are something wrong. Please exit and re-enter.')
@@ -71,15 +72,16 @@ class ModalAddBudget extends Component{
 		                    placeholder = 'Price'
 		                    style = {styles.inputS}
 		                    value = {price}
+                            keyboardType={'numeric'}
 		                >
 		                </TextInput>
 
 				</View>
 
-	                <View style= {{flexDirection:"row", justifyContent: "space-around",flexWrap: "wrap",}}>
+	                <View style= {{flexDirection:"row", justifyContent: "space-around",flexWrap: "wrap",paddingTop:10}}>
 
 	                	{budgetList.map((budget)=>(
-	                		<View style = {{padding:5}}>
+	                		<View >
 		                		<TouchableOpacity
 						            style={category == budget ? styles.selectedKeywordStyle : styles.buttonStyle}
 						            onPress={() => this.toggleKeyword(budget)}>
@@ -91,13 +93,13 @@ class ModalAddBudget extends Component{
 	                	))}
 	                	
 	                </View>
-	                <View style={{alignItems:'center', width:'100%', marginTop:20}}>
+	                <View style={{alignItems:'center', width:'100%', marginTop:20, borderRadius:10}}>
 						<TouchableOpacity 
-							style = {[styles.button, {flexDirection:'row', width:'100%'}]}
+							style = {styles.button}
 							onPress = {this.addEntry}
 						>
-			                	<FontAwesome name = 'plus-circle' size = {20} style = {{color: body}}/>
-			                	<Text style = {{color: body, fontWeight: 'bold'}}>  Save</Text>
+			                	<FontAwesome name = 'plus-circle' size = {20} style = {{color: white}}/>
+			                	<Text style = {{color: white, fontWeight: 'bold'}}>  Save</Text>
 			            </TouchableOpacity>
 			        </View>
 			</View>
@@ -136,28 +138,32 @@ const styles = StyleSheet.create({
         width: '100%',
  	},
  	buttonStyle: {
-    backgroundColor: white,
-    padding:10,
-    borderColor: brown,
-    borderWidth:1,
-    borderRadius: 10,
+    backgroundColor: grey,
+    paddingTop:10,
+    paddingBottom:10,
+    paddingLeft:5,
+    paddingRight:5,
+    borderRadius: 20,
     width:'100%',
   },
   selectedKeywordStyle: {
     backgroundColor: brown,
-    padding:10,
-    borderRadius: 10,
+    paddingTop:10,
+    paddingBottom:10,
+    paddingLeft:5,
+    paddingRight:5,
+    borderRadius: 20,
     width:'100%',
   },
   button: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: button,
+        backgroundColor: brown,
         padding:9,
-        borderColor: body,
-        borderWidth: 0.4,
-        borderRadius: Platform.OS === 'ios' ? 2 : 2,
+        borderRadius: 10,
+        flexDirection:'row', 
+        width:'100%',
         
     },
 })
-export default ModalAddBudget
+export default ModalAddEntry

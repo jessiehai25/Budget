@@ -66,8 +66,8 @@ class BudgetList extends Component {
     }
 	render(){
 		const {user, budgets, budgetList} = this.props
-        /*console.log("users", user)*/
-        console.log("budgets", budgets)
+        /*console.log("users", user)
+        console.log("budgets", budgets)*/
 		let budgetsSum = 0
         Object.keys(budgets).map((bud)=> {
             const budgetInNumber = parseInt(budgets[bud].budget)

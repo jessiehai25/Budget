@@ -4,8 +4,9 @@ import {connect} from 'react-redux'
 import Swipeout from 'react-native-swipeout'
 import {blue, white, grey, body} from '../utils/colors'
 import { AntDesign } from '@expo/vector-icons'
+import Chart from './Chart'
 
-export default function SwipeRow ({removeItem, name, description = null, price, edit, del}){
+export default function SwipeRowBudget ({bud, edit, del}){
         const swipeSettings = {
             autoClose: true,
             onClose: (secId, rowId, direction) => {
@@ -17,37 +18,38 @@ export default function SwipeRow ({removeItem, name, description = null, price, 
             right: [
                 {
                     onPress: () => {
-                        edit(removeItem)
+                        edit(bud.x)
                     },
                     text: <AntDesign name="edit" size={24} color="white" />, type: 'edit'
                 },
                 {
                     onPress: () => {
-                        del(removeItem)
+                        del(bud.x)
                     },
                     text: <AntDesign name="delete" size={24} color="white" />, type: 'delete'
                 }
             ],
         }
-        console.log(removeItem)
+        console.log(bud)
 		return(
             <Swipeout {...swipeSettings} style = {styles.swipeRow}>
-    			<View style = {styles.removeItemgetContainer}>
-                    <View style = {{flex:4, marginTop:5, marginBottom:5, width:'100%'}}>
-        				<Text style = {[styles.textBeforeInput, {color: description === null ? body : 'black'}]}>
-                            {name}
-                        </Text>
-                        {description=== null? null: 
-                            <Text style = {{color:body}}> 
-                                {` - ${description}`}
+
+                    <View style = {styles.budContainer}>
+                        <View style = {styles.budTextContainer}>
+
+                            <Text style = {styles.budText}>
+                                {bud.x}
                             </Text>
-                        }
-                       
-                    </View>
-                    <View style = {{flex:1, alignItems:'flex-end', marginTop:10, marginBottom:10}}>
-    				    <Text style = {[styles.textBeforeInput, {alignItems:'flex-end', color: description === null ? body : 'black'}]}>${price}</Text>
-    				</View>
-    			</View>
+                        </View>
+                        <View style =  {{textAlign:'right',alignItems:'flex-end'}}>
+                            <Text style = {[styles.budText,{color: (bud.budget-bud.y)<=0?'red':'green'}]}>
+                                         ${(bud.budget-bud.y).toLocaleString()} / {bud.budget.toLocaleString()}
+                                   </Text>
+                              </View>
+                           </View>
+                    
+                    <Chart spent = {bud.y} total = {bud.budget} color = {bud.color}/>
+               
             </Swipeout>
 
 		)

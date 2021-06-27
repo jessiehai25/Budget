@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, Animated, Text, View, StatusBar, Platform , Dimensions, TouchableOpacity} from 'react-native';
-import {createBottomTabNavigator, createMaterialTopTabNavigator, createAppContainer, createStackNavigator, createSwitchNavigator, useBottomTabBarHeight} from 'react-navigation'
-import {FontAwesome, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons'
+import { StyleSheet, SafeAreaView, Text, View, StatusBar, Platform , Dimensions, TouchableOpacity} from 'react-native';
+import {createBottomTabNavigator, createMaterialTopTabNavigator, createAppContainer, createStackNavigator, createSwitchNavigator} from 'react-navigation'
+import {FontAwesome, MaterialCommunityIcons,} from '@expo/vector-icons'
 import Welcome from '../Components/Welcome'
 import EntryList from '../Components/EntryList'
 import BudgetList from '../Components/BudgetList'
@@ -9,43 +9,71 @@ import AddBudget from '../Components/AddBudget'
 import EditBudget from '../Components/EditBudget'
 import Dashboard from '../Components/Dashboard'
 import Loading from '../Components/Loading'
+import Setting from '../Components/Setting'
 import {blue, grey, white, body, brown} from '../utils/colors'
+
+const CustomTabBarButton = ({children, onPress}) => (
+  <TouchableOpacity
+    style = {{
+      top:-30,
+      justifyContent:'center',
+      alignItems:'center',
+      shadow:{
+      shadowColor: '#7F5DF0',
+      shadowOffset:{
+        width:0,
+        height:10,
+      },
+      shadowOpacity:0.25,
+      shadowRadius:3.5,
+      elevation:5,
+      }
+    }}
+    onPress = {onPress}
+    >
+      <View style = {{
+
+        width:70,
+        height:70,
+        borderRadius: 35,
+        backgroundColor: 'orange'
+      }}>
+        {console.log('checking CustomTabBarButton')}
+        {children}
+      </View>
+    </TouchableOpacity>
+  )
+
 
 const RouteConfigs = {
   Summary:{
     screen: Dashboard,
     navigationOptions: {
-      headerShown:false,
+  
       tabBarIcon: ({ tintColor }) => (
         <View style = {{alignItems:'center', justifyContent:'center', top:5}}>
           <FontAwesome name='home' size = {25} color={tintColor} />
           <Text
             style = {{color: tintColor, fontSize:12}}>
-              Summary
+              Home
             </Text>
         </View>
       )
     },
   },
   Calendar: {
+    title:"ENTRY",
     screen: EntryList,
-    
     navigationOptions: {
-
-      tabBarIcon: ({ focused }) => 
-      {
-        const colors = focused ? 'white' : '#007AFF'
-        {console.log('test')}
-        return(
+      tabBarButton: (props) => (
+        <CustomTabBarButton{...props} />
+        ),
+      tabBarIcon: ({ focused }) => (
         <View style = {{
-
           alignItems:'center', 
           justifyContent:'center', 
-          top:-25,
-          backgroundColor: colors,
-          borderRadius:'50%',
-          width:50,
-          height:50,
+          top:-35,
+          shadow:{
           shadowColor: '#7F5DF0',
           shadowOffset:{
             width:0,
@@ -54,60 +82,18 @@ const RouteConfigs = {
           shadowOpacity:0.25,
           shadowRadius:3.5,
           elevation:5,
-          
+          }
         }}>
-          {focused ?<AntDesign name="pluscircle"  size = {47} color = '#e32f45' /> : <FontAwesome name='calendar-o' size = {28} color = 'white' />}
+          <FontAwesome name='plus-circle' size = {50} color = {focused ? '#007AFF': '#e32f45'} />
           </View>
-      )
-      },
-      tabBarOnPress: (event) => {
-
-        const { navigation } = event;
-        event.defaultHandler();
-        // Scroll to top
-        if (navigation.isFocused() && navigation.state.params && navigation.state.params.scrollToTop) {
-          console.log("1", navigation.state.params, navigation.state.params.scrollToTop)
-          navigation.state.params.scrollToTop();
-        }
-      },
-
-
-
-      /*tabBarOnPress: (scene, jumpToIndex, navigation) => {
-        console.log('Tab is pressed!', navigation)
-        if (navigation.state.index === 0) {
-          const navigationInRoute = navigation.getChildNavigation(navigation.state.routes[0].key);
-
-          if (!!navigationInRoute && navigationInRoute.isFocused() && !!navigationInRoute.state.params && !!navigationInRoute.state.params.scrollToTop) {
-            navigationInRoute.state.params.scrollToTop();
-          }
-          else {
-            navigation.navigate(navigation.state.key)
-          }
-        }
-
-
-          const { route, index, focused } = scene;
-          console.log(scene, jumpToIndex)
-          if (route.index === 0) { // inside 1st screen of stacknavigator
-            ReduxStore.dispatch(someAction());
-
-            // Scroll to top
-            const navigationInRoute = route.routes[0];
-            if (!!navigationInRoute && !!navigationInRoute.params && !!navigationInRoute.params.scrollToTop) {
-              navigationInRoute.params.scrollToTop();
-            }
-
-          }
-          jumpToIndex(1); // Exit
-          
-        },*/
+      ),
       
     }
   },
 
   Budget: {
     screen: BudgetList,
+
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => (
         <View style = {{alignItems:'center', justifyContent:'center', top:5}}>
@@ -120,30 +106,12 @@ const RouteConfigs = {
       )
     }
   },
-
   
 }
 
-/*const tabBarOnPress = ({ navigation, defaultHandler }) => {
-    const { isFocused, state, goBack } = navigation;
-    console.log("ROUTE00",isFocused, state.routes.length)
-    if (isFocused()) {
-      console.log("ROUTE",state.routes.length)
-        if (state.routes.length > 1) {
-            for (let i = 0; i < state.routes.length - 1; i += 1) {
-                goBack();
-            }
-        } else {
-            // @TODO SCROLL TO TOP OF EACH TAB IF SCROLLABLE, $CALLBACK().
-        }
-    } else {
-        defaultHandler();
-    }
-};*/
 
 
 const windowWidth = Dimensions.get('window').width;
-
 
 function tabBarHeight() {
     const majorVersion = parseInt(Platform.Version, 10);
@@ -155,15 +123,17 @@ function tabBarHeight() {
 }
 
 const TabNavigatorConfig = {
-  screenOptions:{
-    headerShown: false,
-
-  },
 
   tabBarOptions: {
     activeTintColor: '#007AFF',
     showLabel: false,
     style: {
+      position: 'absolute',
+      bottom:25,
+      left:20,
+      right:20,
+      height:78,
+      elevation:9,
       shadowColor: '#7F5DF0',
       shadowOffset:{
       width:0,
@@ -200,23 +170,21 @@ const Tabs =
 
 Tabs.navigationOptions = ({navigation}) => {
   const {routeName} = navigation.state.routes[navigation.state.index]
-  /*const headerTitle = 
+  const headerTitle = 
       <Text style = {{fontWeight: 'bold',
           color: white,
           fontSize: 20,
           letterSpacing: 1}}>
         {routeName}
       </Text>
-  */
   return{
-      header: null,
-      /*headerTitle: headerTitle,*/
+      safeAreaInset: { bottom: 'always', top: 'always' },
+      headerTitle: headerTitle,
       headerStyle: {
         marginTop: StatusBar.currentHeight,
         backgroundColor: brown,
-        height:0,
+        height:40,
       },
-      /*tabBarOnPress*/
   }
 }
 
@@ -227,7 +195,6 @@ const MainNavigator = createStackNavigator({
   Home:{
     screen: Tabs,
     title: "HOME",
-
   },
   
   EntryList:{

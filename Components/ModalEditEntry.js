@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
-import {View, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform} from 'react-native'
+import {View, ScrollView, Text, TextInput, StyleSheet, Keyboard, Picker, TouchableOpacity, Platform} from 'react-native'
 import {blue, grey, white, body, brown, darkBrown, button} from '../utils/colors'
 import {formatDate, convertDate} from '../utils/helpers'
 import {FontAwesome } from '@expo/vector-icons'
 import Modal from 'react-native-modal';
  
-class ModalAddBudget extends Component{
+class ModalEditEntry extends Component{
 	state = {
 			id: '',
 			title: '',
@@ -14,26 +14,26 @@ class ModalAddBudget extends Component{
 			timestamp: ''
     }
     componentDidMount(){
-		console.log("TEST", showId)
 	    const {date, showId, entries} = this.props
 	    this.setState(()=> ({
             timestamp:date,
             id: showId,
             title: entries[showId].title,
             category: entries[showId].category,
-            price: entries[showId].price.toString(),
+            price: entries[showId].price,
         }))
 
     }
 
     toggleKeyword = (keyword) => {
+        Keyboard.dismiss()
    		this.setState({ category: keyword });
     };	
 
     editEntry = () => {
     	const {title, category, price, timestamp} = this.state
     	const {edit, showId} = this.props
-    	if (title === '' || category==='' || price ==='' ){
+    	if (title === '' || category==='' || price ==='' || isNaN(price.toString())){
     		if (timestamp === '') {
     			alert('There are something wrong. Please exit and re-enter.')
     		}
@@ -58,8 +58,8 @@ class ModalAddBudget extends Component{
 
 	render(){
 		const {title, category, price, timestamp} = this.state
-        console.log(this.state)
 		const {budgetList} = this.props
+        console.log(price, isNaN(price.toString()))
 		return(
 			<View style = {styles.container}>
 				<View style = {styles.inputContainer}>
@@ -77,7 +77,8 @@ class ModalAddBudget extends Component{
 		                    onChangeText = {(price) => this.setState(() => ({price: parseInt(price)}))}
 		                    placeholder = 'Price'
 		                    style = {styles.inputS}
-		                    value = {price}
+		                    value = {isNaN(price.toString())?0 :price.toString()}
+                            keyboardType={'numeric'}
 		                >
 		                </TextInput>
 
@@ -103,8 +104,8 @@ class ModalAddBudget extends Component{
 							style = {[styles.button, {flexDirection:'row', width:'100%'}]}
 							onPress = {this.editEntry}
 						>
-			                	<FontAwesome name = 'plus-circle' size = {20} style = {{color: body}}/>
-			                	<Text style = {{color: body, fontWeight: 'bold'}}>  Save</Text>
+			                	<FontAwesome name = 'plus-circle' size = {20} style = {{color: white}}/>
+			                	<Text style = {{color: white, fontWeight: 'bold'}}>  Save</Text>
 			            </TouchableOpacity>
 			        </View>
 			</View>
@@ -159,12 +160,12 @@ const styles = StyleSheet.create({
   button: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: button,
+        backgroundColor: brown,
         padding:9,
-        borderColor: body,
-        borderWidth: 0.4,
-        borderRadius: Platform.OS === 'ios' ? 2 : 2,
+        borderRadius: 10,
+        flexDirection:'row', 
+        width:'100%',
         
     },
 })
-export default ModalAddBudget
+export default ModalEditEntry

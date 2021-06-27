@@ -1,19 +1,95 @@
 import React, {Component} from 'react'
-import {View, ScrollView, Text, StyleSheet, TouchableOpacity, Platform, Dimensions} from 'react-native'
+import {View, ScrollView, StatusBar,Text, StyleSheet, TouchableOpacity, Platform, Dimensions, Alert} from 'react-native'
 import {connect} from 'react-redux'
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {blue, grey, white, body, brown, colorScale, background} from '../utils/colors'
-import {handleInitialData} from '../actions/'
 import Chart from './Chart'
-import Welcome from './Welcome'
+import Legend from './Legend'
 import {months, convertMMMYY} from '../utils/helpers'
-import {AntDesign} from '@expo/vector-icons'
-import {VictoryPie} from 'victory-native'
+import {AntDesign, FontAwesome} from '@expo/vector-icons'
+import {VictoryPie, VictoryLegend, VictoryContainer} from 'victory-native'
+import Modal from 'react-native-modal';
+import AddBudget from './AddBudget'
+import EditBudget from './EditBudget'
+import SwipeRowBudget from './SwipeRowBudget'
+import ModalBudgetDetails from './ModalBudgetDetails'
+import {addBudget} from '../actions/budgets'
+import {addUserBudget, deleteUserBudget} from '../actions/user'
+import {saveBudget, saveUserBudget} from '../utils/api'
+import {editBudget} from '../actions/budgets'
+import {modifyBudget} from '../utils/api'
+import {deleteBudget} from '../actions/budgets'
+import {removeBudget, removeUserBudget} from '../utils/api'
 
 class Dashboard extends Component {
   state = {
         month: 0,
         year:0,
+        show:false,
+        showAdd: false,
+        showDetail:false,
+        showDetailBudget:null,
+        showEdit:false,
+        editBud:null,
+    }
+
+    add = ({name, budget, date}) => {
+      const budgetInNumber = parseInt(budget)
+      const {dispatch} = this.props
+      dispatch(addBudget(name, budgetInNumber, date))
+      dispatch(addUserBudget(name))
+      console.log("Add Budget")
+      saveUserBudget(name)
+      saveBudget(name, budgetInNumber, date)
+      this.setState(()=> ({
+          showAdd: false,
+      }))
+
+    }
+
+    editModal = (bud)=>{
+        this.setState(()=> ({
+          showEdit:true,
+          editBud: bud,
+        }))
+    }
+
+    edit = ({name, budget, originalName}) => {
+      const {dispatch} = this.props
+      dispatch(editBudget(name, budget, originalName))
+      modifyBudget(name, budget, originalName)
+      this.setState(()=> ({
+          showEdit:false,
+          editBud: null,
+      }))
+    }
+
+    del = (bud) => {
+        const {dispatch} = this.props
+        Alert.alert(
+            `Are you sure to delete ${bud}?`,
+            "",
+            [
+                
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('cancel'),
+                    style: 'cancel',
+                },
+                {
+                    text: 'Delete',
+                    onPress: () => {
+                        console.log('delete', bud)
+                        dispatch(deleteUserBudget(bud))
+                        dispatch(deleteBudget(bud))
+                        console.log("HERE DE:L")
+                        removeUserBudget(bud)
+                        removeBudget(bud)
+                    }
+
+                },
+            ]
+        )
     }
 
   componentDidMount(){
@@ -64,14 +140,13 @@ class Dashboard extends Component {
   }
 
 	render() {
-		const {budgets, entries} = this.props
+		const {budgets, entries, budgetList} = this.props
     const {month, year} = this.state
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
-    console.log("load Dashboard now!!", this.props.user)
+    /*console.log("load Dashboard now!!", this.props.user)*/
 		const {name, salary} = this.props.user
-		const budgetList = this.props.user.budgets
-    console.log(budgetList)
+    console.log("entries",budgets, entries)
 
     function currentMonthEntry () {
       
@@ -92,15 +167,16 @@ class Dashboard extends Component {
           const date = budgets[bud].start
           const ents = budgets[bud].entries
           const now = Date.UTC(year, month, 31)
-          console.log("OUTSIDE", date, now, date>=now,)
+          
           let spent = 0
+          let spentEntries = []
           if(ents === null){
             totalSpent = 0
             spent = 0
           } 
           else{
             if(date >= now ){
-              console.log(date, now, date>=now,)
+              
               totalSpent = totalSpent
               spent = spent
               totalBudget = totalBudget
@@ -108,18 +184,22 @@ class Dashboard extends Component {
             else{
               
               ents.map((entry)=>{
+                console.log(entry)
                 const times = new Date(entries[entry].timestamp)
                 if(convertMMMYY(times.getMonth(), times.getFullYear()) == convertMMMYY(month, year)){
                      spent = spent + entries[entry].price
+                     spentEntries = spentEntries.concat(entry)
                 }
               
               })
               budgetAmountList=budgetAmountList.concat(
                 {
                   x: bud,
+                  name:bud,
                   budget: budgets[bud].budget,
                   y: spent,
-                  color: colorScale[colorIndex]
+                  color: colorScale[colorIndex],
+                  spentEntries: spentEntries
                 }
               )
               totalSpent = totalSpent + spent
@@ -137,9 +217,10 @@ class Dashboard extends Component {
         
     }
 
-
+  
     function renderPie(){
-      const {budgetAmountList, totalSpent} = currentMonthEntry()
+      const {budgetAmountList, totalSpent, totalBudget} = currentMonthEntry()
+      console.log(budgetAmountList)
       if(totalSpent === 0){
         return(
           <View>
@@ -152,43 +233,42 @@ class Dashboard extends Component {
       }
       else{
         return(
-          <View>
             <VictoryPie 
               animate={{
               
-                easing: 'exp'
+                easing: 'exp',
+                duration: 500
               }}
 
               style={{
                 data: { 
                   fill: ({datum}) => datum.color 
                 },
-                labels: {
+                /*labels: {
                   fontSize: ({ datum }) => datum.x.length > 9 ? 10 : 15, 
-                  fill: body, 
+                  fill:  dy, 
                   
-                }
+                }*/
               }}
               
-              padAngle={({ datum }) => datum.y/totalSpent}
-              innerRadius={windowWidth/3.2}
-              width={windowWidth} 
-              height={windowWidth/1.2}
-              labelRadius={({ innerRadius }) => innerRadius*1.08}
+              padAngle={({ datum }) => datum.y/totalSpent*4}
+              innerRadius={windowWidth/4.5}
+              width={windowWidth}
+              height={windowWidth/1.5}
+
+              labelRadius={({ innerRadius }) => innerRadius*1.1}
               data= {budgetAmountList}
-              labels={({ datum }) => (datum.y === 0 ? "" : 
-                 `${datum.x}\n(${Math.round(datum.y/totalSpent*100)}%)`)
+              labels={({ datum }) => (Math.round(datum.y/totalSpent*100) === 0 ? "" : 
+                 `${Math.round(datum.y/totalSpent*100)}%`)
               }
+              /*labels={({ datum }) => (datum.y === 0 ? "" : 
+                 `${datum.x}\n(${Math.round(datum.y/totalSpent*100)}%)`)
+              }*/
 
               />
-          </View>
           )
       }
     }
-    /*
-
-
-    */
 
     const {budgetAmountList, totalBudget, totalSpent} = currentMonthEntry()
 
@@ -203,68 +283,129 @@ class Dashboard extends Component {
 
 			return(
 				<SafeAreaView style = {styles.container} >
-		            {/*<Text style = {styles.title}>{`Welcome, ${name}`}</Text>*/}
-		            <View style = {{marginTop:20, flexDirection:'row'}}>
-                    <TouchableOpacity 
-                      onPress = {this.minusMonth}
-                      style = {{flexDirection:'row'}}
-                    >
-                      <Text>   </Text>
-                      <AntDesign name='caretleft' size = {15} color= {brown} />
-                      <Text>   </Text>
-                    </TouchableOpacity>
-                    <Text style={{fontSize:15, color: body, alignItems:'center'}}>
-                      {convertMMMYY(month, year)}
-                    </Text>
-                    <TouchableOpacity 
-                      onPress = {this.addMonth}
-                      style = {{flexDirection:'row'}}
-                    >
-                      <Text>   </Text>
-                      <AntDesign name='caretright' size = {15} color= {brown} />
-                      <Text>   </Text>
-                    </TouchableOpacity>
-		            </View>
+          <Modal 
+            isVisible={this.state.showAdd} 
+            transparent = {true}
+            onBackdropPress = {() => {this.setState({showAdd:false})}}
+          >
+            <AddBudget
+                add = {this.add}
+                budgetList = {budgetList}
+            />
+           </Modal>
+           <Modal 
+            isVisible={this.state.showDetail} 
+            transparent = {true}
+            onBackdropPress = {() => {this.setState({showDetail:false})}}
+          >
+            <ModalBudgetDetails
+                budgets = {budgets}
+                entries = {entries}
+                showDetailBudget = {this.state.showDetailBudget}
+            />
+           </Modal>
+           <Modal 
+            isVisible={this.state.showEdit} 
+            transparent = {true}
+            onBackdropPress = {() => {this.setState({showEdit:false})}}
+          >
+            <EditBudget
+                budgets = {budgets}
+                bud = {this.state.editBud}
+                edit = {this.edit}
+            />
+           </Modal>
+          {/*<Text style = {styles.title}>{`Welcome, ${name}`}</Text>*/}
+            <View style = {{marginTop:10, flexDirection:'row', justifyContent:'flex-start'}}>
+              <View style = {{width:'90%', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
+              <View>
+                <AntDesign name='plus' size = {25} color= {white} />
+              </View>
+                <View style = {{flexDirection:'row', }}>
+                  <TouchableOpacity 
+                    onPress = {this.minusMonth}
+                    style = {{flexDirection:'row'}}
+                  >
+                    <Text>   </Text>
+                    <AntDesign name='caretleft' size = {15} color= {brown} />
+                    <Text>   </Text>
+                  </TouchableOpacity>
+                  <Text style={{fontSize:15, color: body, alignItems:'center'}}>
+                    {convertMMMYY(month, year)}
+                  </Text>
+                  <TouchableOpacity 
+                    onPress = {this.addMonth}
+                    style = {{flexDirection:'row'}}
+                  >
+                    <Text>   </Text>
+                    <AntDesign name='caretright' size = {15} color= {brown} />
+                    <Text>   </Text>
+                  </TouchableOpacity >
+                </View>
+                <TouchableOpacity
+                onPress = {() => {this.setState({showAdd:true})}}>
+                  <Text style = {{fontSize:20}}>
+                  <FontAwesome name='plus' size = {20} color= {brown} />
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
                 
-		            <View style = {styles.secondContainer}>
-                  <View>
-                    <Text style = {[styles.budText, {width:'100%'}]}>
-                      Budget: {totalBudget.toLocaleString()}    Spent: {totalSpent.toLocaleString()}    Saved: {(totalBudget-totalSpent).toLocaleString()}
-                    </Text>
-                  </View>
-                  <View style = {{backgroundColor:'white'}}>
-                    {renderPie()}
-                  </View>
-                  <View style = {{padding:5}}></View>
-                  <View style = {{height:'40%', width:'100%',backgroundColor:'white', borderRadius:10, padding:5}}>
-                    <ScrollView>
-  		            	{budgetAmountList.map((bud)=>{
-                      console.log(bud)
-  			            	return(
-  			            		<View style = {styles.detailContainer} key = {bud.x}>
-  			            			<View style = {styles.budContainer}>
-  				            			<View style = {styles.budTextContainer}>
+            <View style = {styles.secondContainer}>
+              {/*<View style = {{width:'95%',flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+                <Text style = {[styles.budText]}>
+                  Budget: ${totalBudget.toLocaleString()}
+                </Text>
+                <Text style = {[styles.budText]}>
+                  Spent: ${totalSpent.toLocaleString()}
+                </Text>
+                <Text style = {[styles.budText]}>
+                  Save: ${(totalBudget-totalSpent).toLocaleString()}
+                </Text>
+                    
+              </View>*/}
+              <View style = {{backgroundColor:'white', width:'100%', alignItems:'center'}}>
+                {renderPie()}
+                <Legend budgetAmountList = {budgetAmountList} />
+              </View>
+              <View style = {{width:'100%', paddingBottom:StatusBar.currentHeight, padding:5, backgroundColor:'white', alignItems:'center'}}>
+                <ScrollView style = {{width:'95%'}}>
+                <View style = {[styles.detailContainer, {borderColor:white}]}>
+                    <View style = {styles.budContainer}>
+                      <View style = {styles.budTextContainer}>
 
-  							            	<Text style = {styles.budText}>
-  							            		{bud.x}
-  							            	</Text>
-  						            	</View>
-  						            	<View style =  {{textAlign:'right',alignItems:'flex-end'}}>
-  							            	<Text style = {[styles.budText,{color: (bud.budget-bud.y)<=0?'red':'green'}]}>
-  													     {(bud.budget-bud.y).toLocaleString()}/{bud.budget.toLocaleString()}
-  											       </Text>
-  										      </View>
-  									       </View>
-  					            	
-  					            	<Chart spent = {bud.y} total = {bud.budget}/>
-  				            	</View>
-  			            	)
-  		            	
-  		            	})}
-                    </ScrollView>
-                  </View>
-		            </View>
-		        </SafeAreaView>
+                        <Text style = {styles.budText}>
+                          Overall
+                        </Text>
+                      </View>
+                      <View style =  {{textAlign:'right',alignItems:'flex-end'}}>
+                        <Text style = {[styles.budText,{color: (totalBudget-totalSpent)<=0?'red':'green'}]}>
+                           ${(totalBudget-totalSpent).toLocaleString()} / {totalBudget.toLocaleString()}
+                         </Text>
+                      </View>
+                     </View>
+                    
+                    <Chart spent = {totalSpent} total = {totalBudget} color = {brown}/>
+                </View>
+	            	{budgetAmountList.map((bud)=>{
+		            	return(
+		            		<View style = {styles.detailContainer} key = {bud.x}>
+                      
+                        <TouchableOpacity
+                        onPress = {() => {this.setState({showDetail:true, showDetailBudget:bud})}}
+                          >
+  			            			<SwipeRowBudget bud = {bud} edit = {this.editModal} del= {this.del}/>
+  				            	</TouchableOpacity>
+                     
+                    </View>
+		            	)
+	            	 
+	            	})}
+                <View style = {{padding:190}}></View>
+                </ScrollView>
+              </View>
+            </View>
+	        </SafeAreaView>
 		    )
 		}
 
@@ -275,7 +416,7 @@ const styles = StyleSheet.create({
     container: {
         flex:1,
         alignItems: 'center',
-        backgroundColor: background
+        backgroundColor: background,
     },
     title:{
         color: body,
@@ -290,8 +431,8 @@ const styles = StyleSheet.create({
         borderTopWidth: 0.5,
         marginTop: 15,
         marginBottom: 15,
-        width: '95%',
-        height:'95%',
+        width: '100%',
+        height:'100%',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
@@ -300,6 +441,12 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: 5,
         marginBottom: 5,
+        borderColor:grey,
+        borderRadius:10,
+        borderWidth:2,
+        padding:8,
+        borderRadius:10,
+        width: '100%',
     },
 
 
@@ -313,8 +460,9 @@ const styles = StyleSheet.create({
   	},
   	budText:{
         color: body,
-        fontSize: 15,
+        fontSize: 13,
         padding: 5,
+        textTransform: 'capitalize',
   	},
 })
 
@@ -323,6 +471,8 @@ function mapStateToProps({user, budgets, entries}){
     user,
     budgets,
     entries,
+    budgetList: user.budgets
+        .sort((a,b)=>budgets[b].name.toLowerCase() < budgets[a].name.toLowerCase())
   }
 }
 

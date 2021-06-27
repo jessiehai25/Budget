@@ -31,7 +31,6 @@ export function saveEntry (entry) {
       const entriesDataJ = JSON.parse(result[0])
       const budgetsDataJ = JSON.parse(result[1])
       const authedBudget = entry.category;
-      console.log(authedBudget)
       const formattedEntry = formatEntry(entry)
       const entries = {
         ...entriesDataJ,
@@ -44,9 +43,13 @@ export function saveEntry (entry) {
           entries: budgetsDataJ[authedBudget].entries.concat([formattedEntry.id])
         }
       }
-      console.log('formattedEntry', formattedEntry)
-      AsyncStorage.setItem(ENTRIES_KEY, JSON.stringify(entries))
-      AsyncStorage.setItem(BUDGETS_KEY, JSON.stringify(budgets))
+      console.log("ADD CHECK", entries)
+      try{
+        AsyncStorage.setItem(ENTRIES_KEY, JSON.stringify(entries))
+        AsyncStorage.setItem(BUDGETS_KEY, JSON.stringify(budgets))
+      }catch (error) {
+        console.log(error)
+      }
       
       return formattedEntry
     })
@@ -54,6 +57,7 @@ export function saveEntry (entry) {
 }
 
 export function removeEntry (entry) {
+  console.log("API0", entry)
   return Promise.all([
       AsyncStorage.getItem(ENTRIES_KEY),
       AsyncStorage.getItem(BUDGETS_KEY)
@@ -61,7 +65,6 @@ export function removeEntry (entry) {
       const entriesDataJ = JSON.parse(result[0])
       const budgetsDataJ = JSON.parse(result[1])
       const authedBudget = entriesDataJ[entry].category
-      console.log(authedBudget, budgetsDataJ[authedBudget])
       const entries = Object.keys(entriesDataJ).reduce((object, key) => {
         if (key !== entry){
           object[key] = entriesDataJ[key]
@@ -75,10 +78,12 @@ export function removeEntry (entry) {
           entries: budgetsDataJ[authedBudget].entries.filter(ent => ent !== entry)
         }
       }
+      console.log("removeEntry", entries)
+
       AsyncStorage.setItem(ENTRIES_KEY, JSON.stringify(entries))
       AsyncStorage.setItem(BUDGETS_KEY, JSON.stringify(budgets))
-      
-      return ([entries, budgets])
+
+        return {entries, budgets}
     })
     
 }
@@ -131,9 +136,7 @@ export function removeUserBudget (budget) {
 export function getBudgets () {
   return AsyncStorage.getItem(BUDGETS_KEY)
   .then (results => {
-    console.log('AsyncStorage_Budget', results)
     if(results === null) {
-      console.log('null result')
       AsyncStorage.setItem(BUDGETS_KEY, JSON.stringify(budgets))
       return budgets
     }else{
@@ -168,7 +171,6 @@ export function getInitialData () {
 }
 
 export function saveUser (user){
-  console.log(user)
   return AsyncStorage.setItem(USER_KEY, JSON.stringify({
     ...user
   }))
@@ -191,7 +193,6 @@ export function saveBudget (name, budget, date, entries = []){
 export function removeBudget (bud) {
   return AsyncStorage.getItem(BUDGETS_KEY)
   .then ((results) => {
-    console.log("API")
     const data = JSON.parse(results)
     data[bud] = undefined
     delete data[bud]
@@ -204,10 +205,11 @@ export function modifyBudget (name, budget, originalName){
   .then((results) => {
     const data = JSON.parse(results)
     const bud = data[originalName]
-    const entries = bud.entries
+    const {entries,start, end} = bud
+    console.log("API", entries, start, end)
     removeBudget(originalName)
     .then(()=>
-      saveBudget (name, budget, entries)
+      saveBudget (name, budget, entries, date = {start}, end)
       )
     
   })

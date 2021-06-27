@@ -36,9 +36,9 @@ export default function budgets (state = {}, action) {
 			const {originalName} = action
 			const name1 = action.name
 			const budget1 = action.budget
-			const originalBud = state[originalName]
-			const entries = originalBud.entries
-			console.log(name1, budget1)
+			const originalBud = state[name1]
+			const {entries, start, end} = originalBud
+			console.log(name1, budget1, entries)
 			const removedState = Object.keys(state).reduce((object, key) => {
 				if (key !== originalName){
 					console.log(key)
@@ -51,7 +51,9 @@ export default function budgets (state = {}, action) {
 			[action.name]:{
 				name:name1,
 				budget:budget1,
-				entries
+				entries,
+				start,
+				end
 			}
 		}
 

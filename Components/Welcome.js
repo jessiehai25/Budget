@@ -32,7 +32,6 @@ class Welcome extends Component {
             ))
 
             saveUser(user)
-            console.log("Welcome",user)
             this.props.navigation.navigate('Main')
 
         }
@@ -65,12 +64,12 @@ class Welcome extends Component {
                                 </View>
                                 <View style = {styles.inputContainer}>
                                     <Text style = {styles.textBeforeInput}>
-                                        Monthly Salary: 
+                                        Monthly Salary / Maximun Budget: 
                                     </Text>
                                 
                                     <TextInput
                                         onChangeText = {(salaryM) => this.setState(() => ({salaryM: salaryM}))}
-                                        placeholder = 'Please enter your monthly salary'
+                                        placeholder = 'Please enter your monthly salary / maximum budget'
                                         value = {salaryM}
                                         style = {styles.inputS}
                                         keyboardType={'numeric'}

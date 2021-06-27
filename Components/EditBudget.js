@@ -1,86 +1,87 @@
 import React, {Component} from 'react'
 import {View, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform} from 'react-native'
 import {connect} from 'react-redux'
-import {blue, grey, white, darkBlue} from '../utils/colors'
+import {body, grey, white, brown} from '../utils/colors'
 import {editBudget} from '../actions/budgets'
 import {modifyBudget} from '../utils/api'
+import {FontAwesome} from '@expo/vector-icons'
 
 class EditBudget extends Component {
+	
+	
 	state = {
 		name:'',
-		budget:'',
+		budget:0,
 
 	}
-	constructor(props) { 
-		super(props); 
-		const bud = this.props.navigation.state.params.bud
-		this.state = { 
-			name: bud, 
-			budget: props.budgets[bud].budget.toString()
-		} 
-	} 
-	edit = (originalName)=>{
+
+	componentDidMount(){
+	    const {bud, budgets} = this.props
+	    const budget = budgets[bud].budget
+	    this.setState(()=> ({
+            name: bud,
+            budget: budget
+        }))
+
+    }
+	editB = ()=>{
+		const originalName = this.props.bud
         const {name, budget} = this.state
-    	const budgetInNumber = parseInt(budget)
-    	const bud = {name, budgetInNumber}
+        const {edit} = this.props
     	const {dispatch} = this.props
-    	if (name === '' || budget===''){
+    	if (name === '' || budget===0){
     		alert('You have not complete')
     	}
     	else{
-	    	dispatch(editBudget(name, budgetInNumber, originalName))
-	    	modifyBudget(name, budgetInNumber, originalName)
+			edit({name, budget, originalName})
 	    	this.setState(()=>({
 	    		name: '',
-	    		budget: ''
+	    		budget: 0
 	    	}))
-	    	this.props.navigation.goBack()
 
 	    }
     }
 
 	render(){
-		const {user, budgets} = this.props
+		const {budgets} = this.props
 		const {name, budget} = this.state
-		const originalName = this.props.navigation.state.params.bud
+		console.log("EDITBUDGET",budget, budgets, name)
+		
 		return(
-			<View style = {{padding: 10}}>
+			<View style = {styles.container}>
+					
+				<View style = {styles.inputContainer}>
+	                <TextInput
+	                    onChangeText = {(name) => this.setState(() => ({name: name}))}
+	                    placeholder = 'Category (e.g. Food)'
+	                    style = {styles.inputS}
+	                    value = {name}
+	                >
+	                </TextInput>
+	                <TextInput
+	                    onChangeText = {(budget) => this.setState(() => ({budget: parseInt(budget)}))}
+	                    placeholder = 'Budget for a year (e.g. 5000)'
+	                    style = {styles.inputS}
+	                    value = {isNaN(budget.toString())?0 :budget.toString()}
+	                    keyboardType={'numeric'}
+	                >
+	                </TextInput>
+	                <Text style = {styles.equivalent}>
+	                	equivalent to ${Math.round(budget/12)} per month
+	                </Text>
+				</View>
 
-				<View style = {styles.container}>
-					
-					<View style = {styles.inputContainer}>
-		                <TextInput
-		                    onChangeText = {(name) => this.setState(() => ({name: name}))}
-		                    placeholder = 'Category (e.g. Food)'
-		                    style = {styles.inputS}
-		                    value = {name}
-		                >
-		                </TextInput>
-		                <TextInput
-		                    onChangeText = {(budget) => this.setState(() => ({budget: budget}))}
-		                    placeholder = 'Budget for a year (e.g. 5000)'
-		                    style = {styles.inputS}
-		                    value = {budget}
-		                >
-		                </TextInput>
-		                <Text style = {styles.equivalent}>
-		                	equivalent to ${Math.round(budget/12)} per month
-		                </Text>
-					</View>
-					
-		        </View>
-		        
+		        <View style = {{alignItems:'center'}}>
 			        <TouchableOpacity 
-						style = {{justifyContent:'center', alignItems:'center'}}
-						onPress = {()=>this.edit(originalName)}	
+						style = {{justifyContent:'center', alignItems:'center',flexDirection:'row', width:'95%'}}
+						onPress = {this.editB}	
 						>
-						<View style = {[styles.container,{backgroundColor:blue,justifyContent:'center', alignItems:'center'}]}>
-	                		<Text style = {[styles.inputS,{color:white}]} >
-	                			Save
-	                		</Text>
+						<View style = {styles.button}>
+							<FontAwesome name = 'plus-circle' size = {20} style = {{color: brown}}/>
+	                		<Text style = {{fontWeight: 'bold', color: white}}>Save</Text>
 	                	</View>
 			        </TouchableOpacity>
-		        
+		        </View>
 	        </View>
 
 
@@ -89,56 +90,54 @@ class EditBudget extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: white,
-        padding: 10,
+	container: {
+        padding: 30,
+        alignItems: 'center',
+        justifyContent:'center',
+        borderRadius: 10,
+        backgroundColor: 'white',
+
+    },
+    container2: {
+
         alignItems: 'flex-start',
         justifyContent:'flex-start',
         flexDirection: 'row',
-        borderBottomColor: grey,
-        borderBottomWidth: 0.5,
-        borderRadius: Platform.OS === 'ios' ? 7 : 2,
-        shadowRadius: 3,
-		shadowOpacity: 0.8,
-		shadowColor: 'rgba(0,0,0,0.24)',
-		shadowOffset: {
-			width: 0,
-			height: 3,
-		},
     },
     inputContainer: {
-        flexDirection: 'column',
-        width: '90%',
+        width: '100%',
         justifyContent: 'flex-start'
     },
     textBeforeInput:{
-        color: blue,
+        color: body,
         fontSize: 20,
-        marginLeft: 15,
     },
     inputS:{
-        alignItems: 'center',
-
-        color: blue,
-        fontSize: 20,
+        color: body,
+        fontSize: 15,
         borderBottomColor: grey,
         borderBottomWidth: 0.5,
         marginLeft: 10,
         marginRight: 10,
         padding: 5,
+        marginTop: 10,
         width: '90%',
  	},
  	equivalent:{
- 		color:grey,
+ 		color:'grey',
  		marginLeft: 15,
- 	}
+        paddingBottom:30,
+ 	},
+ 	button:{
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: brown,
+        padding:9,
+        borderRadius: 10,
+        flexDirection:'row', 
+        width:'100%',
+    }
 })
 
-function mapStateToProps({user, budgets}){
-  return{
-    user,
-    budgets,
-  }
-}
 
-export default connect(mapStateToProps)(EditBudget)
+export default EditBudget
