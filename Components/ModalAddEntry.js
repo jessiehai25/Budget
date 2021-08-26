@@ -85,7 +85,7 @@ class ModalAddEntry extends Component{
 		                		<TouchableOpacity
 						            style={category == budget ? styles.selectedKeywordStyle : styles.buttonStyle}
 						            onPress={() => this.toggleKeyword(budget)}>
-			                		<Text style={{alignItems:"center"}}>
+			                		<Text style={[styles.text, {alignItems:"center"}]}>
 			                			{budget}
 			                		</Text>
 		                		</TouchableOpacity>
@@ -120,6 +120,10 @@ const styles = StyleSheet.create({
         width: '100%',
         justifyContent: 'flex-start',
         alignItems: 'center',
+    },
+    text:{
+      fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'Roboto', 
+      color:body
     },
     textBeforeInput:{
         color: body,

@@ -48,9 +48,12 @@ class Dashboard extends Component {
     }
 
     editModal = (bud)=>{
+      console.log("EDIT BEFORE", bud)
         this.setState(()=> ({
+
           showEdit:true,
           editBud: bud,
+          
         }))
     }
 
@@ -147,6 +150,7 @@ class Dashboard extends Component {
     const windowHeight = Dimensions.get('window').height;
     /*console.log("load Dashboard now!!", this.props.user)*/
 		const {name, salary} = this.props.user
+    console.log(this.state)
     
 
     function currentMonthEntry () {
@@ -177,7 +181,7 @@ class Dashboard extends Component {
             spent = 0
           } 
           else{
-            console.log("123!!!", budgets[bud])
+
             if(date >= now ){
               
               totalSpent = totalSpent
@@ -187,7 +191,7 @@ class Dashboard extends Component {
             else{
               
               ents.map((entry)=>{
-                console.log(entry)
+
                 const times = new Date(entries[entry].timestamp)
                 if(convertMMMYY(times.getMonth(), times.getFullYear()) == convertMMMYY(month, year)){
                      spent = spent + entries[entry].price
@@ -255,15 +259,24 @@ class Dashboard extends Component {
                 }*/
               }}
               
-              padAngle={({ datum }) => datum.y/totalSpent*4}
+              
               innerRadius={windowWidth/4.5}
               width={windowWidth}
               height={windowWidth/1.5}
 
               labelRadius={({ innerRadius }) => innerRadius*1.1}
-              data= {budgetAmountList}
-              labels={({ datum }) => (Math.round(datum.y/totalSpent*100) === 0 ? "" : 
-                 `${Math.round(datum.y/totalSpent*100)}%`)
+              data= {budgetAmountList.concat(
+                {
+                  x: "Remaining",
+                  name:"Remaining",
+                  budget: 0,
+                  y: totalBudget-totalSpent,
+                  color: grey,
+                  
+                }
+              )}
+              labels={({ datum }) => (Math.round(datum.y/totalBudget*100) === 0 || datum.x === "Remaining" ? "" : 
+                 `${Math.round(datum.y/totalBudget*100)}%`)
               }
               /*labels={({ datum }) => (datum.y === 0 ? "" : 
                  `${datum.x}\n(${Math.round(datum.y/totalSpent*100)}%)`)
@@ -277,7 +290,7 @@ class Dashboard extends Component {
     }
 
     const {budgetAmountList, totalBudget, totalSpent} = currentMonthEntry()
-    console.log("!",budgetList)
+
 		if(!budgetList.length){
         	return(
             <SafeAreaView style = {[styles.container, {justifyContent:'center'}]} >
@@ -328,24 +341,28 @@ class Dashboard extends Component {
             isVisible={this.state.showDetail} 
             transparent = {true}
             onBackdropPress = {() => {this.setState({showDetail:false})}}
-          >
-            <ModalBudgetDetails
-                budgets = {budgets}
-                entries = {entries}
-                showDetailBudget = {this.state.showDetailBudget}
-            />
+           >
+              <ModalBudgetDetails
+                  budgets = {budgets}
+                  entries = {entries}
+                  showDetailBudget = {this.state.showDetailBudget}
+                  edit = {this.editModal}
+                  del = {this.del}
+              />
+                <Modal 
+                isVisible={this.state.showEdit} 
+                transparent = {true}
+                onBackdropPress = {() => {this.setState({showEdit:false})}}
+                >
+                  <EditBudget
+                      budgets = {budgets}
+                      bud = {this.state.editBud}
+                      edit = {this.edit}
+                  />
+                </Modal>
+
            </Modal>
-           <Modal 
-            isVisible={this.state.showEdit} 
-            transparent = {true}
-            onBackdropPress = {() => {this.setState({showEdit:false})}}
-          >
-            <EditBudget
-                budgets = {budgets}
-                bud = {this.state.editBud}
-                edit = {this.edit}
-            />
-           </Modal>
+           
           
             <View style = {{marginTop:10, flexDirection:'row', justifyContent:'flex-start'}}>
               <View style = {{width:'90%', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
@@ -404,25 +421,25 @@ class Dashboard extends Component {
                     <View style = {styles.budContainer}>
                       <View style = {styles.budTextContainer}>
                         <View style = {{width:'100%',flexDirection: 'row', justifyContent: "space-between", marginBottom:5}}>
-                          <Text>
+                          <Text style = {styles.text}>
                             Budget
                           </Text>
-                          <Text style = {[styles.budText,{color: body}]}>
+                          <Text style = {[styles.budText,styles.text]}>
                              ${totalBudget.toLocaleString()}
                            </Text>
                         </View>
                         <View style = {{width:'100%',flexDirection: 'row', justifyContent: "space-between"}}>
-                          <Text style = {{marginBottom:4}}>
+                          <Text style = {[styles.text, {marginBottom:4}]}>
                             Remaining ({Math.round((totalBudget-totalSpent)/totalBudget*100)}%)
                           </Text>
-                          <Text style = {[styles.budText,{color: (totalBudget-totalSpent)<=0?'red':'green', marginBottom:4}]}>
+                          <Text style = {[styles.budText, styles.text, {color: (totalBudget-totalSpent)<=0?'red':'green', marginBottom:4}]}>
                              ${(totalBudget-totalSpent).toLocaleString()}
                           </Text>
                         </View>
                       </View>
                      </View>
                     
-                    <Chart spent = {totalSpent} total = {totalBudget} color = {brown}/>
+                   
                 </View>
 	            	{budgetAmountList.map((bud)=>{
 		            	return(
@@ -455,6 +472,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: background,
     },
+    text:{
+      fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'Roboto', 
+      color:body
+    },
     title:{
         color: body,
         justifyContent: 'center',
@@ -462,6 +483,7 @@ const styles = StyleSheet.create({
         fontSize: 35,
         marginTop: 15,
         marginBottom: 15,
+        fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'Roboto'
     },
    secondContainer: {
         borderTopColor: brown,
@@ -497,6 +519,7 @@ const styles = StyleSheet.create({
         fontSize: 13,
         marginTop:2,
         textTransform: 'capitalize',
+        fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'Roboto'
   	},
 })
 

@@ -60,7 +60,7 @@ class AddBudget extends Component {
                         keyboardType={'numeric'}
 	                >
 	                </TextInput>
-	                <Text style = {styles.equivalent}>
+	                <Text style = {[styles.text,styles.equivalent]}>
 	                	equivalent to around ${Math.round(budget/30)} per day
 	                </Text>
 				</View>
@@ -70,8 +70,8 @@ class AddBudget extends Component {
 						onPress = {this.addB}
 					>
                         <View style={styles.button}>
-    		                <FontAwesome name = 'plus-circle' size = {20} style = {{color: brown}}/>
-                            <Text style = {{fontWeight: 'bold', color: white}}>Save</Text>
+    		                <FontAwesome name = 'plus-circle' size = {20} style = {{color: white}}/>
+                            <Text style = {[styles.text, {fontWeight: 'bold', color: white}]}> Save</Text>
                         </View>
 		            </TouchableOpacity>
 	            </View>
@@ -90,6 +90,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
 
     },
+    text:{
+      fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'Roboto', 
+      color:body
+    },
+
     inputContainer: {
         width: '100%',
         justifyContent: 'flex-start'

@@ -10,10 +10,10 @@ class ModalBudgetDetails extends Component{
 
 	render(){
 
-		const {budgets, entries, showDetailBudget} = this.props
+		const {budgets, entries, showDetailBudget, edit, del} = this.props
         const {budget, name, y, spentEntries} = showDetailBudget
         const budgetEntries = budgets[showDetailBudget.name].entries
-        console.log("MODALBUDGETDETAILS",showDetailBudget, entries)
+        console.log("MODALBUDGETDETAILS", this.props)
 
             let spentDetail = {}
             spentEntries.map((ent)=> {
@@ -26,8 +26,6 @@ class ModalBudgetDetails extends Component{
                     originalPrice = spentDetail[title].spent 
                     original = spentDetail[title].entries
                 }
-                console.log("SPENTDETAIL", spentDetail)
-                console.log("ORIGINAL", original, originalPrice)
                 return(
                 spentDetail = {
                     ...spentDetail,
@@ -42,7 +40,6 @@ class ModalBudgetDetails extends Component{
 
 
             })
-            console.log("final", spentDetail)
         if(spentDetail === {}){
             return(
                 <Text>
@@ -54,18 +51,24 @@ class ModalBudgetDetails extends Component{
     		return(
     			<View style = {{width:'100%', backgroundColor:'white',borderRadius:10,}}>
                     <View style = {styles.container}>
-                        <View style = {styles.titleContainer}>
+                        <View>
                             <Text style = {{fontSize:15, fontWeight: 'bold'}}>
                                 {name} 
                             </Text>
-                            <Text style = {{fontSize:15, fontWeight: 'bold'}}>
+                        </View>
+
+                        <View style = {[styles.titleContainer, {borderBottomColor: brown, borderBottomWidth: 0.5, paddingBottom:10}]}>
+                            <Text style = {{fontSize:15}}>
+                                Spending 
+                            </Text>
+                            <Text style = {{fontSize:15}}>
                                 ${y.toLocaleString()} 
                             </Text>
                         </View>
                         {Object.keys(spentDetail).map((title)=> (
-                            <View style = {{width:'100%', paddingTop:5}}>
+                            <View style = {{width:'100%'}}>
 
-                                <View style = {{flexDirection:'row', justifyContent:'space-between'}}>
+                                <View style = {{flexDirection:'row', justifyContent:'space-between', paddingTop:5, paddingBottom:5}}>
                                     <Text style = {{fontSize:15}}>{title}</Text>
                                     <Text style = {{fontSize:15}}>
                                         ${spentDetail[title].spent.toLocaleString()}
@@ -80,20 +83,23 @@ class ModalBudgetDetails extends Component{
                                         </View>
                                     )
                                 })}
-                                
-
-                                
-                            
+                
                             </View>
                             ))
                         }
                     </View>
-                    <TouchableOpacity style = {{borderBottomColor:grey, borderBottomWidth:2, borderTopColor:grey, borderTopWidth:2, padding:12, alignItems:'center'}}>
+                    <TouchableOpacity 
+                        style = {{borderBottomColor:grey, borderBottomWidth:2, borderTopColor:grey, borderTopWidth:2, padding:12, alignItems:'center'}}
+                        onPress = {() => edit(name)}
+                    >
                         <Text style = {{color:'#007AFF'}}>
                             Edit Budget
                         </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style = {{padding:12, alignItems:'center'}}>
+                    <TouchableOpacity 
+                        style = {{padding:12, alignItems:'center'}}
+                        onPress = {() => del(name)}
+                    >
                         <Text style = {{color:'red'}}>
                             Delete Budget
                         </Text>
@@ -117,9 +123,6 @@ const styles = StyleSheet.create({
         width:'100%',
         flexDirection:'row', 
         justifyContent:'space-between',
-        borderBottomColor: brown,
-        borderBottomWidth: 0.5,
-        paddingBottom:10,
     }
 })
 export default ModalBudgetDetails

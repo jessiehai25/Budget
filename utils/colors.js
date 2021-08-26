@@ -7,7 +7,7 @@ export const darkBlue = '#003151'
 export const skyBlue = '#95C8D8'
 export const brown = '#dabb88'
 export const background = 'white'
-export const body = '#242A32'
+export const body = '#615B73'
 export const button = '#ED9850'
 
 /*
@@ -20,7 +20,7 @@ export const darkBlue = '#003151'
 export const skyBlue = '#95C8D8'
 export const brown = '#dabb88'
 export const darkBrown = '867666'
-export const body = '#757575'
+export const body = '#242A32'
 export const backgroundGrey = '#f2f1ef'
 */
 

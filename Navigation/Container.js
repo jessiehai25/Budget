@@ -5,7 +5,6 @@ import {FontAwesome, MaterialCommunityIcons, AntDesign } from '@expo/vector-icon
 import Welcome from '../Components/Welcome'
 import EntryList from '../Components/EntryList'
 import BudgetList from '../Components/BudgetList'
-import AddBudget from '../Components/AddBudget'
 import EditBudget from '../Components/EditBudget'
 import Dashboard from '../Components/Dashboard'
 import Loading from '../Components/Loading'

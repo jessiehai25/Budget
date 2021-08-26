@@ -10,7 +10,7 @@ export default function Chart({spent, total, color}){
 		<View style = {{flexDirection: 'row', alignItems:'center', backgroundColor: grey, borderRadius:10,}}>
 			<View style = {[styles.container, {backgroundColor: color,width:`${width}%`, borderRadius:10}]}>
 				<Text style={{fontSize:10, color: white}}>
-					${spent}
+					{/*${spent}*/}
 				</Text>
 			</View>
 			<View style = {[styles.container,  {width:`${100-width}%`}]}>

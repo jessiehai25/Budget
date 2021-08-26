@@ -224,7 +224,7 @@ class EntryList extends Component {
 				<View style = {styles.secondContainer}>
 					<View style = {{height:'38%', width:'95%'}}>
 						<View style = {{alignItems:'center', width:'100%',padding:5,borderBottomColor: 'grey',borderBottomWidth: 0.5,}}>
-							<Text style = {{fontSize: 17, marginBottom: 5}}>
+							<Text style = {[styles.text,{fontSize: 17, marginBottom: 5}]}>
 								{formatDate(date)}
 							</Text>
 						</View>
@@ -268,6 +268,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor:background,
         alignItems:'center'
+    },
+    text:{
+      fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'Roboto', 
+      color:body
     },
     secondContainer:{ 
     	alignItems:'center', 

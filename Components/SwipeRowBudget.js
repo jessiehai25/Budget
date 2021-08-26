@@ -32,20 +32,21 @@ export default function SwipeRowBudget ({bud, edit, del}){
         }
         console.log(bud)
 		return(
-            <Swipeout {...swipeSettings} style = {styles.swipeRow}>
+            <View>
+            {/*<Swipeout {...swipeSettings} style = {styles.swipeRow}>*/}
 
                     <View style = {styles.budContainer}>
                         <View style = {{flexDirection:'row', justifyContent:'space-between'}}>
 
-                            <Text style = {styles.budText}>
+                            <Text style = {[styles.budText, styles.text]}>
                                 {bud.x}
                             </Text>
 
                         <View style =  {{textAlign:'right',alignItems:'flex-end'}}>
-                            <Text style = {{fontSize:10}}>
+                            <Text style = {[styles.text, {fontSize:10}]}>
                                 Remaining
                             </Text>
-                            <Text style = {[styles.budText,{color: (bud.budget-bud.y)<=0?'red':'green'}]}>
+                            <Text style = {[styles.budText,styles.text, {color: (bud.budget-bud.y)<=0?'red':'green'}]}>
                                          ${(bud.budget-bud.y).toLocaleString()} / {bud.budget.toLocaleString()}
                                    </Text>
                               </View>
@@ -53,7 +54,7 @@ export default function SwipeRowBudget ({bud, edit, del}){
                         </View>
                     <Chart spent = {bud.y} total = {bud.budget} color = {bud.color}/>
                
-            </Swipeout>
+            </View>
 
 		)
 }
@@ -71,6 +72,10 @@ const styles = StyleSheet.create({
         
 
         
+    },
+    text:{
+      fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'Roboto', 
+      color:body
     },
     textBeforeInput:{
         fontSize: 14,
