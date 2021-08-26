@@ -2,8 +2,6 @@ import React, {Component} from 'react'
 import {View, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform} from 'react-native'
 import {connect} from 'react-redux'
 import {body, grey, white, brown} from '../utils/colors'
-import {editBudget} from '../actions/budgets'
-import {modifyBudget} from '../utils/api'
 import {FontAwesome} from '@expo/vector-icons'
 
 class EditBudget extends Component {
@@ -67,7 +65,7 @@ class EditBudget extends Component {
 	                >
 	                </TextInput>
 	                <Text style = {styles.equivalent}>
-	                	equivalent to ${Math.round(budget/12)} per month
+	                	equivalent to around ${Math.round(budget/30)} per day
 	                </Text>
 				</View>
 

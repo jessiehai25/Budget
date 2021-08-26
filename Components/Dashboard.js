@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, ScrollView, StatusBar,Text, StyleSheet, TouchableOpacity, Platform, Dimensions, Alert} from 'react-native'
+import {View, Image, ScrollView, StatusBar,Text, StyleSheet, TouchableOpacity, Platform, Dimensions, Alert} from 'react-native'
 import {connect} from 'react-redux'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {blue, grey, white, body, brown, colorScale, background} from '../utils/colors'
@@ -38,7 +38,7 @@ class Dashboard extends Component {
       const {dispatch} = this.props
       dispatch(addBudget(name, budgetInNumber, date))
       dispatch(addUserBudget(name))
-      console.log("Add Budget")
+   
       saveUserBudget(name)
       saveBudget(name, budgetInNumber, date)
       this.setState(()=> ({
@@ -82,7 +82,8 @@ class Dashboard extends Component {
                         console.log('delete', bud)
                         dispatch(deleteUserBudget(bud))
                         dispatch(deleteBudget(bud))
-                        console.log("HERE DE:L")
+                      
+
                         removeUserBudget(bud)
                         removeBudget(bud)
                     }
@@ -146,7 +147,7 @@ class Dashboard extends Component {
     const windowHeight = Dimensions.get('window').height;
     /*console.log("load Dashboard now!!", this.props.user)*/
 		const {name, salary} = this.props.user
-    console.log("entries",budgets, entries)
+    
 
     function currentMonthEntry () {
       
@@ -163,6 +164,7 @@ class Dashboard extends Component {
       }
       else{
 
+
         budgetList.map((bud)=>{
           const date = budgets[bud].start
           const ents = budgets[bud].entries
@@ -170,11 +172,12 @@ class Dashboard extends Component {
           
           let spent = 0
           let spentEntries = []
-          if(ents === null){
+          if(ents === null || ents === []){
             totalSpent = 0
             spent = 0
           } 
           else{
+            console.log("123!!!", budgets[bud])
             if(date >= now ){
               
               totalSpent = totalSpent
@@ -220,7 +223,7 @@ class Dashboard extends Component {
   
     function renderPie(){
       const {budgetAmountList, totalSpent, totalBudget} = currentMonthEntry()
-      console.log(budgetAmountList)
+     
       if(totalSpent === 0){
         return(
           <View>
@@ -233,6 +236,7 @@ class Dashboard extends Component {
       }
       else{
         return(
+          <View>
             <VictoryPie 
               animate={{
               
@@ -266,17 +270,44 @@ class Dashboard extends Component {
               }*/
 
               />
+              <Legend budgetAmountList = {budgetAmountList} />
+            </View>
           )
       }
     }
 
     const {budgetAmountList, totalBudget, totalSpent} = currentMonthEntry()
-
-		if(budgetList === null){
+    console.log("!",budgetList)
+		if(!budgetList.length){
         	return(
-        		<Text>
-        		 You have not input any budget yet!
-        		</Text>
+            <SafeAreaView style = {[styles.container, {justifyContent:'center'}]} >
+              <Modal 
+                isVisible={this.state.showAdd} 
+                transparent = {true}
+                onBackdropPress = {() => {this.setState({showAdd:false})}}
+              >
+                <AddBudget
+                    add = {this.add}
+                    budgetList = {budgetList}
+                />
+               </Modal>
+              <TouchableOpacity
+                 onPress = {() => {this.setState({showAdd:true})}}
+              >
+                <View style = {{borderRadius:60, borderWidth:1, borderColor:"grey", padding:40, marginBottom:40}}>
+
+                <Image 
+                  source={require('../assets/plus.png')}
+                  style = {{height:40,width:40,}}
+                />
+                </View>
+              </TouchableOpacity>
+
+          		<Text>
+
+          		  You have not input any budget yet!
+          		</Text>
+            </SafeAreaView>
         	)
 	    }
 	    else{
@@ -315,7 +346,7 @@ class Dashboard extends Component {
                 edit = {this.edit}
             />
            </Modal>
-          {/*<Text style = {styles.title}>{`Welcome, ${name}`}</Text>*/}
+          
             <View style = {{marginTop:10, flexDirection:'row', justifyContent:'flex-start'}}>
               <View style = {{width:'90%', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
               <View>
@@ -366,22 +397,28 @@ class Dashboard extends Component {
               </View>*/}
               <View style = {{backgroundColor:'white', width:'100%', alignItems:'center'}}>
                 {renderPie()}
-                <Legend budgetAmountList = {budgetAmountList} />
               </View>
               <View style = {{width:'100%', paddingBottom:StatusBar.currentHeight, padding:5, backgroundColor:'white', alignItems:'center'}}>
                 <ScrollView style = {{width:'95%'}}>
                 <View style = {[styles.detailContainer, {borderColor:white}]}>
                     <View style = {styles.budContainer}>
                       <View style = {styles.budTextContainer}>
-
-                        <Text style = {styles.budText}>
-                          Overall
-                        </Text>
-                      </View>
-                      <View style =  {{textAlign:'right',alignItems:'flex-end'}}>
-                        <Text style = {[styles.budText,{color: (totalBudget-totalSpent)<=0?'red':'green'}]}>
-                           ${(totalBudget-totalSpent).toLocaleString()} / {totalBudget.toLocaleString()}
-                         </Text>
+                        <View style = {{width:'100%',flexDirection: 'row', justifyContent: "space-between", marginBottom:5}}>
+                          <Text>
+                            Budget
+                          </Text>
+                          <Text style = {[styles.budText,{color: body}]}>
+                             ${totalBudget.toLocaleString()}
+                           </Text>
+                        </View>
+                        <View style = {{width:'100%',flexDirection: 'row', justifyContent: "space-between"}}>
+                          <Text style = {{marginBottom:4}}>
+                            Remaining ({Math.round((totalBudget-totalSpent)/totalBudget*100)}%)
+                          </Text>
+                          <Text style = {[styles.budText,{color: (totalBudget-totalSpent)<=0?'red':'green', marginBottom:4}]}>
+                             ${(totalBudget-totalSpent).toLocaleString()}
+                          </Text>
+                        </View>
                       </View>
                      </View>
                     
@@ -445,15 +482,12 @@ const styles = StyleSheet.create({
         borderRadius:10,
         borderWidth:2,
         padding:8,
-        borderRadius:10,
         width: '100%',
     },
 
 
   	budContainer: {
       flex:1,
-  		flexDirection: 'row',
-      justifyContent: "space-between",
       flexWrap: "wrap"
   	},
   	budTextContainer: {
@@ -461,7 +495,7 @@ const styles = StyleSheet.create({
   	budText:{
         color: body,
         fontSize: 13,
-        padding: 5,
+        marginTop:2,
         textTransform: 'capitalize',
   	},
 })

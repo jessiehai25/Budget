@@ -22,9 +22,11 @@ class Loading extends Component {
 	    if (this.state.loading === false){
 	    	console.log(this.state.loading)
 	    	if (this.props.user.name === null) {
+	    		console.log("LOADING1", this.props.budgets)
     		this.props.navigation.navigate('Signin')
 	    	}
 	    	else{
+	    		console.log("LOADING2", this.props.budgets)
 	    		this.props.navigation.navigate('Main')
 	    	}
 	    }

@@ -9,6 +9,7 @@ import AddBudget from '../Components/AddBudget'
 import EditBudget from '../Components/EditBudget'
 import Dashboard from '../Components/Dashboard'
 import Loading from '../Components/Loading'
+import Profile from '../Components/Profile'
 import {blue, grey, white, body, brown} from '../utils/colors'
 
 const RouteConfigs = {
@@ -106,15 +107,15 @@ const RouteConfigs = {
     }
   },
 
-  Budget: {
-    screen: BudgetList,
+  Profile: {
+    screen: Profile,
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => (
         <View style = {{alignItems:'center', justifyContent:'center', top:5}}>
           <MaterialCommunityIcons name='sack' size = {25} color={tintColor} />
           <Text
               style = {{color: tintColor, fontSize:12}}>
-                My Budget
+                Profile
             </Text>
         </View>
       )

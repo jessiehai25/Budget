@@ -35,19 +35,22 @@ export default function SwipeRowBudget ({bud, edit, del}){
             <Swipeout {...swipeSettings} style = {styles.swipeRow}>
 
                     <View style = {styles.budContainer}>
-                        <View style = {styles.budTextContainer}>
+                        <View style = {{flexDirection:'row', justifyContent:'space-between'}}>
 
                             <Text style = {styles.budText}>
                                 {bud.x}
                             </Text>
-                        </View>
+
                         <View style =  {{textAlign:'right',alignItems:'flex-end'}}>
+                            <Text style = {{fontSize:10}}>
+                                Remaining
+                            </Text>
                             <Text style = {[styles.budText,{color: (bud.budget-bud.y)<=0?'red':'green'}]}>
                                          ${(bud.budget-bud.y).toLocaleString()} / {bud.budget.toLocaleString()}
                                    </Text>
                               </View>
                            </View>
-                    
+                        </View>
                     <Chart spent = {bud.y} total = {bud.budget} color = {bud.color}/>
                
             </Swipeout>

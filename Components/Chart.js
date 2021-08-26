@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {View, ScrollView, Text, StyleSheet, Picker, TouchableOpacity, Platform} from 'react-native'
-import {brown, grey, white} from '../utils/colors'
+import {brown, grey, white, body} from '../utils/colors'
 
 
 export default function Chart({spent, total, color}){
@@ -10,12 +10,12 @@ export default function Chart({spent, total, color}){
 		<View style = {{flexDirection: 'row', alignItems:'center', backgroundColor: grey, borderRadius:10,}}>
 			<View style = {[styles.container, {backgroundColor: color,width:`${width}%`, borderRadius:10}]}>
 				<Text style={{fontSize:10, color: white}}>
-					{/*{spent}*/}
+					${spent}
 				</Text>
 			</View>
 			<View style = {[styles.container,  {width:`${100-width}%`}]}>
-				<Text style={{fontSize:10, color: white}}>
-					{/*{total - spent}*/}
+				<Text style={{fontSize:10, color: body}}>
+					{/*${total - spent}*/}
 				</Text>
 			</View>
 		</View>
