@@ -41,7 +41,7 @@ class Dashboard extends Component {
    
       saveUserBudget(name)
       saveBudget(name, budgetInNumber, date)
-      addBudgetToFB({name, budgetInNumber, date})
+      /*addBudgetToFB({name, budgetInNumber, date})*/
       .then(()=>{
           this.setState(()=> ({
               showAdd: false,

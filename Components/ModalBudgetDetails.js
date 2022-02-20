@@ -66,7 +66,7 @@ class ModalBudgetDetails extends Component{
                             </Text>
                         </View>
                         {Object.keys(spentDetail).map((title)=> (
-                            <View style = {{width:'100%'}}>
+                            <View style = {{width:'100%'}} key = {title}>
 
                                 <View style = {{flexDirection:'row', justifyContent:'space-between', paddingTop:5, paddingBottom:5}}>
                                     <Text style = {{fontSize:15}}>{title}</Text>

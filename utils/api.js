@@ -7,6 +7,7 @@ import {
   entries,
 } from './DATA'
 import {AsyncStorage} from 'react-native'
+/*
 import firebase from 'firebase'
 import "firebase/auth";
 import "firebase/database";
@@ -71,7 +72,7 @@ export const addBudgetToFB = async ({name, budgetInNumber, date}) => {
   })
   .catch((error) => alert(error))
 }
-
+*/
 
 function generateUID () {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)

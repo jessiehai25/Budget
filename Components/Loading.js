@@ -4,8 +4,6 @@ import {connect} from 'react-redux'
 import {blue, grey, white, body, brown} from '../utils/colors'
 import {handleInitialData} from '../actions/'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import firebase from 'firebase'
-import {auth} from '../utils/api'
 
 class Loading extends Component {
 	state = {
@@ -14,24 +12,24 @@ class Loading extends Component {
 
 
 	componentDidMount(){
-		const {dispatch} = this.props
-		auth.onAuthStateChanged((user) => {
-			if(!user){
+		console.log("LOading page", this.props)
+		const {dispatch, user} = this.props
+		if(!user){
 				dispatch(handleInitialData())
 	    		.then(()=>
 				this.setState(() => ({
 					loading: false,
 					loggedIn: false
 				})))
-			}else{
-				dispatch(handleInitialData())
-	    			.then(()=>
-						this.setState(() => ({
-							loading: false,
-							loggedIn: true
-					})))
-			}
-		})
+		}else{
+			dispatch(handleInitialData())
+    			.then(()=>
+					this.setState(() => ({
+						loading: false,
+						loggedIn: true
+				})))
+		}
+		
 	    {/*const {dispatch} = this.props
 	    dispatch(handleInitialData())
 	    .then(()=>this.setState(()=> ({loading:false})))*/}

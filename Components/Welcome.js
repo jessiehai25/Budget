@@ -9,9 +9,9 @@ import PropTypes from 'prop-types';
 import {saveUser} from '../utils/api'
 import SignUp from './SignUp'
 import SignIn from './SignIn'
-import firebase from 'firebase'
+/*import firebase from 'firebase'
 import {auth, addUserToFB, getUserFrFB} from '../utils/api'
-import { getAuth, updateProfile } from "firebase/auth";
+import { getAuth, updateProfile } from "firebase/auth";*/
 
 class Welcome extends Component {
     state = {
@@ -20,7 +20,7 @@ class Welcome extends Component {
     }
 
     onSignUp = ({name, salaryM, email, password}) => {
-        
+        console.log( name)
         const salary = parseInt(salaryM)
         const user = {name, salary, email, password, budgets:[], photoURL:'../assets/6.png'}
 
@@ -29,6 +29,12 @@ class Welcome extends Component {
             alert('You have not complete all information')
         }
         else{
+            dispatch(setUser(
+                user
+            ))
+            saveUser(user)
+            this.props.navigation.navigate('AuthLoad')
+            /*
             auth
             .createUserWithEmailAndPassword(email, password)
             .then((authUser) => {
@@ -52,7 +58,7 @@ class Welcome extends Component {
             .catch((error) => {
                 alert(error.message)
             })
-            
+            */
 
         }
         
@@ -60,7 +66,8 @@ class Welcome extends Component {
 
     onSignIn = ({email, password}) => {
         console.log(email, password)
-        const {dispatch} = this.props
+        const {dispatch, user} = this.props
+        /*
         auth.signInWithEmailAndPassword(email, password)
             .then((authUser) => {
                 console.log("ONsignIn", authUser)
@@ -84,7 +91,9 @@ class Welcome extends Component {
             .catch((error) => {
                 alert(error)
             })
-        {/*const user = {name, salary, email, password, yearEnd, budgets:[]}
+            
+        const user = {name, salary, email, password, yearEnd, budgets:[]}
+        */
         console.log(user)
         
         if(user.name === "" || user.salaryM === "" || user.email === ""|| user.password === ""){
@@ -106,7 +115,7 @@ class Welcome extends Component {
             
 
         }
-        */}
+        
         
     }
 
@@ -117,6 +126,7 @@ class Welcome extends Component {
 
 
     render() {
+        console.log("Welcome")
         const {name, salaryM, email, password, yearEnd, login} = this.state
             return (
                 <KeyboardAvoidingView behavior = {Platform.OS == "ios" ? "padding" : "height"}  enabled = "true" style = {styles.container}>

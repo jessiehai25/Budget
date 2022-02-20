@@ -7,7 +7,6 @@ import {months} from '../utils/helpers'
 import {setUser} from '../actions/user'
 import PropTypes from 'prop-types';
 import {saveUser} from '../utils/api'
-import firebase from 'firebase'
 
 class SignUp extends Component {
     state = {
