@@ -1,145 +1,175 @@
-import React, {Component} from 'react'
-import {View, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform} from 'react-native'
+import React, {Component, UseEffect} from 'react'
+import {View, ScrollView, Text, TextInput, Keyboard, TouchableWithoutFeedback, StyleSheet, Picker, TouchableOpacity, Platform, KeyboardAvoidingView} from 'react-native'
 import {connect} from 'react-redux'
 import {body, grey, white, brown, darkBrown} from '../utils/colors'
-import {AntDesign} from '@expo/vector-icons'
+import {AntDesign, Ionicons } from '@expo/vector-icons'
 import {months} from '../utils/helpers'
 import {setUser} from '../actions/user'
 import PropTypes from 'prop-types';
 import {saveUser} from '../utils/api'
-import {handleInitialData} from '../actions/'
+import SignUp from './SignUp'
+import SignIn from './SignIn'
+import firebase from 'firebase'
+import {auth, addUserToFB, getUserFrFB} from '../utils/api'
+import { getAuth, updateProfile } from "firebase/auth";
 
 class Welcome extends Component {
     state = {
-        name: '',
-        salaryM: '',
-        yearEnd: '',
+        login: true,
 
     }
-    
 
-    next = () => {
-        const {name, salaryM, yearEnd} = this.state
+    onSignUp = ({name, salaryM, email, password}) => {
+        
         const salary = parseInt(salaryM)
-        const user = {name, salary, yearEnd, budgets:[]}
+        const user = {name, salary, email, password, budgets:[], photoURL:'../assets/6.png'}
+
         const {dispatch} = this.props
-        if(user.name === "" || user.salaryM === "" || user.yearEnd === ""){
+        if(user.name === "" || user.salaryM === "" || user.email === ""|| user.password === ""){
             alert('You have not complete all information')
         }
         else{
-            dispatch(setUser(
-                user
-            ))
+            auth
+            .createUserWithEmailAndPassword(email, password)
+            .then((authUser) => {
 
-            saveUser(user)
-            this.props.navigation.navigate('Main')
+                authUser.user.updateProfile({
+                    displayName: name,
+                    phoneNumber: salary,
+                    photoURL:'../assets/6.png'
+                })
+                .then(()=> {
+                    addUserToFB(user)
+                    console.log(authUser)
+                    dispatch(setUser(
+                        user
+                    ))
+                    saveUser(user)
+                    this.props.navigation.navigate('AuthLoad')
+                })
+                
+            })
+            .catch((error) => {
+                alert(error.message)
+            })
+            
 
         }
         
     }
 
+    onSignIn = ({email, password}) => {
+        console.log(email, password)
+        const {dispatch} = this.props
+        auth.signInWithEmailAndPassword(email, password)
+            .then((authUser) => {
+                console.log("ONsignIn", authUser)
+                getUserFrFB()
+             
+                const user = {
+                    name: authUser.user.displayName,
+                    salary: 0,
+                    email: authUser.user.email,
+                    photoURL: authUser.user.photoURL,
+                    budgets: []
 
-	render() {
-        const {name, salaryM, yearEnd} = this.state
-        	return (
-        		<View style = {styles.container}>
-                    <View style = {{flex:5, width: '100%', height: '100%'}}>
-                        <ScrollView style = {styles.scrollContainer}>
+                }
+                dispatch(setUser(
+                    user
+                ))
+                saveUser(user)
+                console.log("LOGIN", user)
+                this.props.navigation.navigate('AuthLoad')
+            })
+            .catch((error) => {
+                alert(error)
+            })
+        {/*const user = {name, salary, email, password, yearEnd, budgets:[]}
+        console.log(user)
+        
+        if(user.name === "" || user.salaryM === "" || user.email === ""|| user.password === ""){
+            alert('You have not complete all information')
+        }
+        else{
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+            .then((result) => {
+                console.log(result)
+                dispatch(setUser(
+                    user
+                ))
+                saveUser(user)
+                this.props.navigation.navigate('Main')
+            })
+            .catch((error) => {
+                alert(error)
+            })
+            
+
+        }
+        */}
+        
+    }
+
+    chg = () => {
+        const {login} = this.state
+        this.setState(() => ({login: !login}))
+    }
+
+
+    render() {
+        const {name, salaryM, email, password, yearEnd, login} = this.state
+            return (
+                <KeyboardAvoidingView behavior = {Platform.OS == "ios" ? "padding" : "height"}  enabled = "true" style = {styles.container}>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style = {{width: '80%', height: '100%', alignItems:'center', justifyContent:'center'}}>
+                        
                             <View style = {styles.secondContainer}>
-                    			<Text style = {styles.title}>
-                    				Welcome to Budget!
-                    			</Text>
-                                <AntDesign name='Safety' size = {100} color= {brown} />
-                                <View style = {styles.inputContainer}>
-                                    <Text style = {styles.textBeforeInput}>
-                                        Name: 
-                                    </Text>
-                                    <TextInput
-                                        onChangeText = {(name) => this.setState(() => ({name: name}))}
-                                        placeholder = 'Please enter your name'
-                                        value = {name}
-                                        style = {styles.inputS}
-                                    >
-                                    </TextInput>
-                                </View>
-                                <View style = {styles.inputContainer}>
-                                    <Text style = {styles.textBeforeInput}>
-                                        Monthly Salary / Maximun Budget: 
-                                    </Text>
-                                
-                                    <TextInput
-                                        onChangeText = {(salaryM) => this.setState(() => ({salaryM: salaryM}))}
-                                        placeholder = 'Please enter your monthly salary / maximum budget'
-                                        value = {salaryM}
-                                        style = {styles.inputS}
-                                        keyboardType={'numeric'}
-                                    >
-                                    </TextInput>
-                                </View>
-                                <View style = {styles.inputContainer}>
-                                    <Text style = {styles.textBeforeInput}>
-                                        Financial Year Start from: 
-                                    </Text>
-                                    <Picker
-                                      selectedValue={yearEnd}
-                                      style={styles.textBeforeInput, {padding: 0, marginTop: 0}}
-                                      onValueChange={(itemValue, itemIndex) =>
-                                        this.setState({yearEnd: itemValue})
-                                      }>
-                                      <Picker.Item label="None" value="" />
-                                      {months.map((month)=>(
-                                          <Picker.Item label={month} value={month} key = {month}/>
-                                        ))}
-                                      
-                                     </Picker>
-
-                                </View>
-                            </View>
-                                
-                        </ScrollView>
-                    </View>
-                    <View style = {styles.thirdContainer}>
-                            <TouchableOpacity
-                                onPress = {() => this.next()}
-                            >
-                                <View style = {{backgroundColor: brown, padding:9, borderRadius: 7,alignItems:'center',justifyContent: 'center'}}>
-                                <Text style = {[styles.textBeforeInput, {color: white, fontWeight: 'bold'}]}>
-                                    SET UP BUDGET
+                                <Text style = {styles.title}>
+                                    Welcome to Budget!
                                 </Text>
-                                </View>
-                            </TouchableOpacity>
+                                <AntDesign name='Safety' size = {100} color= {brown} />
+                            </View>
+                            {login 
+                                ? <SignIn next = {this.onSignIn} chg = {this.chg}/>
+                                : <SignUp next = {this.onSignUp} chg = {this.chg}/>
+                            }
+                        
                     </View>
+                    </TouchableWithoutFeedback>
+                    <View style = {{height:100}}/>
 
-        		</View>
-        	)
+                </KeyboardAvoidingView>
+            )
     }
 
 }
 
 const styles = StyleSheet.create({
     container: {
+        flex:1,
         width: '95%',
-        height: '95%',
-
-        flex: 1,
+        height: '80%',
         marginLeft: 10,
         marginRight: 10,
+        marginTop: 40,
         alignItems: 'center',
-        justifyContent:'center',
+        justifyContent:'flex-end',
     },
     scrollContainer: {
         flex: 20,
         width: '100%',
         height: '100%',
 
+
     },
     secondContainer: {
         alignItems: 'center',
         justifyContent:'center',
+        width:'100%',
 
     },
     thirdContainer: {
-        flex:1,
+        marginTop: 30,
         width:'95%',
     },
     title:{
@@ -152,9 +182,10 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         marginTop: 30,
-        flexDirection: 'column',
+        flexDirection: 'row',
         width: '100%',
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
+        alignItems:'center'
     },
     textBeforeInput:{
         color: body,

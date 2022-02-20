@@ -12,6 +12,7 @@ import {addBudget} from '../actions/budgets'
 import {addUserBudget, deleteUserBudget} from '../actions/user'
 import {saveBudget, saveUserBudget} from '../utils/api'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import {db} from '../utils/api'
 
 class BudgetList extends Component {
     state = {
@@ -27,11 +28,26 @@ class BudgetList extends Component {
         console.log("Add Budget")
         saveUserBudget(name)
         saveBudget(name, budgetInNumber, date)
-        this.setState(()=> ({
-            showAddBudget: false,
-        }))
+        const addBudgetToF = async () => {
+            console.log("DB HERE!!!!!!!!")
+            await db.collection('budgets').add({
+                chatName: name,
+                budget: budgetInNumber,
+                date: date
+            })
+            .then(()=>{
+                this.setState(()=> ({
+                    showAddBudget: false,
+                }))
+            })
+            .catch((error) => alert(error))
+        }
+        addBudgetToF
 
     }
+
+
+
 
     edit = (bud)=>{
         this.props.navigation.navigate('EditBudget', {bud: bud})

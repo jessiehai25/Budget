@@ -30,7 +30,6 @@ export default function SwipeRowBudget ({bud, edit, del}){
                 }
             ],
         }
-        console.log(bud)
 		return(
             <View>
             {/*<Swipeout {...swipeSettings} style = {styles.swipeRow}>*/}

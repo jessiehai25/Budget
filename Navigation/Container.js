@@ -9,6 +9,8 @@ import EditBudget from '../Components/EditBudget'
 import Dashboard from '../Components/Dashboard'
 import Loading from '../Components/Loading'
 import Profile from '../Components/Profile'
+import SignIn from '../Components/SignIn'
+import SignUp from '../Components/SignUp'
 import {blue, grey, white, body, brown} from '../utils/colors'
 
 const RouteConfigs = {
@@ -249,7 +251,7 @@ const MainNavigator = createStackNavigator({
 
 })
 
-const Signin = createStackNavigator({
+const Landing = createStackNavigator({
 	Welcome:{
     	screen: Welcome,
   	},
@@ -266,7 +268,7 @@ const AuthLoad = createStackNavigator({
 const Container = createAppContainer(createSwitchNavigator(
 	{
 		Main: MainNavigator,
-		Signin: Signin,
+		Landing: Landing,
 		AuthLoad: AuthLoad,
 	},
 	{

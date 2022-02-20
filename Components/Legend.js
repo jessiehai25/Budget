@@ -5,7 +5,6 @@ import { Octicons } from '@expo/vector-icons';
 
 export default function Legend({budgetAmountList}){
 	if(budgetAmountList === {}){
-		console.log("SOR", budgetAmountList)
 		return null
 	}
 	else{

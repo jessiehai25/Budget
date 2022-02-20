@@ -19,7 +19,7 @@ import {saveBudget, saveUserBudget} from '../utils/api'
 import {editBudget} from '../actions/budgets'
 import {modifyBudget} from '../utils/api'
 import {deleteBudget} from '../actions/budgets'
-import {removeBudget, removeUserBudget} from '../utils/api'
+import {removeBudget, removeUserBudget, db, addBudgetToFB} from '../utils/api'
 
 class Dashboard extends Component {
   state = {
@@ -41,20 +41,13 @@ class Dashboard extends Component {
    
       saveUserBudget(name)
       saveBudget(name, budgetInNumber, date)
-      this.setState(()=> ({
-          showAdd: false,
-      }))
+      addBudgetToFB({name, budgetInNumber, date})
+      .then(()=>{
+          this.setState(()=> ({
+              showAdd: false,
+          }))
+      })
 
-    }
-
-    editModal = (bud)=>{
-      console.log("EDIT BEFORE", bud)
-        this.setState(()=> ({
-
-          showEdit:true,
-          editBud: bud,
-          
-        }))
     }
 
     edit = ({name, budget, originalName}) => {
@@ -150,7 +143,6 @@ class Dashboard extends Component {
     const windowHeight = Dimensions.get('window').height;
     /*console.log("load Dashboard now!!", this.props.user)*/
 		const {name, salary} = this.props.user
-    console.log(this.state)
     
 
     function currentMonthEntry () {
@@ -400,7 +392,7 @@ class Dashboard extends Component {
             </View>
                 
             <View style = {styles.secondContainer}>
-              {/*<View style = {{width:'95%',flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
+              <View style = {{width:'95%',flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
                 <Text style = {[styles.budText]}>
                   Budget: ${totalBudget.toLocaleString()}
                 </Text>
@@ -408,38 +400,36 @@ class Dashboard extends Component {
                   Spent: ${totalSpent.toLocaleString()}
                 </Text>
                 <Text style = {[styles.budText]}>
-                  Save: ${(totalBudget-totalSpent).toLocaleString()}
+                  Remaining: ${(totalBudget-totalSpent).toLocaleString()}
                 </Text>
                     
-              </View>*/}
+              </View>
               <View style = {{backgroundColor:'white', width:'100%', alignItems:'center'}}>
                 {renderPie()}
               </View>
               <View style = {{width:'100%', paddingBottom:StatusBar.currentHeight, padding:5, backgroundColor:'white', alignItems:'center'}}>
                 <ScrollView style = {{width:'95%'}}>
                 <View style = {[styles.detailContainer, {borderColor:white}]}>
-                    <View style = {styles.budContainer}>
-                      <View style = {styles.budTextContainer}>
-                        <View style = {{width:'100%',flexDirection: 'row', justifyContent: "space-between", marginBottom:5}}>
-                          <Text style = {styles.text}>
-                            Budget
-                          </Text>
-                          <Text style = {[styles.budText,styles.text]}>
-                             ${totalBudget.toLocaleString()}
-                           </Text>
-                        </View>
-                        <View style = {{width:'100%',flexDirection: 'row', justifyContent: "space-between"}}>
-                          <Text style = {[styles.text, {marginBottom:4}]}>
-                            Remaining ({Math.round((totalBudget-totalSpent)/totalBudget*100)}%)
-                          </Text>
-                          <Text style = {[styles.budText, styles.text, {color: (totalBudget-totalSpent)<=0?'red':'green', marginBottom:4}]}>
-                             ${(totalBudget-totalSpent).toLocaleString()}
-                          </Text>
-                        </View>
+                  <View style = {styles.budContainer}>
+                    <View style = {styles.budTextContainer}>
+                      <View style = {{width:'100%',flexDirection: 'row', justifyContent: "space-between", marginBottom:5}}>
+                        <Text style = {styles.text}>
+                          Budget
+                        </Text>
+                        <Text style = {[styles.budText,styles.text]}>
+                           ${totalBudget.toLocaleString()}
+                         </Text>
                       </View>
-                     </View>
-                    
-                   
+                      <View style = {{width:'100%',flexDirection: 'row', justifyContent: "space-between"}}>
+                        <Text style = {[styles.text, {marginBottom:4}]}>
+                          Remaining ({Math.round((totalBudget-totalSpent)/totalBudget*100)}%)
+                        </Text>
+                        <Text style = {[styles.budText, styles.text, {color: (totalBudget-totalSpent)<=0?'red':'green', marginBottom:4}]}>
+                           ${(totalBudget-totalSpent).toLocaleString()}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
                 </View>
 	            	{budgetAmountList.map((bud)=>{
 		            	return(

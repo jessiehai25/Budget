@@ -6,7 +6,7 @@ export const user = {
 	id: null,
 	name: null,
 	salary: 0,
-	yearEnd: null,
+  email: null,
 	budgets: null,
 }
 export const budgets = {
