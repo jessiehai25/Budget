@@ -9,42 +9,23 @@ class Loading extends Component {
 	state = {
 		loading: true
 	}
-
-
 	componentDidMount(){
 		console.log("LOading page", this.props.user)
 		const {dispatch, user} = this.props
-		if( user === null){
-				console.log('NOt login')
-				dispatch(handleInitialData())
-	    		.then(()=>
-				this.setState(() => ({
-					loading: false,
-					loggedIn: false
-				})))
-		}else{
-			dispatch(handleInitialData())
-    			.then(()=>
-					this.setState(() => ({
-						loading: false,
-						loggedIn: true
-				})))
-		}
-		
-	    {/*const {dispatch} = this.props
-	    dispatch(handleInitialData())
-	    .then(()=>this.setState(()=> ({loading:false})))*/}
+		dispatch(handleInitialData())
+		.then(()=>this.setState(()=> ({loading:false})))
+	
+	}
 
-    }
 
     componentDidUpdate(){
 	    if (this.state.loading === false){
-	    	if (this.state.loggedIn === false) {
-	    		console.log("LOADING1", this.props.budgets)
+	    	if (this.props.user.name === null) {
+	    		console.log("LOADING1", this.props.user)
     			this.props.navigation.navigate('Landing')
 	    	}
 	    	else{
-	    		console.log("LOADING2", this.props.budgets)
+	    		console.log("LOADING2", this.props.user)
 	    		this.props.navigation.navigate('Main')
 	    	}
 	    }

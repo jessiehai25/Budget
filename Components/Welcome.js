@@ -22,7 +22,7 @@ class Welcome extends Component {
     onSignUp = ({name, salaryM, email, password}) => {
         console.log( name)
         const salary = parseInt(salaryM)
-        const user = {name, salary, email, password, budgets:[], photoURL:'../assets/6.png'}
+        const user = {name, salary, email, password, budgets:[], date: Date.now()}
 
         const {dispatch} = this.props
         if(user.name === "" || user.salaryM === "" || user.email === ""|| user.password === ""){
@@ -125,7 +125,7 @@ class Welcome extends Component {
 
 
     render() {
-        console.log("Welcome")
+        console.log("Welcome", this.state.login)
         const {name, salaryM, email, password, yearEnd, login} = this.state
             return (
                 <KeyboardAvoidingView behavior = {Platform.OS == "ios" ? "padding" : "height"}  enabled = "true" style = {styles.container}>

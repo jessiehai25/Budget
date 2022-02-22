@@ -2,9 +2,9 @@ import React, {Component} from 'react'
 import {View, Image, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform, Alert} from 'react-native'
 import {connect} from 'react-redux'
 import {blue, grey, white, body, brown, darkBrown, button, background} from '../utils/colors'
-import {formatDate, convertDate} from '../utils/helpers'
+import {formatDate, convertDate, convertMMMYY} from '../utils/helpers'
 import {CalendarList} from 'react-native-calendars';
-import { Ionicons } from '@expo/vector-icons'
+import {AntDesign, Ionicons } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context';
  
 
@@ -46,17 +46,14 @@ class Profile extends Component {
 				<View style = {{flex:1,width:'90%'}}>
 					<View style = {styles.detailContainer}>
 						<View style = {styles.avagarCircle}>
-							<Image 
-								source={require('../assets/6.png')}
-								style = {styles.avagar}
-							/>
+							<AntDesign name='Safety' size = {100} color= {brown} />
 						</View>
 						<View style = {{alignItems:'center', marginTop:-50}}>
 							<Text style={styles.nameText}>
 								{user.name}
 							</Text>
 							<Text style={styles.salaryText}>
-								joined since
+								joined since {formatDate(user.date)}
 							</Text>
 						</View>
 					</View>
@@ -64,14 +61,6 @@ class Profile extends Component {
 						<Text style={styles.nameText}>
 							Demographics
 						</Text>
-						<View style = {styles.demoView}>
-							<Text style={[styles.demoText, {color:'grey'}]}>
-							Gender
-							</Text>
-							<Text style={styles.demoText}>
-							Female
-							</Text>
-						</View>
 						<View style = {styles.demoView}>
 							<Text style={[styles.demoText, {color:'grey'}]}>
 							Monthly Salary / Maximum Budget
@@ -165,19 +154,18 @@ const styles = StyleSheet.create({
         marginTop:60
     },
     avagarCircle:{
-    	/*borderRadius:60,
-    	borderWidth:2,*/
-    	top:-70,
+    	borderRadius:60,
+    	/*borderWidth:2,*/
+    	top:-60,
     	borderColor:brown,
     	alignItems:'center',
+    	backgroundColor:white
     },
     avagar: {
     	height:120,
     	width:120,
 
     },
-
-
   	budContainer: {
       flex:1,
       flexDirection: 'row',

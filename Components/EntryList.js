@@ -124,8 +124,7 @@ class EntryList extends Component {
     	Alert.alert(
             `Are you sure to delete ${id}?`,
             "",
-            [
-                
+            [  
                 {
                     text: 'Cancel',
                     onPress: () => console.log('cancel'),
@@ -140,12 +139,10 @@ class EntryList extends Component {
 				        	markedDate
 				        }))
                     }
-
                 },
             ]
         )
     }
-
 
     onDayPress = (day) => {
 		const d = formatDate(day)

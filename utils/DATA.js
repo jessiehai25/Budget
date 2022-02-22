@@ -8,6 +8,7 @@ export const user = {
 	salary: 0,
   email: null,
 	budgets: null,
+  date: null
 }
 export const budgets = {
 	
