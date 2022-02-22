@@ -12,9 +12,10 @@ class Loading extends Component {
 
 
 	componentDidMount(){
-		console.log("LOading page", this.props)
+		console.log("LOading page", this.props.user)
 		const {dispatch, user} = this.props
-		if(!user){
+		if( user === null){
+				console.log('NOt login')
 				dispatch(handleInitialData())
 	    		.then(()=>
 				this.setState(() => ({
@@ -37,9 +38,7 @@ class Loading extends Component {
     }
 
     componentDidUpdate(){
-
 	    if (this.state.loading === false){
-	    	console.log(this.state.loading)
 	    	if (this.state.loggedIn === false) {
 	    		console.log("LOADING1", this.props.budgets)
     			this.props.navigation.navigate('Landing')

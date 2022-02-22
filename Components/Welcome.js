@@ -15,7 +15,7 @@ import { getAuth, updateProfile } from "firebase/auth";*/
 
 class Welcome extends Component {
     state = {
-        login: true,
+        login: false,
 
     }
 
@@ -63,7 +63,7 @@ class Welcome extends Component {
         }
         
     }
-
+/*
     onSignIn = ({email, password}) => {
         console.log(email, password)
         const {dispatch, user} = this.props
@@ -93,7 +93,7 @@ class Welcome extends Component {
             })
             
         const user = {name, salary, email, password, yearEnd, budgets:[]}
-        */
+        
         console.log(user)
         
         if(user.name === "" || user.salaryM === "" || user.email === ""|| user.password === ""){
@@ -115,9 +115,8 @@ class Welcome extends Component {
             
 
         }
-        
-        
-    }
+    }      
+*/
 
     chg = () => {
         const {login} = this.state
@@ -140,7 +139,8 @@ class Welcome extends Component {
                                 <AntDesign name='Safety' size = {100} color= {brown} />
                             </View>
                             {login 
-                                ? <SignIn next = {this.onSignIn} chg = {this.chg}/>
+                                ? this.props.navigation.navigate('Main')
+                                /*<SignIn next = {this.onSignIn} chg = {this.chg}/>*/
                                 : <SignUp next = {this.onSignUp} chg = {this.chg}/>
                             }
                         

@@ -28,7 +28,6 @@ class EntryList extends Component {
 		const formatted = convertDate(t)
 		const selectedDate = {[formatted]: {selected: true, selectedColor: brown, marked: true, dotColor: body}}
 		var markedDate = {}
-		console.log(this.props.navigation)
 		this.props.navigation.setParams({
 
 	      scrollToTop: this.scrollToTop,
@@ -76,11 +75,9 @@ class EntryList extends Component {
     }
 
     edit = ({showId, title, category, price, timestamp}) => {
-    	console.log("PRESS EDIT 0", category)
     	const {dispatch} = this.props
     	const {entries} = this.props
     	const showCategory = entries[showId].category
-    	console.log("PRESS EDIT",showCategory, category)
     	const entry = {
     		title, 
     		category, 
@@ -92,8 +89,6 @@ class EntryList extends Component {
   			.then(()=>
   				dispatch(handleDeleteEntry(id = showId, category = showCategory))
   			)
-    	
-    	console.log("PRESS EDIT2", entry)
     	this.setState(()=> ({
         	showEdit: false,
         	
@@ -105,12 +100,10 @@ class EntryList extends Component {
     	const {entries} = this.props
     	const newEntries = Object.keys(entries).reduce((object, key) => {
 			if (key !== id){
-				console.log(key, id)
 				object[key] = entries[key]
 			}
 			return object
 		}, {})
-    	console.log("ENTRY_DELETE", id, newEntries)
     	const entryDate = convertDate(new Date(entries[id].timestamp))
     	const mark = this.state.markedDate
     	const category = entries[id].category

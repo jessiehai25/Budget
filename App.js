@@ -8,13 +8,10 @@ import middleware from './middleware'
 import Container from './Navigation/Container'
 import {createStackNavigator} from 'react-navigation'
 
-
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-
-
 export default class App extends React.Component {
 
   render() {
+  	console.log("APP")
     return (
       <Provider store = {createStore(reducer, middleware)}>
 

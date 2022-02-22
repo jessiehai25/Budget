@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
   	},
 })
 
-function mapStateToProps({user, budgets, entries}){
+function mapStateToProps({user, budgets=[], entries}){
   return{
     user,
     budgets,

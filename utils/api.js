@@ -7,6 +7,9 @@ import {
   entries,
 } from './DATA'
 import {AsyncStorage} from 'react-native'
+
+import { initializeApp } from 'firebase/app';
+import * as firebase from "firebase/app";
 /*
 import firebase from 'firebase'
 import "firebase/auth";
@@ -25,7 +28,7 @@ const firebaseConfig = {
   appId: "1:429983338993:web:053829ffc4dd887b107450",
   measurementId: "G-GLVYWNS4YL"
 };
-
+/*
 let app;
 if(firebase.apps.length === 0){
   app = firebase.initializeApp(firebaseConfig)
