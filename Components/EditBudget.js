@@ -5,14 +5,10 @@ import {body, grey, white, brown} from '../utils/colors'
 import {FontAwesome} from '@expo/vector-icons'
 
 class EditBudget extends Component {
-	
-	
 	state = {
 		name:'',
 		budget:0,
-
 	}
-
 	componentDidMount(){
 	    const {bud, budgets} = this.props
 	    const budget = budgets[bud].budget
@@ -20,7 +16,6 @@ class EditBudget extends Component {
             name: bud,
             budget: budget
         }))
-
     }
 	editB = ()=>{
 		const originalName = this.props.bud
@@ -36,15 +31,12 @@ class EditBudget extends Component {
 	    		name: '',
 	    		budget: 0
 	    	}))
-
 	    }
     }
 
 	render(){
 		const {budgets} = this.props
 		const {name, budget} = this.state
-		console.log("EDITBUDGET",budget, budgets, name)
-		
 		return(
 			<View style = {styles.container}>
 					
@@ -81,8 +73,6 @@ class EditBudget extends Component {
 			        </TouchableOpacity>
 		        </View>
 	        </View>
-
-
 		)
 	}
 }
@@ -96,19 +86,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
 
     },
-    container2: {
-
-        alignItems: 'flex-start',
-        justifyContent:'flex-start',
-        flexDirection: 'row',
-    },
     inputContainer: {
         width: '100%',
         justifyContent: 'flex-start'
-    },
-    textBeforeInput:{
-        color: body,
-        fontSize: 20,
     },
     inputS:{
         color: body,

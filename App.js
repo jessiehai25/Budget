@@ -11,7 +11,6 @@ import {createStackNavigator} from 'react-navigation'
 export default class App extends React.Component {
 
   render() {
-  	console.log("APP")
     return (
       <Provider store = {createStore(reducer, middleware)}>
 

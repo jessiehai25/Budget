@@ -12,7 +12,6 @@ class Welcome extends Component {
     state = {
         email: '',
         password: '',
-
     }
 
 	render() {
@@ -84,30 +83,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent:'center',
     },
-    scrollContainer: {
-        flex: 20,
-        width: '100%',
-        height: '100%',
-
-
-    },
     secondContainer: {
         alignItems: 'center',
         justifyContent:'center',
         width:'100%',
-
     },
     thirdContainer: {
         marginTop: 30,
         width:'95%',
-    },
-    title:{
-        color: body,
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 20,
-        marginTop: 15,
-        marginBottom: 15,
     },
     inputContainer: {
         marginTop: 30,

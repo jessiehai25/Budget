@@ -3,15 +3,11 @@ import {View, Image, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableO
 import {connect} from 'react-redux'
 import {blue, grey, white, body, brown, darkBrown, button, background} from '../utils/colors'
 import {formatDate, convertDate, convertMMMYY} from '../utils/helpers'
-import {CalendarList} from 'react-native-calendars';
 import {AntDesign, Ionicons } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context';
  
 
 class Profile extends Component {
-
-
-
 	render(){
 		const {user, budgets, entries, budgetList} = this.props
 
@@ -125,10 +121,6 @@ class Profile extends Component {
 					</View>
 				</View>
 			</SafeAreaView>
-
-
-
-
 		)
 	}
 }
@@ -138,7 +130,6 @@ const styles = StyleSheet.create({
         flex:1,
         alignItems: 'center',
         backgroundColor: background,
-
     },
 
     detailContainer: {

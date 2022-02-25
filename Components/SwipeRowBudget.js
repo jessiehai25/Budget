@@ -7,55 +7,48 @@ import { AntDesign } from '@expo/vector-icons'
 import Chart from './Chart'
 
 export default function SwipeRowBudget ({bud, edit, del}){
-        const swipeSettings = {
-            autoClose: true,
-            onClose: (secId, rowId, direction) => {
-
-            },
-            onOpen: (secId, rowId, direction) => {
-
-            },
-            right: [
-                {
-                    onPress: () => {
-                        edit(bud.x)
-                    },
-                    text: <AntDesign name="edit" size={24} color="white" />, type: 'edit'
+    const swipeSettings = {
+        autoClose: true,
+        onClose: (secId, rowId, direction) => {
+        },
+        onOpen: (secId, rowId, direction) => {
+        },
+        right: [
+            {
+                onPress: () => {
+                    edit(bud.x)
                 },
-                {
-                    onPress: () => {
-                        del(bud.x)
-                    },
-                    text: <AntDesign name="delete" size={24} color="white" />, type: 'delete'
-                }
-            ],
-        }
-		return(
-            <View>
-            {/*<Swipeout {...swipeSettings} style = {styles.swipeRow}>*/}
-
-                    <View style = {styles.budContainer}>
-                        <View style = {{flexDirection:'row', justifyContent:'space-between'}}>
-
-                            <Text style = {[styles.budText, styles.text]}>
-                                {bud.x}
-                            </Text>
-
-                        <View style =  {{textAlign:'right',alignItems:'flex-end'}}>
-                            <Text style = {[styles.text, {fontSize:10}]}>
-                                Remaining
-                            </Text>
-                            <Text style = {[styles.budText,styles.text, {color: (bud.budget-bud.y)<=0?'red':'green'}]}>
-                                         ${(bud.budget-bud.y).toLocaleString()} / {bud.budget.toLocaleString()}
-                                   </Text>
-                              </View>
-                           </View>
-                        </View>
-                    <Chart spent = {bud.y} total = {bud.budget} color = {bud.color}/>
-               
-            </View>
-
-		)
+                text: <AntDesign name="edit" size={24} color="white" />, type: 'edit'
+            },
+            {
+                onPress: () => {
+                    del(bud.x)
+                },
+                text: <AntDesign name="delete" size={24} color="white" />, type: 'delete'
+            }
+        ],
+    }
+	return(
+        <View>
+        {/*<Swipeout {...swipeSettings} style = {styles.swipeRow}>*/}
+                <View style = {styles.budContainer}>
+                    <View style = {{flexDirection:'row', justifyContent:'space-between'}}>
+                        <Text style = {[styles.budText, styles.text]}>
+                            {bud.x}
+                        </Text>
+                    <View style =  {{textAlign:'right',alignItems:'flex-end'}}>
+                        <Text style = {[styles.text, {fontSize:10}]}>
+                            Remaining
+                        </Text>
+                        <Text style = {[styles.budText,styles.text, {color: (bud.budget-bud.y)<=0?'red':'green'}]}>
+                                     ${(bud.budget-bud.y).toLocaleString()} / {bud.budget.toLocaleString()}
+                               </Text>
+                          </View>
+                       </View>
+                    </View>
+                <Chart spent = {bud.y} total = {bud.budget} color = {bud.color}/>
+        </View>
+	)
 }
 
 const styles = StyleSheet.create({
@@ -68,9 +61,6 @@ const styles = StyleSheet.create({
         borderBottomColor: 'grey',
         borderBottomWidth: 0.2,
         borderRadius: Platform.OS === 'ios' ? 2 : 2,
-        
-
-        
     },
     text:{
       fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'Roboto', 
@@ -84,6 +74,5 @@ const styles = StyleSheet.create({
         padding: 1,
         alignItems: 'center',
         justifyContent:'center',
-       
     }
 })

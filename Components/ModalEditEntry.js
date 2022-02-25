@@ -22,7 +22,6 @@ class ModalEditEntry extends Component{
             category: entries[showId].category,
             price: entries[showId].price,
         }))
-
     }
 
     toggleKeyword = (keyword) => {
@@ -53,9 +52,6 @@ class ModalEditEntry extends Component{
 	    	}))
     	}
     }
-
-
-
 	render(){
 		const {title, category, price, timestamp} = this.state
 		const {budgetList} = this.props
@@ -81,11 +77,8 @@ class ModalEditEntry extends Component{
                             keyboardType={'numeric'}
 		                >
 		                </TextInput>
-
 				</View>
-
 	                <View style= {{flexDirection:"row", justifyContent: "space-around",flexWrap: "wrap",}}>
-
 	                	{budgetList.map((budget)=>(
 	                		<View style = {{padding:5}} key = {budget}>
 		                		<TouchableOpacity
@@ -96,20 +89,19 @@ class ModalEditEntry extends Component{
 			                		</Text>
 		                		</TouchableOpacity>
 		                	</View>
-	                	))}
-	                	
+	                	))}	
 	                </View>
 	                <View style={{alignItems:'center', width:'100%', marginTop:20}}>
 						<TouchableOpacity 
 							style = {[styles.button, {flexDirection:'row', width:'100%'}]}
 							onPress = {this.editEntry}
 						>
-			                	<FontAwesome name = 'plus-circle' size = {20} style = {{color: white}}/>
-			                	<Text style = {{color: white, fontWeight: 'bold'}}>  Save</Text>
+		                	<FontAwesome name = 'plus-circle' size = {20} style = {{color: white}}/>
+		                	<Text style = {{color: white, fontWeight: 'bold'}}>  Save</Text>
 			            </TouchableOpacity>
 			        </View>
 			</View>
-			)
+		)
 	}
 }
 
@@ -126,11 +118,6 @@ const styles = StyleSheet.create({
         width: '100%',
         justifyContent: 'flex-start',
         alignItems: 'center',
-    },
-    textBeforeInput:{
-        color: body,
-        fontSize: 20,
-        marginLeft: 15,
     },
     inputS:{
         color: body,

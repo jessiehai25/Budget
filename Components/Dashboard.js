@@ -2,24 +2,19 @@ import React, {Component} from 'react'
 import {View, Image, ScrollView, StatusBar,Text, StyleSheet, TouchableOpacity, Platform, Dimensions, Alert} from 'react-native'
 import {connect} from 'react-redux'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {blue, grey, white, body, brown, colorScale, background} from '../utils/colors'
-import Chart from './Chart'
-import Legend from './Legend'
-import {months, convertMMMYY} from '../utils/helpers'
-import {AntDesign, FontAwesome} from '@expo/vector-icons'
-import {VictoryPie, VictoryLegend, VictoryContainer} from 'victory-native'
+import {VictoryPie} from 'victory-native'
 import Modal from 'react-native-modal';
+import Legend from './Legend'
 import AddBudget from './AddBudget'
 import EditBudget from './EditBudget'
 import SwipeRowBudget from './SwipeRowBudget'
 import ModalBudgetDetails from './ModalBudgetDetails'
-import {addBudget} from '../actions/budgets'
+import {addBudget, editBudget, deleteBudget} from '../actions/budgets'
 import {addUserBudget, deleteUserBudget} from '../actions/user'
-import {saveBudget, saveUserBudget} from '../utils/api'
-import {editBudget} from '../actions/budgets'
-import {modifyBudget} from '../utils/api'
-import {deleteBudget} from '../actions/budgets'
-import {removeBudget, removeUserBudget, db, addBudgetToFB} from '../utils/api'
+import {saveBudget, saveUserBudget, modifyBudget, removeBudget, removeUserBudget, db, addBudgetToFB} from '../utils/api'
+import {blue, grey, white, body, brown, colorScale, background} from '../utils/colors'
+import {months, convertMMMYY} from '../utils/helpers'
+import {AntDesign, FontAwesome} from '@expo/vector-icons'
 
 class Dashboard extends Component {
   state = {
@@ -32,7 +27,6 @@ class Dashboard extends Component {
         showEdit:false,
         editBud:null,
     }
-
     add = ({name, budget, date}) => {
       const budgetInNumber = parseInt(budget)
       const {dispatch} = this.props
@@ -47,7 +41,6 @@ class Dashboard extends Component {
               showAdd: false,
           }))
       })
-
     }
 
     edit = ({name, budget, originalName}) => {
@@ -66,7 +59,6 @@ class Dashboard extends Component {
             `Are you sure to delete ${bud}?`,
             "",
             [
-                
                 {
                     text: 'Cancel',
                     onPress: () => console.log('cancel'),
@@ -78,12 +70,9 @@ class Dashboard extends Component {
                         console.log('delete', bud)
                         dispatch(deleteUserBudget(bud))
                         dispatch(deleteBudget(bud))
-                      
-
                         removeUserBudget(bud)
                         removeBudget(bud)
                     }
-
                 },
             ]
         )
@@ -141,7 +130,6 @@ class Dashboard extends Component {
     const {month, year} = this.state
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
-    /*console.log("load Dashboard now!!", this.props.user)*/
 		const {name, salary} = this.props.user
     
 
@@ -159,13 +147,10 @@ class Dashboard extends Component {
           )
       }
       else{
-
-
         budgetList.map((bud)=>{
           const date = budgets[bud].start
           const ents = budgets[bud].entries
           const now = Date.UTC(year, month, 31)
-          
           let spent = 0
           let spentEntries = []
           if(ents === null || ents === []){
@@ -173,23 +158,18 @@ class Dashboard extends Component {
             spent = 0
           } 
           else{
-
             if(date >= now ){
-              
               totalSpent = totalSpent
               spent = spent
               totalBudget = totalBudget
             }
             else{
-              
               ents.map((entry)=>{
-
                 const times = new Date(entries[entry].timestamp)
                 if(convertMMMYY(times.getMonth(), times.getFullYear()) == convertMMMYY(month, year)){
-                     spent = spent + entries[entry].price
-                     spentEntries = spentEntries.concat(entry)
+                  spent = spent + entries[entry].price
+                  spentEntries = spentEntries.concat(entry)
                 }
-              
               })
               budgetAmountList=budgetAmountList.concat(
                 {
@@ -204,22 +184,15 @@ class Dashboard extends Component {
               totalSpent = totalSpent + spent
               totalBudget = totalBudget + budgets[bud].budget
             }
-
           }
-
           colorIndex = colorIndex + 1
-          
         })
-        
         return {budgetAmountList, totalSpent, totalBudget}
       }
-        
     }
 
-  
     function renderPie(){
       const {budgetAmountList, totalSpent, totalBudget} = currentMonthEntry()
-     
       if(totalSpent === 0){
         return(
           <View>
@@ -227,15 +200,13 @@ class Dashboard extends Component {
               No Spending data
             </Text>
           </View>
-
-          )
+        )
       }
       else{
         return(
           <View>
             <VictoryPie 
               animate={{
-              
                 easing: 'exp',
                 duration: 500
               }}
@@ -244,18 +215,10 @@ class Dashboard extends Component {
                 data: { 
                   fill: ({datum}) => datum.color 
                 },
-                /*labels: {
-                  fontSize: ({ datum }) => datum.x.length > 9 ? 10 : 15, 
-                  fill:  dy, 
-                  
-                }*/
-              }}
-              
-              
+              }} 
               innerRadius={windowWidth/4.5}
               width={windowWidth}
               height={windowWidth/1.5}
-
               labelRadius={({ innerRadius }) => innerRadius*1.1}
               data= {budgetAmountList.concat(
                 {
@@ -264,59 +227,50 @@ class Dashboard extends Component {
                   budget: 0,
                   y: totalBudget-totalSpent,
                   color: grey,
-                  
                 }
               )}
               labels={({ datum }) => (Math.round(datum.y/totalBudget*100) === 0 || datum.x === "Remaining" ? "" : 
                  `${Math.round(datum.y/totalBudget*100)}%`)
               }
-              /*labels={({ datum }) => (datum.y === 0 ? "" : 
-                 `${datum.x}\n(${Math.round(datum.y/totalSpent*100)}%)`)
-              }*/
-
-              />
-              <Legend budgetAmountList = {budgetAmountList} />
-            </View>
-          )
+            />
+            <Legend budgetAmountList = {budgetAmountList} />
+          </View>
+        )
       }
     }
-
     const {budgetAmountList, totalBudget, totalSpent} = currentMonthEntry()
-
 		if(!budgetList.length){
-        	return(
-            <SafeAreaView style = {[styles.container, {justifyContent:'center'}]} >
-              <Modal 
-                isVisible={this.state.showAdd} 
-                transparent = {true}
-                onBackdropPress = {() => {this.setState({showAdd:false})}}
-              >
-                <AddBudget
-                    add = {this.add}
-                    budgetList = {budgetList}
-                />
-               </Modal>
-              <TouchableOpacity
-                 onPress = {() => {this.setState({showAdd:true})}}
-              >
-                <View style = {{borderRadius:60, borderWidth:1, borderColor:"grey", padding:40, marginBottom:40}}>
+    	return(
+        <SafeAreaView style = {[styles.container, {justifyContent:'center'}]} >
+          <Modal 
+            isVisible={this.state.showAdd} 
+            transparent = {true}
+            onBackdropPress = {() => {this.setState({showAdd:false})}}
+          >
+            <AddBudget
+                add = {this.add}
+                budgetList = {budgetList}
+            />
+           </Modal>
+          <TouchableOpacity
+             onPress = {() => {this.setState({showAdd:true})}}
+          >
+            <View style = {{borderRadius:60, borderWidth:1, borderColor:"grey", padding:40, marginBottom:40}}>
 
-                <Image 
-                  source={require('../assets/plus.png')}
-                  style = {{height:40,width:40,}}
-                />
-                </View>
-              </TouchableOpacity>
+            <Image 
+              source={require('../assets/plus.png')}
+              style = {{height:40,width:40,}}
+            />
+            </View>
+          </TouchableOpacity>
 
-          		<Text>
-
-          		  You have not input any budget yet!
-          		</Text>
-            </SafeAreaView>
-        	)
-	    }
-	    else{
-
+      		<Text>
+      		  You have not input any budget yet!
+      		</Text>
+        </SafeAreaView>
+    	)
+    }
+    else{
 			return(
 				<SafeAreaView style = {styles.container} >
           <Modal 
@@ -450,9 +404,8 @@ class Dashboard extends Component {
               </View>
             </View>
 	        </SafeAreaView>
-		    )
+		  )
 		}
-
 	}
 }
 
@@ -465,15 +418,6 @@ const styles = StyleSheet.create({
     text:{
       fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'Roboto', 
       color:body
-    },
-    title:{
-        color: body,
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 35,
-        marginTop: 15,
-        marginBottom: 15,
-        fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'Roboto'
     },
    secondContainer: {
         borderTopColor: brown,
@@ -496,8 +440,6 @@ const styles = StyleSheet.create({
         padding:8,
         width: '100%',
     },
-
-
   	budContainer: {
       flex:1,
       flexWrap: "wrap"

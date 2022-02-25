@@ -26,9 +26,7 @@ export function deleteEntry (id) {
 }
 
 export function handleAddEntry ({title, category, price, timestamp}){
-	console.log("handle", title, category, price, timestamp)
 	return (dispatch, getState) => {
-		
 		return saveEntry({
 			title,
 			category,
@@ -36,7 +34,6 @@ export function handleAddEntry ({title, category, price, timestamp}){
 			timestamp
 		})
 		.then((entry) => {
-			 console.log("NEW add", entry)
 			dispatch(addEntry(entry))
 			dispatch(addEntryToBudget(entry.category, entry.id))
 		})
@@ -44,9 +41,7 @@ export function handleAddEntry ({title, category, price, timestamp}){
 }
 
 export function handleDeleteEntry (id, category){
-	console.log("handleDelete", id, category)
 	return (dispatch, getState) => {
-		
 		return removeEntry(id)
 		.then((entry, budgets) => {
 			dispatch(deleteEntryToBudget(id, category))

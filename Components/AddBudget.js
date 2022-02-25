@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import {View, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform} from 'react-native'
 import {blue, grey, white, body, background, brown} from '../utils/colors'
 import {FontAwesome} from '@expo/vector-icons'
- 
 
 class AddBudget extends Component {
 	state = {
@@ -35,12 +34,9 @@ class AddBudget extends Component {
             }
     	}
 	}
-    
-
 
 	render(){
 		const {name, budget, date} = this.state
-
 		return(
 			<View style = {styles.container}>
 				
@@ -76,7 +72,6 @@ class AddBudget extends Component {
 		            </TouchableOpacity>
 	            </View>
 	        </View>
-
 		)
 	}
 }
@@ -88,20 +83,14 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         borderRadius: 10,
         backgroundColor: 'white',
-
     },
     text:{
       fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'Roboto', 
       color:body
     },
-
     inputContainer: {
         width: '100%',
         justifyContent: 'flex-start'
-    },
-    textBeforeInput:{
-        color: body,
-        fontSize: 20,
     },
     inputS:{
         color: body,

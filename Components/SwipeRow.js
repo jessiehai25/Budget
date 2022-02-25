@@ -9,10 +9,8 @@ export default function SwipeRow ({removeItem, name, description = null, price, 
         const swipeSettings = {
             autoClose: true,
             onClose: (secId, rowId, direction) => {
-
             },
             onOpen: (secId, rowId, direction) => {
-
             },
             right: [
                 {
@@ -63,9 +61,6 @@ const styles = StyleSheet.create({
         borderBottomColor: 'grey',
         borderBottomWidth: 0.2,
         borderRadius: Platform.OS === 'ios' ? 2 : 2,
-        
-
-        
     },
     text:{
       fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'Roboto', 
@@ -78,7 +73,6 @@ const styles = StyleSheet.create({
         backgroundColor:'white',
         padding: 1,
         alignItems: 'center',
-        justifyContent:'center',
-       
+        justifyContent:'center',  
     }
 })

@@ -16,7 +16,6 @@ class ModalAddEntry extends Component{
     componentDidMount(){
 	    const {date} = this.props
 	    this.setState(()=> ({timestamp:date}))
-
     }
 
     toggleKeyword = (keyword) => {
@@ -26,19 +25,29 @@ class ModalAddEntry extends Component{
 
     addEntry = () => {
     	const {title, category, price, timestamp} = this.state
-    	const {add} = this.props
-
-    	if (title === '' || category==='' || price ==='' ){
+    	const {add, budgetList} = this.props
+        console.log(budgetList)
+    	if (title === '' || category==='' || price ==='' || timestamp === '' || budgetList.length === 0 || isNaN(price)){
     		if (timestamp === '') {
     			alert('There are something wrong. Please exit and re-enter.')
     		}
-    		else{
-    		alert('You have not complete')
-    		}
-    	}
+            else{
+                if (budgetList.length === 0) {
+                alert('Please add Budget at Summary Page first.')
+                }
+                else{
+                    console.log(price, isNaN(price))
+                    if (price, isNaN(price)){
+                        alert('Please input number for the price.')
+                    }
+                    else{
+                        alert('You have not complete')
+                    }
+                }
+            }
+        }
     	else{
     		add({title, category, price, timestamp})
-	    	console.log("MODAL Add ENTRY")
 	    	this.setState(()=>({
 	    		id: '',
 				title: '',
@@ -48,8 +57,6 @@ class ModalAddEntry extends Component{
 	    	}))
     	}
     }
-
-
 
 	render(){
 		const {title, category, price, timestamp} = this.state
@@ -71,7 +78,7 @@ class ModalAddEntry extends Component{
 		                    onChangeText = {(price) => this.setState(() => ({price: parseInt(price)}))}
 		                    placeholder = 'Price'
 		                    style = {styles.inputS}
-		                    value = {price}
+		                    value = {price.value}
                             keyboardType={'numeric'}
 		                >
 		                </TextInput>
@@ -103,7 +110,7 @@ class ModalAddEntry extends Component{
 			            </TouchableOpacity>
 			        </View>
 			</View>
-			)
+		)
 	}
 }
 
@@ -124,11 +131,6 @@ const styles = StyleSheet.create({
     text:{
       fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'Roboto', 
       color:body
-    },
-    textBeforeInput:{
-        color: body,
-        fontSize: 20,
-        marginLeft: 15,
     },
     inputS:{
         color: body,

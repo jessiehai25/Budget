@@ -7,10 +7,10 @@ import {
   entries,
 } from './DATA'
 import {AsyncStorage} from 'react-native'
-
+/*
 import { initializeApp } from 'firebase/app';
 import * as firebase from "firebase/app";
-/*
+
 import firebase from 'firebase'
 import "firebase/auth";
 import "firebase/database";
@@ -153,10 +153,7 @@ export function removeEntry (entry) {
 
         return {entries, budgets}
     })
-    
 }
-
-
 
 export function getUser () {
   return AsyncStorage.getItem(USER_KEY)
@@ -255,8 +252,6 @@ export function saveBudget (name, budget, date, entries = []){
     }
   }))
 }
-
-
 
 export function removeBudget (bud) {
   return AsyncStorage.getItem(BUDGETS_KEY)

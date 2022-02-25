@@ -8,8 +8,8 @@ import { Ionicons } from '@expo/vector-icons'
 import Modal from 'react-native-modal';
 import ModalAddEntry from'./ModalAddEntry'
 import ModalEditEntry from './ModalEditEntry'
-import {handleAddEntry, handleDeleteEntry} from '../actions/entries'
 import SwipeRow from './SwipeRow'
+import {handleAddEntry, handleDeleteEntry} from '../actions/entries'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 class EntryList extends Component {
@@ -29,7 +29,6 @@ class EntryList extends Component {
 		const selectedDate = {[formatted]: {selected: true, selectedColor: brown, marked: true, dotColor: body}}
 		var markedDate = {}
 		this.props.navigation.setParams({
-
 	      scrollToTop: this.scrollToTop,
 	    });
 		Object.keys(entries).map((entry)=> {
@@ -49,14 +48,12 @@ class EntryList extends Component {
 			markedDate:markedDate,
 			selected: {[formatted] : {selected: true, selectedColor: brown}}
 		}))
-
-
 	}
 	scrollToTop = ()=>{
       this.setState(()=> ({
         	showAdd: true,
         }))
-  }
+  	}
 	add = (entry) =>{
         const {markedDate} = this.state
         var entryDate = convertDate(new Date(entry.timestamp))
@@ -84,14 +81,12 @@ class EntryList extends Component {
     		price, 
     		timestamp
     	}
-   
-    		dispatch(handleAddEntry({title, category, price, timestamp}))
-  			.then(()=>
-  				dispatch(handleDeleteEntry(id = showId, category = showCategory))
-  			)
+		dispatch(handleAddEntry({title, category, price, timestamp}))
+		.then(()=>
+			dispatch(handleDeleteEntry(id = showId, category = showCategory))
+		)
     	this.setState(()=> ({
         	showEdit: false,
-        	
         }))
     }
 
@@ -110,19 +105,19 @@ class EntryList extends Component {
     	var markedDate = {}
     	Object.keys(newEntries).map((entry)=> {
 			var entryDate = convertDate(new Date(entries[entry].timestamp))
-			
 			return(
 				markedDate = {
 					...markedDate,
 					[entryDate]:{
 						...markedDate[entryDate],
 						marked: true, 
-						dotColor: 'red'}
+						dotColor: 'red'
+					}
 				}
 			)
 		})
     	Alert.alert(
-            `Are you sure to delete ${id}?`,
+            `Are you sure to delete ${entries[id].title}?`,
             "",
             [  
                 {
@@ -151,8 +146,8 @@ class EntryList extends Component {
 	  		date: day.timestamp,
 	  		selected:{
 				[day.dateString]:{selected: true, selectedColor: brown}
-	  	}
-	  }))
+	  		}
+	  	}))
 	)}
 
 	render(){
@@ -238,9 +233,7 @@ class EntryList extends Component {
 												})}} 
 												del = {this.delete}/>
 											</View>
-				
 										</View>
-
 									)}
 								}								
 							})}
@@ -276,11 +269,6 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         justifyContent:'flex-start',
         flexDirection: 'row',
-    },
-    textBeforeInput:{
-        color: body,
-        fontSize: 15,
-        marginLeft: 15,
     },
 
 })

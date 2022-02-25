@@ -14,15 +14,14 @@ class SignUp extends Component {
         email: '',
         password: '',
         salaryM: '',
-
     }
 
 	render() {
+        console.log("signup")
         const {name, salaryM, email, password} = this.state
         const {next, chg} = this.props
         	return (
                 <View style = {styles.secondContainer}>
-
                     <View style = {styles.inputContainer}>
                         <Ionicons name="person-circle-outline" size={24} color="#a9a9a9" />
                         <TextInput
@@ -81,7 +80,7 @@ class SignUp extends Component {
                         </TouchableOpacity>
                     </View>
 
-                    <View style = {[styles.thirdContainer, {flexDirection: 'row', alignItems:'center'}]}>
+                    {/*<View style = {[styles.thirdContainer, {flexDirection: 'row', alignItems:'center'}]}>
                         <View style = {{flexDirection:'row', alignItems:'center', width:'100%', justifyContent:'center'}}>
                             <Text style = {{color:'#a9a9a9'}}>
                                 Already have account?
@@ -94,15 +93,11 @@ class SignUp extends Component {
                                 </Text>
                             </TouchableOpacity>
                         </View>
-                    </View>
-
+                    </View>*/}
                     <View style = {{height:100}}/>
-
                 </View>
-   
         	)
         }
-
     }
 
 const styles = StyleSheet.create({
@@ -114,30 +109,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent:'center',
     },
-    scrollContainer: {
-        flex: 20,
-        width: '100%',
-        height: '100%',
-
-
-    },
     secondContainer: {
         alignItems: 'center',
         justifyContent:'center',
         width:'100%',
-
     },
     thirdContainer: {
         marginTop: 30,
         width:'95%',
-    },
-    title:{
-        color: body,
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 20,
-        marginTop: 15,
-        marginBottom: 15,
     },
     inputContainer: {
         marginTop: 30,

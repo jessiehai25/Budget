@@ -46,7 +46,6 @@ export function addEntryToBudget(category, id) {
 }
 
 export function deleteEntryToBudget(id, category) {
-	console.log("HERE")
 	return{
 		type: DELETE_ENTRY_TO_BUDGET,
 		id,

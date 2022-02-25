@@ -14,7 +14,6 @@ export default function user (state = null, action){
 			}
 		case ADD_USER_BUDGET:
 			const name = action.name
-			console.log("ADD_USER_BUDGET in reducer!!!!!!!")
 			return {
 
 				...state,
@@ -24,10 +23,8 @@ export default function user (state = null, action){
 				]
 			}
 		case DELETE_USER_BUDGET:
-		console.log("!!!!")
 			const {budget} = action
 			const budgets = state.budgets.filter(bud => bud !== budget)
-			console.log("DELETE_USER_BUDGET", budgets)
 			return{
 				...state,
 				budgets

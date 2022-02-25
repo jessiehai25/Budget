@@ -16,7 +16,6 @@ import { getAuth, updateProfile } from "firebase/auth";*/
 class Welcome extends Component {
     state = {
         login: false,
-
     }
 
     onSignUp = ({name, salaryM, email, password}) => {
@@ -117,33 +116,24 @@ class Welcome extends Component {
         }
     }      
 */
-
     chg = () => {
         const {login} = this.state
         this.setState(() => ({login: !login}))
     }
-
-
     render() {
         console.log("Welcome", this.state.login)
         const {name, salaryM, email, password, yearEnd, login} = this.state
             return (
                 <KeyboardAvoidingView behavior = {Platform.OS == "ios" ? "padding" : "height"}  enabled = "true" style = {styles.container}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style = {{width: '80%', height: '100%', alignItems:'center', justifyContent:'center'}}>
-                        
+                    <View style = {{width: '80%', height: '80%', alignItems:'center', justifyContent:'center'}}>           
                             <View style = {styles.secondContainer}>
                                 <Text style = {styles.title}>
                                     Welcome to Budget!
                                 </Text>
                                 <AntDesign name='Safety' size = {100} color= {brown} />
                             </View>
-                            {login 
-                                ? this.props.navigation.navigate('Main')
-                                /*<SignIn next = {this.onSignIn} chg = {this.chg}/>*/
-                                : <SignUp next = {this.onSignUp} chg = {this.chg}/>
-                            }
-                        
+                            <SignUp next = {this.onSignUp} chg = {this.chg}/>
                     </View>
                     </TouchableWithoutFeedback>
                     <View style = {{height:100}}/>
@@ -151,7 +141,6 @@ class Welcome extends Component {
                 </KeyboardAvoidingView>
             )
     }
-
 }
 
 const styles = StyleSheet.create({
@@ -165,22 +154,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent:'flex-end',
     },
-    scrollContainer: {
-        flex: 20,
-        width: '100%',
-        height: '100%',
-
-
-    },
     secondContainer: {
         alignItems: 'center',
         justifyContent:'center',
         width:'100%',
-
-    },
-    thirdContainer: {
-        marginTop: 30,
-        width:'95%',
     },
     title:{
         color: body,
@@ -190,28 +167,6 @@ const styles = StyleSheet.create({
         marginTop: 15,
         marginBottom: 15,
     },
-    inputContainer: {
-        marginTop: 30,
-        flexDirection: 'row',
-        width: '100%',
-        justifyContent: 'flex-start',
-        alignItems:'center'
-    },
-    textBeforeInput:{
-        color: body,
-        fontSize: 15,
-        marginLeft: 15,
-    },
-    inputS:{
-        color: body,
-        fontSize: 15,
-        borderBottomColor: grey,
-        borderBottomWidth: 0.5,
-        marginLeft: 10,
-        marginRight: 10,
-        padding: 5,
-        width: '90%',
-  },
 })
 
 

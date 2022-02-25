@@ -16,8 +16,6 @@ class Loading extends Component {
 		.then(()=>this.setState(()=> ({loading:false})))
 	
 	}
-
-
     componentDidUpdate(){
 	    if (this.state.loading === false){
 	    	if (this.props.user.name === null) {
@@ -28,28 +26,23 @@ class Loading extends Component {
 	    		console.log("LOADING2", this.props.user)
 	    		this.props.navigation.navigate('Main')
 	    	}
-	    }
-	    
+	    }	    
     }
-
 
   render() {
   	return(
 	        <SafeAreaView style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-
-	          <Text>
-	          	Loading
-	          </Text>
+	        	<Text>
+	          		Loading
+	        	</Text>
 	        </SafeAreaView>
 	)
   }
 }
 
-function mapStateToProps({user, budgets, entries}){
+function mapStateToProps({user}){
 	return{
 	    user,
-	    budgets,
-	    entries,
 	}
 }
 

@@ -6,14 +6,10 @@ import {FontAwesome } from '@expo/vector-icons'
 import Modal from 'react-native-modal';
  
 class ModalBudgetDetails extends Component{
-
-
 	render(){
-
 		const {budgets, entries, showDetailBudget, edit, del} = this.props
         const {budget, name, y, spentEntries} = showDetailBudget
         const budgetEntries = budgets[showDetailBudget.name].entries
-        console.log("MODALBUDGETDETAILS", this.props)
 
             let spentDetail = {}
             spentEntries.map((ent)=> {
@@ -27,25 +23,21 @@ class ModalBudgetDetails extends Component{
                     original = spentDetail[title].entries
                 }
                 return(
-                spentDetail = {
-                    ...spentDetail,
-                    [title]:{
-                        spent: price+originalPrice,
-                        entries: original.concat(ent)
+                    spentDetail = {
+                        ...spentDetail,
+                        [title]:{
+                            spent: price+originalPrice,
+                            entries: original.concat(ent)
+                        }
                     }
-                }
-
-
-            )
-
-
+                )
             })
         if(spentDetail === {}){
             return(
                 <Text>
                     No spending Data
                 </Text>
-                )
+            )
         }
         else{
     		return(
@@ -115,8 +107,6 @@ const styles = StyleSheet.create({
         width:'100%',
         alignItems: 'center',
         justifyContent:'center',
-        
-        
         padding:30,
     },
     titleContainer:{
