@@ -9,17 +9,17 @@ import PropTypes from 'prop-types';
 import {saveUser} from '../utils/api'
 import SignUp from './SignUp'
 import SignIn from './SignIn'
-/*import firebase from 'firebase'
-import {auth, addUserToFB, getUserFrFB} from '../utils/api'
-import { getAuth, updateProfile } from "firebase/auth";*/
+import {auth, storeUser, dbRef} from "../utils/firebase";
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, ref, child, get } from "firebase/database";
 
 class Welcome extends Component {
     state = {
         login: false,
+        budgetExist: false,
     }
 
     onSignUp = ({name, salaryM, email, password}) => {
-        console.log( name)
         const salary = parseInt(salaryM)
         const user = {name, salary, email, password, budgets:[], date: Date.now()}
 
@@ -28,94 +28,76 @@ class Welcome extends Component {
             alert('You have not complete all information')
         }
         else{
-            dispatch(setUser(
-                user
-            ))
-            saveUser(user)
-            this.props.navigation.navigate('AuthLoad')
-            /*
-            auth
-            .createUserWithEmailAndPassword(email, password)
-            .then((authUser) => {
+            /***https://firebase.google.com/docs/auth/web/start***/
+            console.log(name, email)
+            createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                user.uid = userCredential.user.uid
+                console.log(user)
+                dispatch(setUser(user))
+                saveUser(user)
+                storeUser(user)
+                this.props.navigation.navigate('AuthLoad')
+            })
+            .catch((error) => {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // [START_EXCLUDE]
+                if (errorCode == 'auth/email-already-in-use'){
+                    alert('The email is already in use.')
+                } 
+                else {
+                    if (errorCode == 'auth/weak-password') {
+                    alert('The password is too weak.');
+                    }
+                    else{
+                        alert(error);
+                    }
+                }
+            })
+        }
+                    
+    }
 
-                authUser.user.updateProfile({
-                    displayName: name,
-                    phoneNumber: salary,
-                    photoURL:'../assets/6.png'
-                })
-                .then(()=> {
-                    addUserToFB(user)
-                    console.log(authUser)
-                    dispatch(setUser(
-                        user
-                    ))
-                    saveUser(user)
-                    this.props.navigation.navigate('AuthLoad')
-                })
-                
+    onSignIn = ({email, password}) => {
+        console.log(email, password)
+        const {dispatch, user} = this.props
+        
+        signInWithEmailAndPassword(auth, email, password)
+            .then((authUser) => {
+                /***https://firebase.google.com/docs/database/web/read-and-write?hl=en***/
+                console.log("ONsignIn", authUser)
+                get(child(dbRef, `users/${authUser.user.uid}`)).then((snapshot) => {
+                    let list = ["budgets"]
+                    if (snapshot.exists()) {
+                        let user = snapshot.val(); 
+                        let budgetExist = Object.keys(user).filter((key)=>{
+                            return list.includes(key)
+                        })
+                        budgetExist.length>0
+                            ? console.log("has budget", user.budgets)
+                            : user.budgets = []
+                        
+                        console.log("getuser", budgetExist, user)
+                        dispatch(setUser(user))
+                        saveUser(user)
+                        console.log("LOGIN", user)
+                        this.props.navigation.navigate('Main')
+                    } 
+                    else {
+                        alert("No data available");
+                    }
+                }).catch((error) => {
+                    alert(error);
+                });
+
             })
             .catch((error) => {
                 alert(error.message)
             })
-            */
-
-        }
-        
-    }
-/*
-    onSignIn = ({email, password}) => {
-        console.log(email, password)
-        const {dispatch, user} = this.props
-        /*
-        auth.signInWithEmailAndPassword(email, password)
-            .then((authUser) => {
-                console.log("ONsignIn", authUser)
-                getUserFrFB()
-             
-                const user = {
-                    name: authUser.user.displayName,
-                    salary: 0,
-                    email: authUser.user.email,
-                    photoURL: authUser.user.photoURL,
-                    budgets: []
-
-                }
-                dispatch(setUser(
-                    user
-                ))
-                saveUser(user)
-                console.log("LOGIN", user)
-                this.props.navigation.navigate('AuthLoad')
-            })
-            .catch((error) => {
-                alert(error)
-            })
             
-        const user = {name, salary, email, password, yearEnd, budgets:[]}
-        
-        console.log(user)
-        
-        if(user.name === "" || user.salaryM === "" || user.email === ""|| user.password === ""){
-            alert('You have not complete all information')
-        }
-        else{
-            firebase.auth().createUserWithEmailAndPassword(email, password)
-            .then((result) => {
-                console.log(result)
-                dispatch(setUser(
-                    user
-                ))
-                saveUser(user)
-                this.props.navigation.navigate('Main')
-            })
-            .catch((error) => {
-                alert(error)
-            })
-            
-
-        }
     }      
-*/
+
     chg = () => {
         const {login} = this.state
         this.setState(() => ({login: !login}))
@@ -133,7 +115,11 @@ class Welcome extends Component {
                                 </Text>
                                 <AntDesign name='Safety' size = {100} color= {brown} />
                             </View>
-                            <SignUp next = {this.onSignUp} chg = {this.chg}/>
+                            {login === true
+                                ?<SignIn next = {this.onSignIn} chg = {this.chg}/>
+                                :<SignUp next = {this.onSignUp} chg = {this.chg}/>
+                            }
+                            
                     </View>
                     </TouchableWithoutFeedback>
                     <View style = {{height:100}}/>

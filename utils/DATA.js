@@ -2,12 +2,22 @@ export const USER_KEY = 'Budget:user'
 export const BUDGETS_KEY = 'Budget:budgets'
 export const ENTRIES_KEY = 'Budget:entries'
 
+export const firebaseConfig = {
+  apiKey: "AIzaSyAOwU41skP-0myZvwRf-_73J0G--2yrcIU",
+  authDomain: "budget-87f6a.firebaseapp.com",
+  projectId: "budget-87f6a",
+  storageBucket: "budget-87f6a.appspot.com",
+  messagingSenderId: "429983338993",
+  appId: "1:429983338993:web:053829ffc4dd887b107450",
+  measurementId: "G-GLVYWNS4YL"
+};
+
 export const user = {
-	id: null,
+	uid: null,
 	name: null,
 	salary: 0,
   email: null,
-	budgets: null,
+	budgets: [],
   date: null
 }
 export const budgets = {

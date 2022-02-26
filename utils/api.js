@@ -7,75 +7,8 @@ import {
   entries,
 } from './DATA'
 import {AsyncStorage} from 'react-native'
-/*
-import { initializeApp } from 'firebase/app';
-import * as firebase from "firebase/app";
+import {updateUserBudget} from './firebase'
 
-import firebase from 'firebase'
-import "firebase/auth";
-import "firebase/database";
-import "firebase/firestore";
-import "firebase/functions";
-import "firebase/storage";
-import { collection, getDocs } from "firebase/firestore";
-  
-const firebaseConfig = {
-  apiKey: "AIzaSyAOwU41skP-0myZvwRf-_73J0G--2yrcIU",
-  authDomain: "budget-87f6a.firebaseapp.com",
-  projectId: "budget-87f6a",
-  storageBucket: "budget-87f6a.appspot.com",
-  messagingSenderId: "429983338993",
-  appId: "1:429983338993:web:053829ffc4dd887b107450",
-  measurementId: "G-GLVYWNS4YL"
-};
-/*
-let app;
-if(firebase.apps.length === 0){
-  app = firebase.initializeApp(firebaseConfig)
-}else{
-  app = firebase.app()
-}
-
-export const db = app.firestore()
-export const auth = firebase.auth()
-
-export const addUserToFB = async ({name, salary, email, password, budgets, photoURL}) => {
-  const authUser = auth.currentUser;
-  await db.collection(authUser.email).doc("user").set({
-      name: name,
-      salary: salary,
-      budgets: budgets,
-
-  })
-  .catch((error) => alert(error))
-}
-
-export const getUserFrFB = async () => {
-  const authUser = auth.currentUser;
-  await db.collection(authUser.email).onSnapshot((snapshots) => {
-    console.log("snapshots", snapshots)
-    snapshots.docs.map((doc)=> ({
-      id: doc.id,
-      data:doc.data()
-    }))
-  // doc.data() is never undefined for query doc snapshots
-  console.log(doc.id, " => ", doc.data());
-  })
-    
-}
-
-
-
-export const addBudgetToFB = async ({name, budgetInNumber, date}) => {
-  const authUser = auth.currentUser;
-  await db.collection(authUser.email).doc("budgets").collection(name).add({
-      chatName: name,
-      budget: budgetInNumber,
-      date: date
-  })
-  .catch((error) => alert(error))
-}
-*/
 
 function generateUID () {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
@@ -175,12 +108,14 @@ export function saveUserBudget (name) {
     if (user["budgets"] === undefined) {
       const budgets = [name]
       const newUser = {...user, budgets}
+      updateUserBudget(newUser)
       AsyncStorage.setItem(USER_KEY, JSON.stringify(newUser))
     }
     else {
       const budgetList = user["budgets"]
       const budgets = [...budgetList, name]
       const newUser = {...user, budgets}
+      updateUserBudget(newUser)
       AsyncStorage.setItem(USER_KEY, JSON.stringify(newUser))
     }
   })

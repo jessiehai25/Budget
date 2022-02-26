@@ -17,7 +17,6 @@ class SignUp extends Component {
     }
 
 	render() {
-        console.log("signup")
         const {name, salaryM, email, password} = this.state
         const {next, chg} = this.props
         	return (
@@ -80,7 +79,7 @@ class SignUp extends Component {
                         </TouchableOpacity>
                     </View>
 
-                    {/*<View style = {[styles.thirdContainer, {flexDirection: 'row', alignItems:'center'}]}>
+                    <View style = {[styles.thirdContainer, {flexDirection: 'row', alignItems:'center'}]}>
                         <View style = {{flexDirection:'row', alignItems:'center', width:'100%', justifyContent:'center'}}>
                             <Text style = {{color:'#a9a9a9'}}>
                                 Already have account?
@@ -93,7 +92,7 @@ class SignUp extends Component {
                                 </Text>
                             </TouchableOpacity>
                         </View>
-                    </View>*/}
+                    </View>
                     <View style = {{height:100}}/>
                 </View>
         	)
