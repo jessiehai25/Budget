@@ -148,46 +148,41 @@ class Dashboard extends Component {
       }
       else{
         budgetList.map((bud)=>{
+
           const date = budgets[bud].start
           const ents = budgets[bud].entries
           const now = Date.UTC(year, month, 31)
           let spent = 0
           let spentEntries = []
-          if(ents === null || ents === []){
-            totalSpent = 0
-            spent = 0
-          } 
-          else{
-            if(date >= now ){
-              totalSpent = totalSpent
-              spent = spent
-              totalBudget = totalBudget
-            }
-            else{
-              ents.map((entry)=>{
-                const times = new Date(entries[entry].timestamp)
-                if(convertMMMYY(times.getMonth(), times.getFullYear()) == convertMMMYY(month, year)){
-                  spent = spent + entries[entry].price
-                  spentEntries = spentEntries.concat(entry)
-                }
-              })
-              budgetAmountList=budgetAmountList.concat(
-                {
-                  x: bud,
-                  name:bud,
-                  budget: budgets[bud].budget,
-                  y: spent,
-                  color: colorScale[colorIndex],
-                  spentEntries: spentEntries
-                }
-              )
-              totalSpent = totalSpent + spent
-              totalBudget = totalBudget + budgets[bud].budget
-            }
+          if(date >= now ){
+            totalSpent = totalSpent
+            spent = spent
+            totalBudget = totalBudget
           }
-          colorIndex = colorIndex + 1
-        })
-        return {budgetAmountList, totalSpent, totalBudget}
+          else{
+            ents.map((entry)=>{
+              const times = new Date(entries[entry].timestamp)
+              if(convertMMMYY(times.getMonth(), times.getFullYear()) == convertMMMYY(month, year)){
+                spent = spent + entries[entry].price
+                spentEntries = spentEntries.concat(entry)
+              }
+            })
+            budgetAmountList=budgetAmountList.concat(
+              {
+                x: bud,
+                name:bud,
+                budget: budgets[bud].budget,
+                y: spent,
+                color: colorScale[colorIndex],
+                spentEntries: spentEntries
+              }
+            )
+            totalSpent = totalSpent + spent
+            totalBudget = totalBudget + budgets[bud].budget
+          }
+        colorIndex = colorIndex + 1
+      })
+      return {budgetAmountList, totalSpent, totalBudget}
       }
     }
 
@@ -292,7 +287,7 @@ class Dashboard extends Component {
                   budgets = {budgets}
                   entries = {entries}
                   showDetailBudget = {this.state.showDetailBudget}
-                  edit = {this.editModal}
+                  edit = {() => {this.setState({showEdit:true})}}
                   del = {this.del}
               />
                 <Modal 
@@ -302,7 +297,7 @@ class Dashboard extends Component {
                 >
                   <EditBudget
                       budgets = {budgets}
-                      bud = {this.state.editBud}
+                      bud = {this.state.showDetailBudget}
                       edit = {this.edit}
                   />
                 </Modal>

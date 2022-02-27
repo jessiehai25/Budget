@@ -42,8 +42,8 @@ const RouteConfigs = {
             top:-25,
             backgroundColor: colors,
             borderRadius:'50%',
-            width:50,
-            height:50,
+            width:60,
+            height:60,
             shadowColor: '#7F5DF0',
             shadowOffset:{
               width:0,
@@ -53,7 +53,7 @@ const RouteConfigs = {
             shadowRadius:3.5,
             elevation:5,
           }}>
-            {focused ?<AntDesign name="pluscircle"  size = {47} color = '#e32f45' /> : <FontAwesome name='calendar-o' size = {28} color = 'white' />}
+            {focused ?<AntDesign name="pluscircle"  size = {60} color = '#e32f45' /> : <FontAwesome name='calendar-o' size = {32} color = 'white' />}
           </View>
         )
       },

@@ -11,9 +11,10 @@ class EditBudget extends Component {
 	}
 	componentDidMount(){
 	    const {bud, budgets} = this.props
-	    const budget = budgets[bud].budget
+	    console.log("EditBudget1", budgets, "bud", bud)
+	    const budget = budgets[bud.x].budget
 	    this.setState(()=> ({
-            name: bud,
+            name: bud.x,
             budget: budget
         }))
     }

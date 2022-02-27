@@ -88,7 +88,7 @@ class ModalAddEntry extends Component{
 	                <View style= {{flexDirection:"row", justifyContent: "space-around",flexWrap: "wrap",paddingTop:10}}>
 
 	                	{budgetList.map((budget)=>(
-	                		<View >
+	                		<View key = {budget}>
 		                		<TouchableOpacity
 						            style={category == budget ? styles.selectedKeywordStyle : styles.buttonStyle}
 						            onPress={() => this.toggleKeyword(budget)}>
@@ -144,24 +144,20 @@ const styles = StyleSheet.create({
         width: '100%',
  	},
  	buttonStyle: {
-    backgroundColor: grey,
-    paddingTop:10,
-    paddingBottom:10,
-    paddingLeft:5,
-    paddingRight:5,
-    borderRadius: 20,
-    width:'100%',
-  },
-  selectedKeywordStyle: {
-    backgroundColor: brown,
-    paddingTop:10,
-    paddingBottom:10,
-    paddingLeft:5,
-    paddingRight:5,
-    borderRadius: 20,
-    width:'100%',
-  },
-  button: {
+        backgroundColor: white,
+        padding:10,
+        borderColor: brown,
+        borderWidth:1,
+        borderRadius: 10,
+        width:'100%',
+    },
+    selectedKeywordStyle: {
+        backgroundColor: brown,
+        padding:10,
+        borderRadius: 10,
+        width:'100%',
+    },
+    button: {
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: brown,

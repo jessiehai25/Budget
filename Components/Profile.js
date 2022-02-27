@@ -37,6 +37,28 @@ class Profile extends Component {
 			}
 		}
 
+		function maxSpending (){
+			let maxSpent = "N/A"
+			let maxSpentAmount = 0
+			if (entries === null) {
+				return maxSpent
+			}
+			else{
+				budgetList.map((bud)=>{
+					let thisSpentAmount = 0
+					let entList = budgets[bud].entries
+					entList.map((ent)=>{
+						thisSpentAmount = thisSpentAmount + entries[ent].price
+					})
+					if (thisSpentAmount > maxSpentAmount){
+						maxSpent = bud
+						maxSpentAmount = thisSpentAmount
+					}
+				})
+				return maxSpent
+			}
+		}
+
 		return(
 			<SafeAreaView style= {styles.container}>
 				<View style = {{flex:1,width:'90%'}}>
@@ -104,7 +126,7 @@ class Profile extends Component {
 						</View>
 						<View style = {styles.demoView}>
 							<Text style={[styles.demoText, {color:'grey'}]}>
-							Average Spending
+							Average Spending per Transaction
 							</Text>
 							<Text style={styles.demoText}>
 							${averageSpending().toLocaleString()}
@@ -115,7 +137,7 @@ class Profile extends Component {
 							Largest Portion of Spending
 							</Text>
 							<Text style={styles.demoText}>
-							Clothes
+							{maxSpending()}
 							</Text>
 						</View>
 					</View>

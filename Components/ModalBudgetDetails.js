@@ -48,10 +48,17 @@ class ModalBudgetDetails extends Component{
                                 {name} 
                             </Text>
                         </View>
-
-                        <View style = {[styles.titleContainer, {borderBottomColor: brown, borderBottomWidth: 0.5, paddingBottom:10}]}>
+                        <View style = {[styles.titleContainer, , {borderBottomColor: brown, borderBottomWidth: 0.5, paddingBottom:10}]}>
                             <Text style = {{fontSize:15}}>
-                                Spending 
+                                Budget 
+                            </Text>
+                            <Text style = {{fontSize:15}}>
+                                ${budgets[showDetailBudget.name].budget.toLocaleString()} 
+                            </Text>
+                        </View>
+                        <View style = {[styles.titleContainer]}>
+                            <Text style = {{fontSize:15}}>
+                                Spent 
                             </Text>
                             <Text style = {{fontSize:15}}>
                                 ${y.toLocaleString()} 
@@ -60,8 +67,8 @@ class ModalBudgetDetails extends Component{
                         {Object.keys(spentDetail).map((title)=> (
                             <View style = {{width:'100%'}} key = {title}>
 
-                                <View style = {{flexDirection:'row', justifyContent:'space-between', paddingTop:5, paddingBottom:5}}>
-                                    <Text style = {{fontSize:15}}>{title}</Text>
+                                <View style = {{flexDirection:'row', justifyContent:'space-between', marginLeft: 10, paddingTop:5, paddingBottom:5}}>
+                                    <Text style = {{fontSize:15}}>- {title}</Text>
                                     <Text style = {{fontSize:15}}>
                                         ${spentDetail[title].spent.toLocaleString()}
                                     </Text>
