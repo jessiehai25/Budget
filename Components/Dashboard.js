@@ -27,15 +27,14 @@ class Dashboard extends Component {
         showEdit:false,
         editBud:null,
     }
-    add = ({name, budget, date}) => {
+    add = ({name, budget, date, rollOver}) => {
       const budgetInNumber = parseInt(budget)
       const {dispatch} = this.props
-      dispatch(addBudget(name, budgetInNumber, date))
+      dispatch(addBudget(name, budgetInNumber, date, rollOver))
       dispatch(addUserBudget(name))
-   
+      console.log("ROLL",rollOver)
       saveUserBudget(name)
-      saveBudget(name, budgetInNumber, date)
-      /*addBudgetToFB({name, budgetInNumber, date})*/
+      saveBudget(name, budgetInNumber, date, rollOver)
       .then(()=>{
           this.setState(()=> ({
               showAdd: false,
@@ -44,10 +43,20 @@ class Dashboard extends Component {
     }
 
     edit = ({name, budget, originalName}) => {
+      console.log(name, budget, originalName)
       const {dispatch} = this.props
+      const newName = originalName.name
       dispatch(editBudget(name, budget, originalName))
+      dispatch(deleteUserBudget(newName))
+      dispatch(addUserBudget(name))
       modifyBudget(name, budget, originalName)
       this.setState(()=> ({
+          showDetailBudget:{
+              ...originalName,
+              name: name,
+              x: name,
+              budget: budget
+          },
           showEdit:false,
           editBud: null,
       }))
@@ -67,11 +76,15 @@ class Dashboard extends Component {
                 {
                     text: 'Delete',
                     onPress: () => {
-                        console.log('delete', bud)
-                        dispatch(deleteUserBudget(bud))
-                        dispatch(deleteBudget(bud))
-                        removeUserBudget(bud)
-                        removeBudget(bud)
+                      console.log('delete', bud)
+                          
+                          this.setState(()=> ({showDetail:false}))
+                          dispatch(deleteUserBudget(bud))
+                          dispatch(deleteBudget(bud))
+                          removeUserBudget(bud)
+                          removeBudget(bud)
+                        
+
                     }
                 },
             ]
@@ -131,7 +144,7 @@ class Dashboard extends Component {
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
 		const {name, salary} = this.props.user
-    
+    console.log(budgets)
 
     function currentMonthEntry () {
       
@@ -151,6 +164,7 @@ class Dashboard extends Component {
 
           const date = budgets[bud].start
           const ents = budgets[bud].entries
+          console.log("HERE", bud, ents)
           const now = Date.UTC(year, month, 31)
           let spent = 0
           let spentEntries = []
@@ -177,8 +191,8 @@ class Dashboard extends Component {
                 spentEntries: spentEntries
               }
             )
-            totalSpent = totalSpent + spent
-            totalBudget = totalBudget + budgets[bud].budget
+            totalSpent = totalSpent + parseInt(spent)
+            totalBudget = totalBudget + parseInt(budgets[bud].budget)
           }
         colorIndex = colorIndex + 1
       })
@@ -451,6 +465,7 @@ const styles = StyleSheet.create({
 })
 
 function mapStateToProps({user, budgets=[], entries}){
+  console.log("BEGIN", user, budgets, entries)
   return{
     user,
     budgets,

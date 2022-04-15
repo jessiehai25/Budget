@@ -11,19 +11,47 @@ export const dbRef = ref(getDatabase());
 
 export function storeUser(user) {
   /***https://docs.expo.dev/guides/using-firebase/***/
-  console.log("storeUser_Firebase", user)
   const reference = ref(db, 'users/' + user.uid);
   set(reference, user);
 }
 
-export function updateUserBudget(user){
-  console.log("firebase", user)
+export function updateUser(user){
   set(ref(db, 'users/' + user.uid), user)
   .then(() => {
-    console.log("saved successfully")
+    console.log("user saved successfully")
   })
   .catch((error) => {
     Alert(error)
   });
 }
 
+export function updateBudget(budget, uid){
+  const name = Object.keys(budget)
+  set(ref(db, 'budgets/' + uid + '/' + Object.keys(budget)), budget[name])
+  .then(() => {
+    console.log("budget saved successfully")
+  })
+  .catch((error) => {
+    Alert(error)
+  });
+}
+
+export function updateWholeBudget(budget, uid){
+  set(ref(db, 'budgets/' + uid + '/'), budget)
+  .then(() => {
+    console.log("budget saved successfully")
+  })
+  .catch((error) => {
+    Alert(error)
+  });
+}
+
+export function updateWholeEntries(entries, uid){
+  set(ref(db, 'entries/' + uid + '/'), entries)
+  .then(() => {
+    console.log("entries saved successfully")
+  })
+  .catch((error) => {
+    Alert(error)
+  });
+}

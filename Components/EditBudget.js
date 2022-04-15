@@ -1,21 +1,27 @@
 import React, {Component} from 'react'
 import {View, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform} from 'react-native'
 import {connect} from 'react-redux'
-import {body, grey, white, brown} from '../utils/colors'
+import {body, grey, white, brown, inputOutline} from '../utils/colors'
 import {FontAwesome} from '@expo/vector-icons'
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 class EditBudget extends Component {
 	state = {
 		name:'',
 		budget:0,
+		rollOver:false,
+		nameFocus:inputOutline,
+        budgetFocus:inputOutline
 	}
 	componentDidMount(){
 	    const {bud, budgets} = this.props
 	    console.log("EditBudget1", budgets, "bud", bud)
 	    const budget = budgets[bud.x].budget
+	    const rollOver = budgets[bud.x].rollOver
 	    this.setState(()=> ({
             name: bud.x,
-            budget: budget
+            budget: budget,
+            rollOver: rollOver
         }))
     }
 	editB = ()=>{
@@ -35,26 +41,52 @@ class EditBudget extends Component {
 	    }
     }
 
+    onFocusName() {
+        this.setState({
+            nameFocus: brown
+        })
+    }
+    onBlurName() {
+        this.setState({
+          nameFocus: inputOutline
+        })
+    }
+
+    onFocusBudget() {
+        this.setState({
+            budgetFocus: brown
+        })
+    }
+    onBlurBudget() {
+        this.setState({
+          budgetFocus: inputOutline
+        })
+    }
+
 	render(){
 		const {budgets} = this.props
-		const {name, budget} = this.state
+		const {name, budget, rollOver} = this.state
 		return(
 			<View style = {styles.container}>
 					
 				<View style = {styles.inputContainer}>
 	                <TextInput
-	                    onChangeText = {(name) => this.setState(() => ({name: name}))}
-	                    placeholder = 'Category (e.g. Food)'
-	                    style = {styles.inputS}
+	                    onChangeText = {(name) => this.setState(() => ({name: name, budgetFocus:false, nameFocus:true}))}
+	                    placeholder = 'New Category (e.g. Food)'
+	                    style = {[styles.inputS, {borderColor:this.state.nameFocus}]}
 	                    value = {name}
+                        onFocus={ () => this.onFocusName() }
+                        onBlur={ () => this.onBlurName() }
 	                >
 	                </TextInput>
 	                <TextInput
-	                    onChangeText = {(budget) => this.setState(() => ({budget: parseInt(budget)}))}
-	                    placeholder = 'Budget for a year (e.g. 5000)'
-	                    style = {styles.inputS}
+	                    onChangeText = {(budget) => this.setState(() => ({budget: budget, budgetFocus:true, nameFocus:false}))}
+	                    placeholder = 'Budget for month (e.g. 5000)'
+	                    style = {[styles.inputS, {borderColor:this.state.budgetFocus}]}
 	                    value = {isNaN(budget.toString())?0 :budget.toString()}
-	                    keyboardType={'numeric'}
+                        keyboardType={'numeric'}
+                        onFocus={ () => this.onFocusBudget() }
+                        onBlur={ () => this.onBlurBudget() }
 	                >
 	                </TextInput>
 	                <Text style = {styles.equivalent}>
@@ -63,13 +95,27 @@ class EditBudget extends Component {
 				</View>
 
 		        <View style = {{alignItems:'center'}}>
+		        	<View style = {{width:'100%', borderRadius:10, }}>
+                        <BouncyCheckbox
+                            style= {{padding:5}}
+                            size={20}
+                            fillColor={brown}
+                            unfillColor="#FFFFFF"
+                            text={`rollover budget`}
+                            iconStyle={{ borderColor: brown }}
+                            textStyle={{color:body, fontSize: 15, textDecorationLine: "none"}}
+                            onPress={(rollOver: boolean) => this.setState(() => ({rollOver: rollOver}))}
+                        />
+                        <Text style = {{color:body, fontSize: 11, marginLeft:42}}>remaining budget of previous month will roll over to next month</Text>
+                    </View>
+                    <View style = {{padding:10}}/>
 			        <TouchableOpacity 
 						style = {{justifyContent:'center', alignItems:'center',flexDirection:'row', width:'95%'}}
 						onPress = {this.editB}	
 						>
 						<View style = {styles.button}>
-							<FontAwesome name = 'plus-circle' size = {20} style = {{color: brown}}/>
-	                		<Text style = {{fontWeight: 'bold', color: white}}>Save</Text>
+							<FontAwesome name = 'plus-circle' size = {20} style = {{color: white}}/>
+	                		<Text style = {{fontWeight: 'bold', color: white}}> Save</Text>
 	                	</View>
 			        </TouchableOpacity>
 		        </View>
@@ -94,13 +140,13 @@ const styles = StyleSheet.create({
     inputS:{
         color: body,
         fontSize: 15,
-        borderBottomColor: grey,
-        borderBottomWidth: 0.5,
-        marginLeft: 10,
-        marginRight: 10,
+        borderColor: inputOutline,
+        borderRadius: 5,
+        borderWidth: 0.5,
+
         padding: 5,
         marginTop: 10,
-        width: '90%',
+        width: '100%',
  	},
  	equivalent:{
  		color:'grey',

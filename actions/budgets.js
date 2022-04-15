@@ -11,13 +11,13 @@ export function receiveBudgets (budgets) {
 		budgets
 	}
 }
-
-export function addBudget (name, budget, date) {
+export function addBudget (name, budget, date, rollOver) {
 	return{
 		type: ADD_BUDGET,
 		name,
 		budget,
-		date
+		date,
+		rollOver
 	}
 }
 

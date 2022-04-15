@@ -59,6 +59,7 @@ class EntryList extends Component {
         var entryDate = convertDate(new Date(entry.timestamp))
 		const {dispatch} = this.props
         dispatch(handleAddEntry(entry))
+        console.log(entry)
         this.setState(()=> ({
         	showAdd: false,
         	markedDate: {
@@ -81,10 +82,12 @@ class EntryList extends Component {
     		price, 
     		timestamp
     	}
+    	setTimeout(() => {
 		dispatch(handleAddEntry({title, category, price, timestamp}))
-		.then(()=>
-			dispatch(handleDeleteEntry(id = showId, category = showCategory))
-		)
+		}, 100);
+		
+		dispatch(handleDeleteEntry(id = showId, category = showCategory))
+		
     	this.setState(()=> ({
         	showEdit: false,
         }))

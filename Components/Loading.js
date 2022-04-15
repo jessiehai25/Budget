@@ -13,17 +13,17 @@ class Loading extends Component {
 		console.log("LOading page", this.props.user)
 		const {dispatch, user} = this.props
 		dispatch(handleInitialData())
-		.then(()=>this.setState(()=> ({loading:false})))
+		.then(()=>{
+			this.setState(()=> ({loading:false}))
+		})
 	
 	}
     componentDidUpdate(){
 	    if (this.state.loading === false){
 	    	if (this.props.user.name === null) {
-	    		console.log("LOADING1", this.props.user)
     			this.props.navigation.navigate('Landing')
 	    	}
 	    	else{
-	    		console.log("LOADING2", this.props.user)
 	    		this.props.navigation.navigate('Main')
 	    	}
 	    }	    

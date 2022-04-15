@@ -9,6 +9,7 @@ export const brown = '#dabb88'
 export const background = 'white'
 export const body = '#615B73'
 export const button = '#ED9850'
+export const inputOutline = '#E8E8E8'
 
 /*
 export const grey = '#757575'

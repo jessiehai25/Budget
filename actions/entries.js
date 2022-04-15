@@ -5,7 +5,7 @@ import {addEntryToBudget, deleteEntryToBudget} from './budgets'
 import {saveEntry, removeEntry} from '../utils/api'
 
 export function receiveEntries (entries) {
-	return {
+	return{
 		type: RECEIVE_ENTRIES,
 		entries
 	}
@@ -34,6 +34,7 @@ export function handleAddEntry ({title, category, price, timestamp}){
 			timestamp
 		})
 		.then((entry) => {
+			console.log('redux add', entry)
 			dispatch(addEntry(entry))
 			dispatch(addEntryToBudget(entry.category, entry.id))
 		})
@@ -42,6 +43,7 @@ export function handleAddEntry ({title, category, price, timestamp}){
 
 export function handleDeleteEntry (id, category){
 	return (dispatch, getState) => {
+		console.log('redux remove', id)
 		return removeEntry(id)
 		.then((entry, budgets) => {
 			dispatch(deleteEntryToBudget(id, category))

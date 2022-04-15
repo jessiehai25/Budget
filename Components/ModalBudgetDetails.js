@@ -9,7 +9,6 @@ class ModalBudgetDetails extends Component{
 	render(){
 		const {budgets, entries, showDetailBudget, edit, del} = this.props
         const {budget, name, y, spentEntries} = showDetailBudget
-        const budgetEntries = budgets[showDetailBudget.name].entries
 
             let spentDetail = {}
             spentEntries.map((ent)=> {

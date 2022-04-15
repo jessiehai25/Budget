@@ -5,8 +5,10 @@ import {body, grey, white, brown, darkBrown} from '../utils/colors'
 import {AntDesign, Ionicons } from '@expo/vector-icons'
 import {months} from '../utils/helpers'
 import {setUser} from '../actions/user'
+import {receiveBudgets} from '../actions/budgets'
+import {receiveEntries} from '../actions/entries'
 import PropTypes from 'prop-types';
-import {saveUser} from '../utils/api'
+import {setAPIUser, setAPIBudget, setAPIEntries} from '../utils/api'
 import SignUp from './SignUp'
 import SignIn from './SignIn'
 import {auth, storeUser, dbRef} from "../utils/firebase";
@@ -33,7 +35,6 @@ class Welcome extends Component {
             createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 user.uid = userCredential.user.uid
-                console.log(user)
                 dispatch(setUser(user))
                 saveUser(user)
                 storeUser(user)
@@ -77,24 +78,75 @@ class Welcome extends Component {
                         budgetExist.length>0
                             ? console.log("has budget", user.budgets)
                             : user.budgets = []
-                        
-                        console.log("getuser", budgetExist, user)
                         dispatch(setUser(user))
-                        saveUser(user)
-                        console.log("LOGIN", user)
-                        this.props.navigation.navigate('Main')
+                        setAPIUser(user)
                     } 
                     else {
                         alert("No data available");
                     }
                 }).catch((error) => {
+                    alert( error);
+                });
+                get(child(dbRef, `budgets/${authUser.user.uid}`)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const APIbudgets = snapshot.val() 
+                        let budgets = {}
+                        Object.keys(APIbudgets).map((bud)=>{
+                            console.log(bud, APIbudgets[bud].entries)
+                            if (APIbudgets[bud].entries !== undefined) {
+                                budgets = {
+                                    ...budgets,
+                                    [bud]: APIbudgets[bud]
+                                }
+                            }
+                            else{
+                                addEnt = {
+                                    ...APIbudgets[bud],
+                                    entries: []
+                                }
+                                budgets = {
+                                    ...budgets,
+                                    [bud]: addEnt
+                                }
+                            }
+                        })
+                        console.log(budgets)
+                        dispatch(receiveBudgets(budgets))
+                        setAPIBudget(budgets)
+                    }
+                    else{
+                        const budgets = {}
+                        console.log("B")
+                        dispatch(receiveBudgets(budgets))
+                        setAPIBudget(budgets)
+                    }
+                }).catch((error) => {
                     alert(error);
                 });
+                
+                get(child(dbRef, `entries/${authUser.user.uid}`)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const entries = snapshot.val()
+                        dispatch(receiveEntries(entries))
+                        setAPIEntries(entries)
+                    }
+                    else{
+                        const entries = {}
+                        setAPIEntries(entries)
+                        dispatch(receiveEntries(entries))
+                        setAPIEntries(entries)
+                    }
+                    
+                }).catch((error) => {
+                    alert(error);
+                });
+                
+                })
 
-            })
             .catch((error) => {
                 alert(error.message)
             })
+            this.props.navigation.navigate('Main')
             
     }      
 

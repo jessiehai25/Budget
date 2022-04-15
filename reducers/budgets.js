@@ -8,8 +8,9 @@ export default function budgets (state = {}, action) {
 				...state,
 				...action.budgets
 			}
+		
 		case ADD_BUDGET :
-			const {name, budget, date} = action
+			const {name, budget, date, rollOver} = action
 			return {
 				...state,
 				[action.name]:{
@@ -18,6 +19,7 @@ export default function budgets (state = {}, action) {
 					start: date,
 					entries: [],
 					end: null,
+					rollOver
 			}
 		}
 		case DELETE_BUDGET :
@@ -36,11 +38,12 @@ export default function budgets (state = {}, action) {
 			const {originalName} = action
 			const name1 = action.name
 			const budget1 = action.budget
-			const originalBud = state[name1]
+			const originalBud = state[originalName.name]
+			console.log("originalBud", originalBud)
 			const {entries, start, end} = originalBud
 			console.log(name1, budget1, entries)
 			const removedState = Object.keys(state).reduce((object, key) => {
-				if (key !== originalName){
+				if (key !== originalName.name){
 					console.log(key)
 					object[key] = state[key]
 				}
