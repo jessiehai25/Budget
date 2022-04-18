@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, Image, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform, Alert} from 'react-native'
+import {View, Image, ScrollView, Text, TextInput, StyleSheet, Linking, Picker, TouchableOpacity, Platform, Alert} from 'react-native'
 import {connect} from 'react-redux'
 import {blue, grey, white, body, brown, darkBrown, button, background} from '../utils/colors'
 import {formatDate, convertDate, convertMMMYY} from '../utils/helpers'
@@ -74,8 +74,9 @@ class Profile extends Component {
 		}
 
 		function averageSpending (){
+			console.log(entries)
 			let totalSpent = 0
-			if(entries === null){
+			if(Object.keys(entries).length == 0 ){
 				return 0
 			}
 			else{
@@ -89,7 +90,7 @@ class Profile extends Component {
 		function maxSpending (){
 			let maxSpent = "N/A"
 			let maxSpentAmount = 0
-			if (entries === null) {
+			if (Object.keys(entries).length == 0 ) {
 				return maxSpent
 			}
 			else{
@@ -189,6 +190,17 @@ class Profile extends Component {
 							{maxSpending()}
 							</Text>
 						</View>
+					</View>
+					<View style= {{alignItems: 'flex-start', justifyContent:'flex-end'}}>
+						<TouchableOpacity
+							style = {{marginLeft: 5,paddingTop:30, borderRadius:10}}
+							onPress = {() => Linking.openURL('mailto:jessiewlhai@gmail.com?subject=Feedback on Budget App') }
+						>
+							<Text 
+							style = {{color: brown}}>
+							Send us Feedback
+							</Text>
+						</TouchableOpacity>
 					</View>
 					<View style= {{alignItems: 'flex-start', justifyContent:'flex-end'}}>
 						<TouchableOpacity

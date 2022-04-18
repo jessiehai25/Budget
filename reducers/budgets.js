@@ -5,7 +5,6 @@ export default function budgets (state = {}, action) {
 	switch(action.type){
 		case RECEIVE_BUDGETS :
 			return {
-				...state,
 				...action.budgets
 			}
 		
