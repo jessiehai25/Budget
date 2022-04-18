@@ -1,5 +1,5 @@
 import React, {Component, useEffect} from 'react'
-import { StyleSheet, Text, View, StatusBar, Platform } from 'react-native';
+import { StyleSheet, Image, Text, View, StatusBar, Platform } from 'react-native';
 import {connect} from 'react-redux'
 import {blue, grey, white, body, brown} from '../utils/colors'
 import {handleInitialData} from '../actions/'
@@ -12,11 +12,13 @@ class Loading extends Component {
 	componentDidMount(){
 		console.log("LOading page", this.props.user)
 		const {dispatch, user} = this.props
+		setTimeout(() => {
 		dispatch(handleInitialData())
+	
 		.then(()=>{
 			this.setState(()=> ({loading:false}))
 		})
-	
+	},2000)
 	}
     componentDidUpdate(){
 	    if (this.state.loading === false){
@@ -32,9 +34,10 @@ class Loading extends Component {
   render() {
   	return(
 	        <SafeAreaView style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-	        	<Text>
-	          		Loading
-	        	</Text>
+	        	<Image
+			        source={require('../assets/icon.png')}
+			        style={{width: 50, height:50}}
+			      />
 	        </SafeAreaView>
 	)
   }

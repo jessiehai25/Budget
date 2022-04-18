@@ -19,6 +19,7 @@ class Welcome extends Component {
     state = {
         login: false,
         budgetExist: false,
+        gestureName: ''
     }
 
     onSignUp = ({name, salaryM, email, password}) => {
@@ -36,7 +37,7 @@ class Welcome extends Component {
             .then((userCredential) => {
                 user.uid = userCredential.user.uid
                 dispatch(setUser(user))
-                saveUser(user)
+                setAPIUser(user)
                 storeUser(user)
                 this.props.navigation.navigate('AuthLoad')
             })
@@ -146,14 +147,19 @@ class Welcome extends Component {
             .catch((error) => {
                 alert(error.message)
             })
-            this.props.navigation.navigate('Main')
-            
+            setTimeout(() => {
+            this.props.navigation.navigate('AuthLoad')
+            }, 100);
     }      
 
     chg = () => {
         const {login} = this.state
         this.setState(() => ({login: !login}))
     }
+
+
+
+
     render() {
         console.log("Welcome", this.state.login)
         const {name, salaryM, email, password, yearEnd, login} = this.state

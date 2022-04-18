@@ -1,7 +1,7 @@
 import {firebaseConfig} from './DATA'
 import firebase from "firebase/app";
 import { initializeApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import { getDatabase, ref, onValue, set, get, child } from 'firebase/database';
 
 initializeApp(firebaseConfig);

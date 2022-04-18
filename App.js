@@ -8,6 +8,11 @@ import middleware from './middleware'
 import Container from './Navigation/Container'
 import {createStackNavigator} from 'react-navigation'
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+
+
 export default class App extends React.Component {
 
   render() {

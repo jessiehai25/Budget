@@ -5,9 +5,58 @@ import {blue, grey, white, body, brown, darkBrown, button, background} from '../
 import {formatDate, convertDate, convertMMMYY} from '../utils/helpers'
 import {AntDesign, Ionicons } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context';
- 
+import {auth} from "../utils/firebase";
+import {signOut } from "firebase/auth";
+import {setAPIUser, setAPIBudget, setAPIEntries} from '../utils/api'
+import {setUser} from '../actions/user'
+import {receiveBudgets} from '../actions/budgets'
+import {receiveEntries} from '../actions/entries'
 
 class Profile extends Component {
+
+	logout = () => {
+		const {dispatch} = this.props
+		Alert.alert(
+            `Do you want to Logout?`,
+            "",
+            [
+                {
+                    text: 'No',
+                    onPress: () => console.log('cancel'),
+                    style: 'cancel',
+                },
+                {
+                    text: 'Yes',
+                    onPress: () => {
+                      	signOut(auth).then(() => {
+							const user = {
+								uid: null,
+								name: null,
+								salary: 0,
+							  email: null,
+								budgets: [],
+							  date: null
+							}
+							const budgets = {}
+							const entries = {}
+							dispatch(setUser(user))
+				            setAPIUser(user)
+				            dispatch(receiveBudgets(budgets))
+				            setAPIBudget(budgets)
+				            dispatch(receiveEntries(entries))
+				            setAPIEntries(entries)
+							console.log('logout successful')
+							this.props.navigation.navigate('AuthLoad')
+						}).catch((error) => {
+							alert(error)
+						})
+                    }
+                },
+            ]
+        )
+		
+	}
+
 	render(){
 		const {user, budgets, entries, budgetList} = this.props
 
@@ -18,7 +67,7 @@ class Profile extends Component {
 			}
 			else{
 				budgetList.map((bud)=>{
-					totalBudget = totalBudget + budgets[bud].budget
+					totalBudget = parseInt(totalBudget) + parseInt(budgets[bud].budget)
 				})
 				return totalBudget
 			}
@@ -64,7 +113,7 @@ class Profile extends Component {
 				<View style = {{flex:1,width:'90%'}}>
 					<View style = {styles.detailContainer}>
 						<View style = {styles.avagarCircle}>
-							<AntDesign name='Safety' size = {100} color= {brown} />
+							<AntDesign name='smileo' size = {80} color= {brown} />
 						</View>
 						<View style = {{alignItems:'center', marginTop:-50}}>
 							<Text style={styles.nameText}>
@@ -140,6 +189,17 @@ class Profile extends Component {
 							{maxSpending()}
 							</Text>
 						</View>
+					</View>
+					<View style= {{alignItems: 'flex-start', justifyContent:'flex-end'}}>
+						<TouchableOpacity
+							style = {{marginLeft: 5,paddingTop:30, borderRadius:10}}
+							onPress = {() => this.logout()}
+						>
+							<Text 
+							style = {{color: brown}}>
+							Logout
+							</Text>
+						</TouchableOpacity>
 					</View>
 				</View>
 			</SafeAreaView>

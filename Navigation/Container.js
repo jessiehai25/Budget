@@ -8,8 +8,6 @@ import EditBudget from '../Components/EditBudget'
 import Dashboard from '../Components/Dashboard'
 import Loading from '../Components/Loading'
 import Profile from '../Components/Profile'
-import SignIn from '../Components/SignIn'
-import SignUp from '../Components/SignUp'
 import {blue, grey, white, body, brown} from '../utils/colors'
 
 const RouteConfigs = {
@@ -18,7 +16,7 @@ const RouteConfigs = {
     navigationOptions: {
       headerShown:false,
       tabBarIcon: ({ tintColor }) => (
-        <View style = {{alignItems:'center', justifyContent:'center', top:5}}>
+        <View style = {{alignItems:'center', justifyContent:'center', top:5, width:100}}>
           <FontAwesome name='home' size = {25} color={tintColor} />
           <Text
             style = {{color: tintColor, fontSize:12}}>
@@ -34,7 +32,7 @@ const RouteConfigs = {
 
       tabBarIcon: ({ focused }) => 
       {
-        const colors = focused ? 'white' : '#007AFF'
+        const colors = focused ? 'white' : brown
         return(
           <View style = {{
             alignItems:'center', 
@@ -53,7 +51,7 @@ const RouteConfigs = {
             shadowRadius:3.5,
             elevation:5,
           }}>
-            {focused ?<AntDesign name="pluscircle"  size = {60} color = '#e32f45' /> : <FontAwesome name='calendar-o' size = {32} color = 'white' />}
+            {focused ?<AntDesign name="pluscircle"  size = {60} color = '#FFA800' /> : <FontAwesome name='calendar-o' size = {32} color = 'white' />}
           </View>
         )
       },
@@ -72,7 +70,7 @@ const RouteConfigs = {
     screen: Profile,
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => (
-        <View style = {{alignItems:'center', justifyContent:'center', top:5}}>
+        <View style = {{alignItems:'center', justifyContent:'center', top:5, width:100}}>
           <MaterialCommunityIcons name='sack' size = {25} color={tintColor} />
           <Text
               style = {{color: tintColor, fontSize:12}}>
@@ -90,7 +88,7 @@ const TabNavigatorConfig = {
     headerShown: false,
   },
   tabBarOptions: {
-    activeTintColor: '#007AFF',
+    activeTintColor: brown,
     showLabel: false,
     style: {
       shadowColor: '#7F5DF0',
@@ -103,7 +101,6 @@ const TabNavigatorConfig = {
       elevation:5,
       borderRadius:15,
       backgroundColor: '#fff',
-    
     }
   }
 };
@@ -140,6 +137,10 @@ const Landing = createStackNavigator({
 const AuthLoad = createStackNavigator({
 	Loading:{
     	screen: Loading,
+      navigationOptions: ({ navigation }) => ({
+      headerShown:false,
+      header: null,
+      }),
   	},
 })
 

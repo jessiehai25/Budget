@@ -91,6 +91,7 @@ class AddBudget extends Component {
 	                </Text>
 				</View>
 				<View style = {{alignItems:'center'}}>
+                    {/*
                     <View style = {{width:'100%', borderRadius:10, }}>
                         <BouncyCheckbox
                             style= {{padding:5}}
@@ -104,6 +105,7 @@ class AddBudget extends Component {
                         />
                         <Text style = {{color:body, fontSize: 11, marginLeft:42}}>remaining budget of previous month will roll over to next month</Text>
                     </View>
+                    */}
                     <View style = {{padding:10}}/>
 					<TouchableOpacity 
 						style = {{justifyContent:'center', alignItems:'center',flexDirection:'row', width:'95%'}}

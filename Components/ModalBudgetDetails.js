@@ -75,7 +75,7 @@ class ModalBudgetDetails extends Component{
                                 {spentDetail[title].entries.map((ent)=>{
                                     {console.log(ent, entries[ent].timestamp)}
                                     return(
-                                        <View style = {{flexDirection:'row',justifyContent:'space-between'}}>
+                                        <View key = {ent} style = {{flexDirection:'row',justifyContent:'space-between'}}>
                                             <Text style = {{color:body, fontSize:12}}>      {formatDate(entries[ent].timestamp)}</Text>
                                             <Text style = {{color:body, fontSize:12}}>{entries[ent].price.toLocaleString()}</Text>
                                         </View>

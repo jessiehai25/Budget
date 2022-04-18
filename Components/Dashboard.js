@@ -15,6 +15,7 @@ import {saveBudget, saveUserBudget, modifyBudget, removeBudget, removeUserBudget
 import {blue, grey, white, body, brown, colorScale, background} from '../utils/colors'
 import {months, convertMMMYY} from '../utils/helpers'
 import {AntDesign, FontAwesome} from '@expo/vector-icons'
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 class Dashboard extends Component {
   state = {
@@ -26,6 +27,7 @@ class Dashboard extends Component {
         showDetailBudget:null,
         showEdit:false,
         editBud:null,
+        gestureName: '',
     }
     add = ({name, budget, date, rollOver}) => {
       const budgetInNumber = parseInt(budget)
@@ -138,14 +140,52 @@ class Dashboard extends Component {
     }))
   }
 
+  onSwipeLeft(gestureState) {
+    this.addMonth();
+  }
+
+  onSwipeRight(gestureState) {
+    this.minusMonth();
+  }
+
+  onSwipe(gestureName, gestureState) {
+    console.log(gestureName, gestureState)
+    const {dx} = gestureState
+    if (gestureName === null){
+      if (dx > 0) {
+          gestureName = "SWIPE_RIGHT";
+          this.minusMonth()
+      }
+      else if (dx < 0) {
+          gestureName = "SWIPE_LEFT";
+          this.addMonth();
+      }
+  }
+
+    const {SWIPE_LEFT, SWIPE_RIGHT} = swipeDirections;
+    console.log(gestureName, gestureState)
+    this.setState({gestureName, gestureName});
+    /*switch (gestureName) {
+      case SWIPE_LEFT:
+        this.setState({backgroundColor: 'blue'});
+        break;
+      case SWIPE_RIGHT:
+        this.setState({backgroundColor: 'yellow'});
+        break;
+    }*/
+  }
+
 	render() {
 		const {budgets, entries, budgetList} = this.props
-    const {month, year} = this.state
+    const {month, year, gestureName} = this.state
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
 		const {name, salary} = this.props.user
-    console.log(budgets)
-
+    console.log('gestureName', gestureName)
+    const config = {
+      velocityThreshold: 0.6,
+      directionalOffsetThreshold: 80
+    };
     function currentMonthEntry () {
       
       let budgetAmountList = []
@@ -164,7 +204,6 @@ class Dashboard extends Component {
 
           const date = budgets[bud].start
           const ents = budgets[bud].entries
-          console.log("HERE", bud, ents)
           const now = Date.UTC(year, month, 31)
           let spent = 0
           let spentEntries = []
@@ -205,7 +244,7 @@ class Dashboard extends Component {
       if(totalSpent === 0){
         return(
           <View>
-            <Text style = {{padding:50}}>
+            <Text style = {{marginTop:50, padding:50}}>
               No Spending data
             </Text>
           </View>
@@ -347,7 +386,8 @@ class Dashboard extends Component {
                 </View>
                 <TouchableOpacity
                 onPress = {() => {this.setState({showAdd:true})}}>
-                  <Text style = {{fontSize:20}}>
+                  <Text style = {{fontSize:20}}> 
+                  <Text>   </Text>  
                   <FontAwesome name='plus' size = {20} color= {brown} />
                   </Text>
                 </TouchableOpacity>
@@ -367,9 +407,19 @@ class Dashboard extends Component {
                 </Text>
                     
               </View>
-              <View style = {{backgroundColor:'white', width:'100%', alignItems:'center'}}>
-                {renderPie()}
-              </View>
+              <GestureRecognizer
+                onSwipe={(direction, state) => this.onSwipe(direction, state)}
+                onSwipeLeft={(state) => this.onSwipeLeft(state)}
+                onSwipeRight={(state) => this.onSwipeRight(state)}
+                config={config}
+                style={{
+                  backgroundColor: 'white'
+                }}
+                >
+                <View style = {{backgroundColor:'white', width:'100%', alignItems:'center'}}>
+                  {renderPie()}
+                </View>
+              </GestureRecognizer>
               <View style = {{width:'100%', paddingBottom:StatusBar.currentHeight, padding:5, backgroundColor:'white', alignItems:'center'}}>
                 <ScrollView style = {{width:'95%'}}>
                 <View style = {[styles.detailContainer, {borderColor:white}]}>
@@ -465,7 +515,6 @@ const styles = StyleSheet.create({
 })
 
 function mapStateToProps({user, budgets=[], entries}){
-  console.log("BEGIN", user, budgets, entries)
   return{
     user,
     budgets,
