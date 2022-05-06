@@ -82,9 +82,6 @@ class Welcome extends Component {
                         dispatch(setUser(user))
                         setAPIUser(user)
                     } 
-                    else {
-                        alert("No data available");
-                    }
                 }).catch((error) => {
                     alert( error);
                 });
