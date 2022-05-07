@@ -60,7 +60,7 @@ class AddBudget extends Component {
           budgetFocus: inputOutline
         })
     }
-
+ 
 	render(){
 		const {name, budget, date, rollOver, budgetFocus, nameFocus} = this.state
 		return(
@@ -124,11 +124,11 @@ class AddBudget extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 30,
         alignItems: 'center',
         justifyContent:'center',
-        borderRadius: 10,
-        backgroundColor: 'white',
+        backgroundColor:white,
+        borderRadius:10,
+        padding:30,
     },
     text:{
       fontFamily: Platform.OS === 'ios' ? 'Helvetica Neue' : 'Roboto', 

@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, Image, ScrollView, StatusBar,Text, StyleSheet, TouchableOpacity, Platform, Dimensions, Alert} from 'react-native'
+import {View, Image, ScrollView, StatusBar,Text, StyleSheet, TouchableOpacity, Platform, Dimensions, Alert, KeyboardAvoidingView} from 'react-native'
 import {connect} from 'react-redux'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {VictoryPie} from 'victory-native'
@@ -295,10 +295,12 @@ class Dashboard extends Component {
             transparent = {true}
             onBackdropPress = {() => {this.setState({showAdd:false})}}
           >
+          <KeyboardAvoidingView behavior = {Platform.OS == "ios" ? "padding" : "height"}  enabled = "true" style = {styles.container}>
             <AddBudget
                 add = {this.add}
                 budgetList = {budgetList}
             />
+          </KeyboardAvoidingView>
            </Modal>
           <TouchableOpacity
              onPress = {() => {this.setState({showAdd:true})}}
@@ -326,10 +328,15 @@ class Dashboard extends Component {
             transparent = {true}
             onBackdropPress = {() => {this.setState({showAdd:false})}}
           >
+          <KeyboardAvoidingView
+                behavior="position"
+                enabled
+            >
             <AddBudget
                 add = {this.add}
                 budgetList = {budgetList}
             />
+          </KeyboardAvoidingView>
            </Modal>
            <Modal 
             isVisible={this.state.showDetail} 
@@ -348,11 +355,16 @@ class Dashboard extends Component {
                 transparent = {true}
                 onBackdropPress = {() => {this.setState({showEdit:false})}}
                 >
-                  <EditBudget
-                      budgets = {budgets}
-                      bud = {this.state.showDetailBudget}
-                      edit = {this.edit}
-                  />
+                  <KeyboardAvoidingView
+                    behavior="position"
+                    enabled
+                  >
+                    <EditBudget
+                        budgets = {budgets}
+                        bud = {this.state.showDetailBudget}
+                        edit = {this.edit}
+                    />
+                  </KeyboardAvoidingView>
                 </Modal>
 
            </Modal>

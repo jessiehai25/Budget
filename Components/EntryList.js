@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform, Alert} from 'react-native'
+import {View, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform, Alert, KeyboardAvoidingView} from 'react-native'
 import {connect} from 'react-redux'
 import {blue, grey, white, body, brown, darkBrown, button, background} from '../utils/colors'
 import {formatDate, convertDate} from '../utils/helpers'
@@ -189,11 +189,16 @@ class EntryList extends Component {
 					transparent = {true}
 					onBackdropPress = {() => {this.setState({showAdd:false})}}
 				>
+				<KeyboardAvoidingView
+		            behavior="position"
+		            enabled
+		        >
 					<ModalAddEntry
 						date = {date} 
 						budgetList = {budgetList} 
 						add = {this.add}
 					/>
+				</KeyboardAvoidingView>
 				</Modal>
 
 				<Modal 
@@ -201,6 +206,10 @@ class EntryList extends Component {
 					transparent = {true}
 					onBackdropPress = {() => {this.setState({showEdit:false})}}
 				>
+				<KeyboardAvoidingView
+		            behavior="position"
+		            enabled
+		        >
 					<ModalEditEntry
 						date = {date} 
 						budgetList = {budgetList} 
@@ -208,6 +217,7 @@ class EntryList extends Component {
 						showId = {this.state.showId}
 						entries = {entries}
 					/>
+				</KeyboardAvoidingView>
 				</Modal>
 				<View style = {styles.secondContainer}>
 					<View style = {{height:'38%', width:'95%'}}>

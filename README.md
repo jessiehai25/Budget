@@ -7,7 +7,11 @@ An application used to set your budget and mark your expense, built with React, 
 3rd Party Library: react-native-bouncy-checkbox, victory-native, react-native-modal, react-native-swipe-gestures
 
 ## Project Status
-(only necessary if incomplete)
+
+
+#### Version 1.2.0
+
+Dismiss keyboard in budget adding and entry adding screen
 
 #### Version 1.1.0
 
@@ -20,7 +24,7 @@ This project is currently published in app store. Users can login the app by ema
 
 #### Function In Progress 
 
-1. Functionality to dismiss keyboard in budget adding and entry adding screen
+1. Dismiss keyboard in budget adding and entry adding screen (completed)
 
 2. Add Budget Graphic Icon
 
