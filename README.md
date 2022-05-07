@@ -11,16 +11,16 @@ An application used to set your budget and mark your expense, built with React, 
 
 #### Version 1.2.0
 
-Dismiss keyboard in budget adding and entry adding screen
+ - Dismiss keyboard in budget adding and entry adding screen
 
 #### Version 1.1.0
 
-Update Icon
+ - Update Icon
 
 
 #### Version 1.0.0
 
-This project is currently published in app store. Users can login the app by email and password to retreive their stored data. Functionality to sort by additional parameters is in progress.
+ - This project is currently published in app store. Users can login the app by email and password to retreive their stored data. Functionality to sort by additional parameters is in progress.
 
 #### Function In Progress 
 
