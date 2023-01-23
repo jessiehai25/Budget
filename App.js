@@ -7,7 +7,7 @@ import reducer from './reducers'
 import middleware from './middleware'
 import Container from './Navigation/Container'
 import {createStackNavigator} from 'react-navigation'
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
 LogBox.ignoreAllLogs();//Ignore all log notifications
@@ -19,10 +19,10 @@ export default class App extends React.Component {
     return (
       <Provider store = {createStore(reducer, middleware)}>
 
-        <View style={{flex:1}}>
+        <GestureHandlerRootView style={{flex:1}}>
 
           <Container/>
-        </View>
+        </GestureHandlerRootView>
       </Provider>
     );
   }

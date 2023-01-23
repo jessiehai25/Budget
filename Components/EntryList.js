@@ -11,6 +11,7 @@ import ModalEditEntry from './ModalEditEntry'
 import SwipeRow from './SwipeRow'
 import {handleAddEntry, handleDeleteEntry} from '../actions/entries'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { CommonActions } from '@react-navigation/native';
 
 class EntryList extends Component {
 	state = {
@@ -28,9 +29,11 @@ class EntryList extends Component {
 		const formatted = convertDate(t)
 		const selectedDate = {[formatted]: {selected: true, selectedColor: brown, marked: true, dotColor: body}}
 		var markedDate = {}
+		console.log("setParams")
 		this.props.navigation.setParams({
 	      scrollToTop: this.scrollToTop,
 	    });
+	    console.log("setParamsEnd")
 		Object.keys(entries).map((entry)=> {
 			var entryDate = convertDate(new Date(entries[entry].timestamp))
 			
@@ -50,6 +53,7 @@ class EntryList extends Component {
 		}))
 	}
 	scrollToTop = ()=>{
+		console.log("Press")
       this.setState(()=> ({
         	showAdd: true,
         }))

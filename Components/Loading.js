@@ -12,13 +12,13 @@ class Loading extends Component {
 	componentDidMount(){
 		console.log("LOading page", this.props.user)
 		const {dispatch, user} = this.props
-		setTimeout(() => {
+		/*setTimeout(() => {*/
 		dispatch(handleInitialData())
 	
 		.then(()=>{
 			this.setState(()=> ({loading:false}))
 		})
-	},2000)
+	/*},2000)*/
 	}
     componentDidUpdate(){
 	    if (this.state.loading === false){
