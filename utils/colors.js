@@ -10,6 +10,7 @@ export const background = 'white'
 export const body = '#615B73'
 export const button = '#ED9850'
 export const inputOutline = '#E8E8E8'
+export const lightYellow = '#f9d36c'
 
 /*
 export const grey = '#757575'

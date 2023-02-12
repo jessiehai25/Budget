@@ -1,18 +1,24 @@
 import React, {Component} from 'react'
-import {View, Image, ScrollView, Text, TextInput, StyleSheet, Linking, Picker, TouchableOpacity, Platform, Alert} from 'react-native'
+import {View, Image, ScrollView, Text, TextInput, StyleSheet, Linking, Picker, TouchableOpacity, Platform, Alert, KeyboardAvoidingView} from 'react-native'
 import {connect} from 'react-redux'
-import {blue, grey, white, body, brown, darkBrown, button, background} from '../utils/colors'
+import {blue, grey, white, body, brown, darkBrown, button, background, lightYellow} from '../utils/colors'
 import {formatDate, convertDate, convertMMMYY} from '../utils/helpers'
-import {AntDesign, Ionicons } from '@expo/vector-icons'
+import {AntDesign, Ionicons, Octicons,FontAwesome5,Entypo,MaterialCommunityIcons } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {auth} from "../utils/firebase";
 import {signOut } from "firebase/auth";
-import {setAPIUser, setAPIBudget, setAPIEntries} from '../utils/api'
+import {setAPIUser, setAPIBudget, setAPIEntries, updateSalary} from '../utils/api'
 import {setUser} from '../actions/user'
 import {receiveBudgets} from '../actions/budgets'
 import {receiveEntries} from '../actions/entries'
+import Modal from 'react-native-modal';
+import ModalEditProfile from './ModalEditProfile';
+import {editSalary} from '../actions/user'
 
 class Profile extends Component {
+	state = {
+		showEdit: false
+	}
 
 	logout = () => {
 		const {dispatch} = this.props
@@ -57,9 +63,19 @@ class Profile extends Component {
 		
 	}
 
+	chgSalary = (salary) => {
+		const {dispatch} = this.props
+		dispatch(editSalary(salary))
+		updateSalary(salary)
+		.then(()=>{
+          this.setState(()=> ({
+              showEdit: false,
+          }))
+      })
+	}
+
 	render(){
 		const {user, budgets, entries, budgetList} = this.props
-
 		function totalBudget (){
 			let totalBudget = 0
 			if(budgetList === null){
@@ -74,7 +90,6 @@ class Profile extends Component {
 		}
 
 		function averageSpending (){
-			console.log(entries)
 			let totalSpent = 0
 			if(Object.keys(entries).length == 0 ){
 				return 0
@@ -111,8 +126,24 @@ class Profile extends Component {
 
 		return(
 			<SafeAreaView style= {styles.container}>
+				<Modal 
+					isVisible={this.state.showEdit} 
+					transparent = {true}
+					onBackdropPress = {() => {this.setState({showEdit:false})}}
+				>
+				<KeyboardAvoidingView
+		            behavior="position"
+		            enabled
+		        >
+					<ModalEditProfile
+						edit = {this.chgSalary}
+						salary = {user.salary}
+					/>
+				</KeyboardAvoidingView>
+				</Modal>
 				<View style = {{flex:1,width:'90%'}}>
 					<View style = {styles.detailContainer}>
+						
 						<View style = {styles.avagarCircle}>
 							<AntDesign name='smileo' size = {80} color= {brown} />
 						</View>
@@ -121,98 +152,122 @@ class Profile extends Component {
 								{user.name}
 							</Text>
 							<Text style={styles.salaryText}>
-								joined since {formatDate(user.date)}
+								{user.email}
 							</Text>
 						</View>
 					</View>
-					<View style = {{marginTop:20}}>
-						<Text style={styles.nameText}>
-							Demographics
-						</Text>
-						<View style = {styles.demoView}>
-							<Text style={[styles.demoText, {color:'grey'}]}>
-							Monthly Salary / Maximum Budget
+					<ScrollView>
+						<View style = {{marginTop:20}}>
+							<Text style={styles.nameText}>
+								Profile Setting / Action
 							</Text>
-							<Text style={styles.demoText}>
-							${user.salary.toLocaleString()}
-							</Text>
+							<View style = {styles.demoView}>
+								<TouchableOpacity 
+									style = {[styles.smallView,{backgroundColor:lightYellow}]}
+									onPress = {()=> {this.props.navigation.navigate('Change Password')}}
+								>
+									<Text style={[styles.demoText, {color:'grey'}]}>
+										Change Password
+									</Text>
+								</TouchableOpacity>
+								<View style = {[styles.smallView,{backgroundColor:white}]}>
+									<Text style={[styles.demoText, {color:'grey'}]}>
+
+									</Text>
+								</View>
+							</View>
 						</View>
-						<View style = {styles.demoView}>
-							<Text style={[styles.demoText, {color:'grey'}]}>
-							Monthly Budget
+						<View style = {{marginTop:20}}>
+							<Text style={styles.nameText}>
+								Demographics
 							</Text>
-							<Text style={styles.demoText}>
-							${totalBudget().toLocaleString()}
-							</Text>
+							<View style = {styles.demoView}>
+								<TouchableOpacity 
+									style = {styles.smallView}
+									onPress = {() => {this.setState({showEdit:true})}}
+								>
+									
+										<Text style={[styles.demoText, {color:'grey'}]}>
+											Monthly Salary
+										</Text>
+										
+									
+									<View style = {{flexDirection:'row'}}>
+										<Text style={[styles.demoText, {fontSize:20}]}>
+										${user.salary.toLocaleString()}
+										</Text>
+										<View style = {{justifyContent:'center'}}>
+											<MaterialCommunityIcons name="pencil-circle" size={26} color={brown} />
+										</View>
+									</View>
+								</TouchableOpacity>
+								<View style = {styles.smallView}>
+									<Text style={[styles.demoText, {color:'grey'}]}>
+										Expected Saving
+									</Text>
+									<Text style={[styles.demoText, {fontSize:20}]}>
+										${(user.salary-totalBudget()).toLocaleString()}
+									</Text>
+								</View>
+							</View>
+							
 						</View>
-						<View style = {styles.demoView}>
-							<Text style={[styles.demoText, {color:'grey'}]}>
-							Expected Saving
+						<View style = {{marginTop:20}}>
+							<Text style={styles.nameText}>
+								Statistic
 							</Text>
-							<Text style={styles.demoText}>
-							${(user.salary-totalBudget()).toLocaleString()}
-							</Text>
+							<View style = {styles.demoView}>
+								<View style = {styles.smallView}>
+									<Text style={[styles.demoText, {color:'grey'}]}>
+										No. of Active Budgets
+									</Text>
+									<Text style={[styles.demoText, {fontSize:20}]}>
+										{Object.keys(budgetList).length}
+									</Text>
+								</View>
+								<View style = {styles.smallView}>
+									<Text style={[styles.demoText, {color:'grey'}]}>
+										Avg Spent per Transaction
+									</Text>
+									<Text style={[styles.demoText, {fontSize:20}]}>
+										${averageSpending().toLocaleString()}
+									</Text>
+								</View>
+								<View style = {styles.smallView}>
+									<Text style={[styles.demoText, {color:'grey'}]}>
+										Largest Portion of Spending
+									</Text>
+									<Text style={[styles.demoText, {fontSize:20, padding: 0, paddingBottom:5, paddingTop:5}]}>
+										{maxSpending().substring(0,6)}...
+									</Text>
+								</View>
+							</View>
 						</View>
-					</View>
-					<View style = {{marginTop:20}}>
-						<Text style={styles.nameText}>
-							Statistic
-						</Text>
-						<View style = {styles.demoView}>
-							<Text style={[styles.demoText, {color:'grey'}]}>
-							Number of Active Budgets
-							</Text>
-							<Text style={styles.demoText}>
-							{Object.keys(budgetList).length}
-							</Text>
+						
+						
+						<View style= {{alignItems: 'flex-start', justifyContent:'flex-end'}}>
+							<TouchableOpacity
+								style = {{marginLeft: 5,paddingTop:20, borderRadius:10}}
+								onPress = {() => Linking.openURL('mailto:jessiewlhai@gmail.com?subject=Feedback on Budget App') }
+							>
+								<Text 
+								style = {{color: brown}}>
+								Send us Feedback
+								</Text>
+							</TouchableOpacity>
 						</View>
-						<View style = {styles.demoView}>
-							<Text style={[styles.demoText, {color:'grey'}]}>
-							Number of Entries
-							</Text>
-							<Text style={styles.demoText}>
-							{Object.keys(entries).length}
-							</Text>
+						<View style= {{alignItems: 'flex-start', justifyContent:'flex-end'}}>
+							<TouchableOpacity
+								style = {{marginLeft: 5,paddingTop:20, borderRadius:10}}
+								onPress = {() => this.logout()}
+							>
+								<Text 
+								style = {{color: brown}}>
+								Logout
+								</Text>
+							</TouchableOpacity>
 						</View>
-						<View style = {styles.demoView}>
-							<Text style={[styles.demoText, {color:'grey'}]}>
-							Average Spending per Transaction
-							</Text>
-							<Text style={styles.demoText}>
-							${averageSpending().toLocaleString()}
-							</Text>
-						</View>
-						<View style = {styles.demoView}>
-							<Text style={[styles.demoText, {color:'grey'}]}>
-							Largest Portion of Spending
-							</Text>
-							<Text style={styles.demoText}>
-							{maxSpending()}
-							</Text>
-						</View>
-					</View>
-					<View style= {{alignItems: 'flex-start', justifyContent:'flex-end'}}>
-						<TouchableOpacity
-							style = {{marginLeft: 5,paddingTop:30, borderRadius:10}}
-							onPress = {() => Linking.openURL('mailto:jessiewlhai@gmail.com?subject=Feedback on Budget App') }
-						>
-							<Text 
-							style = {{color: brown}}>
-							Send us Feedback
-							</Text>
-						</TouchableOpacity>
-					</View>
-					<View style= {{alignItems: 'flex-start', justifyContent:'flex-end'}}>
-						<TouchableOpacity
-							style = {{marginLeft: 5,paddingTop:30, borderRadius:10}}
-							onPress = {() => this.logout()}
-						>
-							<Text 
-							style = {{color: brown}}>
-							Logout
-							</Text>
-						</TouchableOpacity>
-					</View>
+					</ScrollView>
 				</View>
 			</SafeAreaView>
 		)
@@ -237,6 +292,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor:grey,
         marginTop:60
+    },
+    edit:{
+    	borderRadius:60,
+    	justifyContent: 'flex-end',
+    	alignItems: 'flex-end',
+    	width: '100%',
+    	backgroundColor:white,
+    	borderColor:brown,
     },
     avagarCircle:{
     	borderRadius:60,
@@ -270,9 +333,19 @@ const styles = StyleSheet.create({
         padding: 5,
   	},
   	demoView:{
-  		flexDirection:'row', 
+  		flexDirection:'row',
   		justifyContent:'space-between',
   		marginTop:5,
+  		width:'100%',
+  		alignItems: 'space-between',
+  	},
+  	smallView:{
+  		flex: 1, 
+  		alignItems:'center', 
+  		backgroundColor:grey, 
+  		padding:10,
+  		margin:5,
+  		borderRadius:5,
   	},
   	demoText:{
         color: body,

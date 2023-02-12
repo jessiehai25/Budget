@@ -83,7 +83,17 @@ class Welcome extends Component {
                         setAPIUser(user)
                     } 
                 }).catch((error) => {
-                    alert( error);
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    console.log(errorCode)
+                    console.log(errorMessage)
+                    if (errorCode == 'auth/user-not-found'){
+                    alert('User not found. Please try again.')
+                    }
+                    else{
+                        alert( errorCode);
+                        console.log(errorCode)
+                    } 
                 });
                 get(child(dbRef, `budgets/${authUser.user.uid}`)).then((snapshot) => {
                     if (snapshot.exists()) {
@@ -138,15 +148,33 @@ class Welcome extends Component {
                 }).catch((error) => {
                     alert(error);
                 });
-                
+                setTimeout(() => {
+                    this.props.navigation.navigate('AuthLoad')
+                }, 100);
                 })
 
             .catch((error) => {
-                alert(error.message)
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                if (errorCode == 'auth/user-not-found' || errorCode == 'auth/invalid-email'){
+                    alert('User not found. Please try again.')
+                }
+                else{
+                    if (errorCode == 'auth/wrong-password'){
+                        alert('Wrong Password. Please try again.')
+                    }
+                    else{
+                       alert(errorMessage)
+                    }
+                    
+                }
+                
             })
+            /*
             setTimeout(() => {
             this.props.navigation.navigate('AuthLoad')
             }, 100);
+            */
     }      
 
     chg = () => {

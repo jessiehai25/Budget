@@ -3,6 +3,8 @@ export const SET_USER = 'SET_USER'
 export const ADD_USER_BUDGET = 'SAVE_USER_BUDGET'
 export const EDIT_USER_BUDGET = 'EDIT_USER_BUDGET'
 export const DELETE_USER_BUDGET = 'DELETE_USER_BUDGET'
+export const EDIT_SALARY = 'EDIT_SALARY'
+export const CHANGE_PASSWORD = 'CHANGE_PASSWORD'
 
 export function receiveUser (user) {
 	return {
@@ -38,3 +40,17 @@ export function deleteUserBudget (budget) {
 		budget
 	}
 } 
+
+export function editSalary (salary) {
+	return {
+		type: EDIT_SALARY,
+		salary
+	}
+}
+
+export function changePassword (newPassword){
+	return{
+		type:CHANGE_PASSWORD,
+		newPassword
+	}
+}

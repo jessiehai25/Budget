@@ -1,4 +1,4 @@
-import {RECEIVE_USER, SET_USER, ADD_USER_BUDGET, EDIT_USER_BUDGET, DELETE_USER_BUDGET} from '../actions/user'
+import {RECEIVE_USER, SET_USER, ADD_USER_BUDGET, EDIT_USER_BUDGET, DELETE_USER_BUDGET, EDIT_SALARY, CHANGE_PASSWORD} from '../actions/user'
 
 export default function user (state = null, action){
 	switch(action.type){
@@ -45,6 +45,22 @@ export default function user (state = null, action){
 				...state,
 				budgets: budgets
 			}
+
+		case EDIT_SALARY:
+			const {salary} = action
+			return{
+				...state,
+				salary: salary
+			}
+
+		case CHANGE_PASSWORD:
+			const {newPassword} = action
+			console.log("redux",newPassword)
+			return{
+				...state,
+				password: newPassword
+			}
+
 		default:
 			return state
 	}

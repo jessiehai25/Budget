@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, useEffect} from 'react'
 import {View, ScrollView, Text, TextInput, StyleSheet, Picker, TouchableOpacity, Platform, Alert, KeyboardAvoidingView} from 'react-native'
 import {connect} from 'react-redux'
 import {blue, grey, white, body, brown, darkBrown, button, background} from '../utils/colors'
@@ -11,7 +11,8 @@ import ModalEditEntry from './ModalEditEntry'
 import SwipeRow from './SwipeRow'
 import {handleAddEntry, handleDeleteEntry} from '../actions/entries'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { CommonActions } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
+
 
 class EntryList extends Component {
 	state = {
@@ -21,19 +22,18 @@ class EntryList extends Component {
 		date: Date.now(),
 		markedDate : {},
 		selected: {}
-	}
+
+	};
+
 	componentDidMount(){
 		const {entries} = this.props
 		const {date} = this.state
 		var t = new Date(date)
+
+	    console.log("setParamsEnd1")
 		const formatted = convertDate(t)
 		const selectedDate = {[formatted]: {selected: true, selectedColor: brown, marked: true, dotColor: body}}
 		var markedDate = {}
-		console.log("setParams")
-		this.props.navigation.setParams({
-	      scrollToTop: this.scrollToTop,
-	    });
-	    console.log("setParamsEnd")
 		Object.keys(entries).map((entry)=> {
 			var entryDate = convertDate(new Date(entries[entry].timestamp))
 			
@@ -52,6 +52,7 @@ class EntryList extends Component {
 			selected: {[formatted] : {selected: true, selectedColor: brown}}
 		}))
 	}
+
 	scrollToTop = ()=>{
 		console.log("Press")
       this.setState(()=> ({
@@ -157,7 +158,13 @@ class EntryList extends Component {
 	  	}))
 	)}
 
-	render(){
+	render(){ 
+		console.log('render',this.props.navigation.getState().routes[1].params== undefined)
+		if (this.props.navigation.getState().routes[1].params== undefined){
+			this.props.navigation.setParams({
+		      scrollToTop: this.scrollToTop,
+		    });
+		}
 		const {user, entries, budgetList} = this.props
 		const {date, markedDate, selected} = this.state
 		const sDate = Object.keys(selected)

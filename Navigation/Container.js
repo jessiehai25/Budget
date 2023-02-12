@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, Animated, Text, View, StatusBar, Platform , Dimensions, TouchableOpacity} from 'react-native';
-import {NavigationContainer, useRoute, useNavigationState} from '@react-navigation/native'
+import {NavigationContainer, useRoute, useNavigationState, CommonActions} from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {FontAwesome, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons'
 import Welcome from '../Components/Welcome'
 import EntryList from '../Components/EntryList'
@@ -10,8 +11,9 @@ import EditBudget from '../Components/EditBudget'
 import Dashboard from '../Components/Dashboard'
 import Loading from '../Components/Loading'
 import Profile from '../Components/Profile'
+import ChgPassword from '../Components/ChgPassword'
 import {blue, grey, white, body, brown} from '../utils/colors'
-
+/*
 const RouteConfigs = {
   Summary:{
     screen: Dashboard,
@@ -83,8 +85,8 @@ const RouteConfigs = {
     }
   },
 }
-
-
+*/
+/*  
 const TabNavigatorConfig = {
   screenOptions:{
     headerShown: false,
@@ -106,6 +108,7 @@ const TabNavigatorConfig = {
     }
   }
 };
+*/
 /*
 const Tabs = createBottomTabNavigator(RouteConfigs, TabNavigatorConfig);
 
@@ -116,35 +119,58 @@ Tabs.navigationOptions = ({navigation}) => {
   }
 }
 */
+
+const ProfileStack = createNativeStackNavigator();
+
+function ProfileStackScreen() {
+  return(
+    <ProfileStack.Navigator
+      screenOptions={{
+        headerShown: false
+    }}
+  >
+      <ProfileStack.Screen name = "Profile" component = {Profile} />
+      <ProfileStack.Screen name = "Change Password" component = {ChgPassword}       screenOptions={{
+        headerShown: true
+    }}/>
+    </ProfileStack.Navigator>
+
+    )
+}
+
 const Tab = createBottomTabNavigator();
 function MyTabs() {
-const route = useRoute();
-console.log(route);
+  const route = useRoute();
+  const routes = useNavigationState(state => state.routes)
+  /*
+  const currentRoute = typeof routes[routes.length -1].state == 'undefined'? "Summary" : routes[routes.length -1].state.routeNames[routes[routes.length -1].state.index]
+  console.log('currentRoute: ',currentRoute)
+  */
 
-  return (
-    <Tab.Navigator
-      initialRouteName="Summary"
+    return (
+      <Tab.Navigator
+        initialRouteName="Summary"
 
-      screenOptions={{
-        headerShown: false,
-        
-        tabBarActiveTintColor: brown,
-        showLabel: false,
-        style: {
-          shadowColor: '#7F5DF0',
-          shadowOffset:{
-          width:0,
-          height:10,
-          },
-          fontSize:12,
-          shadowOpacity:0.25,
-          shadowRadius:3.5,
-          elevation:5,
-          borderRadius:15,
-          backgroundColor: '#fff',
-        }
-      }}
-    >
+        screenOptions={{
+          headerShown: false,
+          
+          tabBarActiveTintColor: brown,
+          showLabel: false,
+          style: {
+            shadowColor: '#7F5DF0',
+            shadowOffset:{
+            width:0,
+            height:10,
+            },
+            fontSize:12,
+            shadowOpacity:0.25,
+            shadowRadius:3.5,
+            elevation:5,
+            borderRadius:15,
+            backgroundColor: '#fff',
+          }
+        }}
+      >
       <Tab.Screen
         name="Summary"
         component={Dashboard}
@@ -171,16 +197,16 @@ console.log(route);
           //     }
           //   },
           // })
-          tabPress: (e) => {
+            tabPress: (e) => {
       // Prevent default action
 
       // Do something with the `navigation` object
 
-      if (navigation.isFocused() && route.params && route.params.scrollToTop) {
-          route.params.scrollToTop();
-      }
-    },
-  })}
+              if (navigation.isFocused() && route.params && route.params.scrollToTop) {
+                  route.params.scrollToTop();
+              }
+            },
+          })}
         
         options={{
           tabBarIcon: ({ focused }) => 
@@ -213,7 +239,7 @@ console.log(route);
       />
       <Tab.Screen
         name="Profile"
-        component={Profile}
+        component={ProfileStackScreen}
         options={{
           tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name='sack' size = {25} color={color} />

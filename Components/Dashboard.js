@@ -531,8 +531,7 @@ function mapStateToProps({user, budgets=[], entries}){
     user,
     budgets,
     entries,
-    budgetList: user.budgets
-        .sort((a,b)=>budgets[b].name.toLowerCase() < budgets[a].name.toLowerCase())
+    budgetList: user.budgets.length == 0 ? [] : user.budgets.sort((a,b)=>budgets[b].name.toLowerCase() < budgets[a].name.toLowerCase())
   }
 }
 

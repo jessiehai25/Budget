@@ -14,7 +14,7 @@ export default function Legend({budgetAmountList}){
 				return(
 					<View key = {bud.x} style = {{flexDirection: 'row', alignItems:'center'}}>
 						<Text style = {styles.text}></Text>
-						<Octicons name="primitive-dot" size={24} color={bud.color} />
+						<Octicons name="dot-fill" size={24} color={bud.color} />
 						<Text style = {styles.text}>  {bud.x}   </Text>
 					</View>
 				)

@@ -14,7 +14,6 @@ class Loading extends Component {
 		const {dispatch, user} = this.props
 		/*setTimeout(() => {*/
 		dispatch(handleInitialData())
-	
 		.then(()=>{
 			this.setState(()=> ({loading:false}))
 		})
@@ -32,6 +31,7 @@ class Loading extends Component {
     }
 
   render() {
+  	console.log("LOADING")
   	return(
 	        <SafeAreaView style={{flex:1, justifyContent:'center', alignItems:'center'}}>
 	        	<Image

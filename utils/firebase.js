@@ -1,8 +1,9 @@
 import {firebaseConfig} from './DATA'
 import firebase from "firebase/app";
 import { initializeApp } from 'firebase/app';
-import { getAuth } from "firebase/auth";
+import { getAuth, updatePassword,reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
 import { getDatabase, ref, onValue, set, get, child } from 'firebase/database';
+import {Alert} from 'react-native'
 
 initializeApp(firebaseConfig);
 const db = getDatabase();
@@ -21,7 +22,7 @@ export function updateUser(user){
     console.log("user saved successfully")
   })
   .catch((error) => {
-    Alert(error)
+    alert(error)
   });
 }
 
@@ -32,7 +33,7 @@ export function updateBudget(budget, uid){
     console.log("budget saved successfully")
   })
   .catch((error) => {
-    Alert(error)
+    alert(error)
   });
 }
 
@@ -42,7 +43,7 @@ export function updateWholeBudget(budget, uid){
     console.log("budget saved successfully")
   })
   .catch((error) => {
-    Alert(error)
+    alert(error)
   });
 }
 
@@ -52,6 +53,33 @@ export function updateWholeEntries(entries, uid){
     console.log("entries saved successfully")
   })
   .catch((error) => {
-    Alert(error)
+    alert(error)
   });
 }
+
+
+export function chgPassword(email, currentPassword,newPassword){
+  let credential = EmailAuthProvider.credential(
+    auth.currentUser.email,
+    currentPassword
+  );
+  console.log('chgPassword',currentPassword,newPassword)
+  reauthenticateWithCredential(auth.currentUser, credential)
+  .then(result => {
+    console.log('back here', result)
+    updatePassword(result.user, newPassword).then(() => {
+    console.log("password changed successfully")
+    Alert.alert("Password","Password has been changed.")
+    return result
+  }).catch((error) => {
+    alert(error)
+    return error
+  });
+})
+.catch((error)=>{
+  alert(error)
+  return error
+})
+}
+
+

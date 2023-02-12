@@ -134,6 +134,21 @@ export function removeUserBudget (budget) {
   )
 }
 
+export function updateSalary (salary) {
+  return AsyncStorage.getItem(USER_KEY)
+  .then(results => {
+    const user = JSON.parse(results)
+    const newUser = {
+      ...user, 
+      salary:salary
+    }
+    console.log(salary, newUser)
+    updateUser(newUser)
+    AsyncStorage.setItem(USER_KEY, JSON.stringify(newUser))
+    }
+  )
+}
+
 /***************BUDGET***************/
 
 export function saveBudget (name, budget, date, rollOver, entries = []){
