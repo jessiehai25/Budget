@@ -9,6 +9,11 @@ An application used to set your budget and mark your expense, built with React, 
 ## Project Status
 
 
+
+#### Version 1.2.0
+
+ - Add 'Change Password' and 'Change Salary' function, update the presentation of 'Profile'
+
 #### Version 1.2.0
 
  - Dismiss keyboard in budget adding and entry adding screen
