@@ -363,11 +363,15 @@ const styles = StyleSheet.create({
   		padding:10,
   		margin:5,
   		borderRadius:5,
+  		height:'100%',
+  		
   	},
   	demoText:{
+  		alignItems:'center',
         color: body,
         fontSize: 13,
-        padding: 5,
+        paddingTop: 5,
+        paddingBottom: 5,
   	},
 })
 

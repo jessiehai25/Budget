@@ -181,7 +181,7 @@ class Dashboard extends Component {
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
 		const {name, salary} = this.props.user
-    console.log('dashboard', this.props.user, budgetList, this.props.user.budgets)
+    console.log('dashboard')
     const config = {
       velocityThreshold: 0.6,
       directionalOffsetThreshold: 80
@@ -527,7 +527,6 @@ const styles = StyleSheet.create({
 })
 
 function mapStateToProps({user, budgets, entries}){
-  console.log("MAPPPP", user, budgets)
   return{
     user,
     budgets,

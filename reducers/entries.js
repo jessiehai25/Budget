@@ -9,7 +9,6 @@ export default function entries (state = {}, action) {
 				
 			}
 		case ADD_ENTRY:
-			console.log(action.entry)
 			return {
 				...state,
 				[action.entry.id]: action.entry
@@ -17,7 +16,6 @@ export default function entries (state = {}, action) {
 			}
 		
 		case DELETE_ENTRY:
-			console.log("delete_entry", action)
 			const newState = Object.keys(state).reduce((object, key) => {
 					if (key !== action.id){
 						object[key] = state[key]

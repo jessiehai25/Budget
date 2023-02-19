@@ -13,7 +13,6 @@ export default function user (state = null, action){
 			}
 		case ADD_USER_BUDGET:
 			const name = action.name
-			console.log("ADD REDUX", name)
 			return {
 
 				...state,
@@ -38,8 +37,6 @@ export default function user (state = null, action){
 		case DELETE_USER_BUDGET:
 			const {budget} = action
 			const budgets = state.budgets.filter(bud => bud !== budget)
-			console.log("redux", budgets)
-			console.log(state)
 			return{
 				...state,
 				budgets: budgets
@@ -54,7 +51,7 @@ export default function user (state = null, action){
 
 		case CHANGE_PASSWORD:
 			const {newPassword} = action
-			console.log("redux",newPassword)
+			console.log("redux change pw", newPassword)
 			return{
 				...state,
 				password: newPassword

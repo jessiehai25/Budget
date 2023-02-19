@@ -5,7 +5,7 @@ import {blue, grey, white, body, brown, darkBrown, button, background, lightYell
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign } from '@expo/vector-icons';
 import {changePassword} from '../actions/user'
-import {chgPassword} from '../utils/firebase'
+import {updatePassword_api} from '../utils/api'
 
 class ChgPassword extends Component {
 	state = {
@@ -65,8 +65,14 @@ class ChgPassword extends Component {
         	}))
     	}
     	else {
+    		const newUser = {
+    			...user,
+    			password: newPassword
+    		}
+    		console.log(newUser)
     		dispatch(changePassword(newPassword))
-    		chgPassword(user.email,currentPassword,newPassword)
+    		updatePassword_api(user.email,currentPassword,newPassword)
+    		
     		this.props.navigation.navigate('Profile')
     		
     	}
@@ -204,6 +210,7 @@ const styles = StyleSheet.create({
 })
 
 function mapStateToProps({user}){
+	console.log(user)
   return{
     user
   }

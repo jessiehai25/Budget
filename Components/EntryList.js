@@ -199,16 +199,16 @@ class EntryList extends Component {
 					transparent = {true}
 					onBackdropPress = {() => {this.setState({showAdd:false})}}
 				>
-				<KeyboardAvoidingView
-		            behavior="position"
-		            enabled
-		        >
-					<ModalAddEntry
-						date = {date} 
-						budgetList = {budgetList} 
-						add = {this.add}
-					/>
-				</KeyboardAvoidingView>
+					<KeyboardAvoidingView
+			            behavior="position"
+			            enabled
+			        >
+						<ModalAddEntry
+							date = {date} 
+							budgetList = {budgetList} 
+							add = {this.add}
+						/>
+					</KeyboardAvoidingView>
 				</Modal>
 
 				<Modal 

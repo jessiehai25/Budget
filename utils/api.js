@@ -7,7 +7,7 @@ import {
   entries,
 } from './DATA'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {updateUser, updateBudget, updateWholeBudget, updateWholeEntries} from './firebase'
+import {updateUser, updateBudget, updateWholeBudget, updateWholeEntries, chgPassword} from './firebase'
 
 
 function generateUID () {
@@ -144,6 +144,23 @@ export function updateSalary (salary) {
     }
     console.log(salary, newUser)
     updateUser(newUser)
+    AsyncStorage.setItem(USER_KEY, JSON.stringify(newUser))
+    }
+  )
+}
+
+export function updatePassword_api (email, currentPassword,newPassword) {
+  console.log("API")
+  return AsyncStorage.getItem(USER_KEY)
+  .then(results => {
+    const user = JSON.parse(results)
+    const newUser = {
+      ...user, 
+      password:newPassword
+    }
+    console.log("newPassword_api", newUser)
+    updateUser(newUser)
+    chgPassword(email, currentPassword,newPassword)
     AsyncStorage.setItem(USER_KEY, JSON.stringify(newUser))
     }
   )

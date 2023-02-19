@@ -35,7 +35,6 @@ class Welcome extends Component {
             console.log(name, email)
             createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                console.log("1. signup usercredential", user)
                 user.uid = userCredential.user.uid
                 dispatch(setUser(user))
                 setAPIUser(user)
@@ -72,60 +71,47 @@ class Welcome extends Component {
             get(child(dbRef, `budgets/${authUser.user.uid}`)).then((snapshot) => {
                 if (snapshot.exists()) {
                     const APIbudgets = snapshot.val() 
-                    console.log ("5.9",APIbudgets)
                     let budgets = {}
                     Object.keys(APIbudgets).map((bud)=>{
-                        console.log("6. Welcome's budget",bud, APIbudgets[bud], APIbudgets[bud].entries)
                         if (APIbudgets[bud].entries !== undefined) {
-                            console.log("6.1 entries not undefined")
                             budgets = {
                                 ...budgets,
                                 [bud]: APIbudgets[bud]
                             }
-                            console.log("6.2", budgets)
                         }
                         else{
-                            console.log("6NA entries undefined", APIbudgets[bud])
                             const addEnt = {
                                 ...APIbudgets[bud],
                                 entries: []
                             }
-                            console.log("6.3", addEnt)
                             budgets = {
                                 ...budgets,
                                 [bud]: addEnt
                             }
                         }
                     })
-                    console.log("7. welcome budget end",budgets)
                     setAPIBudget(budgets)
                     dispatch(receiveBudgets(budgets))
                     
                 }
                 else{
                     const budgets = {}
-                    console.log("0.B")
                     dispatch(receiveBudgets(budgets))
                     setAPIBudget(budgets)
                 }
                 get(child(dbRef, `entries/${authUser.user.uid}`)).then((snapshot) => {
-                    console.log("entries exist checking")
                     if (snapshot.exists()) {
-                        console.log("8 enr")
                         const entries = snapshot.val()
-                        console.log("E1,", entries)
                         setAPIEntries(entries) 
                         dispatch(receiveEntries(entries))
                            
                     }
                     else{
                         const entries = {}
-                        console.log("E2, ", entries)
                         dispatch(receiveEntries(entries))
                          
                         setAPIEntries(entries)
                     }
-                    console.log("4. ONsignIn user", authUser)
                     get(child(dbRef, `users/${authUser.user.uid}`)).then((snapshot) => {
                         let list = ["budgets"]
                         if (snapshot.exists()) {
@@ -173,7 +159,6 @@ class Welcome extends Component {
 
 
     render() {
-        console.log("Welcome", this.state.login)
         const {name, salaryM, email, password, yearEnd, login} = this.state
             return (
                 <KeyboardAvoidingView behavior = {Platform.OS == "ios" ? "padding" : "height"}  enabled = "true" style = {styles.container}>

@@ -117,6 +117,15 @@ const styles = StyleSheet.create({
         fontSize: 15,
         marginLeft: 15,
     },
+    inputS:{
+        color: body,
+        fontSize: 15,
+        borderBottomColor: grey,
+        borderBottomWidth: 0.2,
+        marginLeft: 10,
+        marginRight: 10,
+        width: '90%',
+  },
 })
 
 
