@@ -43,7 +43,7 @@
     "react-redux": "^7.1.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
-    "victory-native": "^35.3.3",
+    "victory-native": "^36.6.8",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
