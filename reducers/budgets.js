@@ -4,6 +4,7 @@ import {RECEIVE_BUDGETS, ADD_BUDGET, DELETE_BUDGET, EDIT_BUDGET, ADD_ENTRY_TO_BU
 export default function budgets (state = {}, action) {
 	switch(action.type){
 		case RECEIVE_BUDGETS :
+			console.log("9. redux", action.budgets)
 			return {
 				...action.budgets
 			}

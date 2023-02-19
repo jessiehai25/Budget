@@ -29,8 +29,6 @@ class EntryList extends Component {
 		const {entries} = this.props
 		const {date} = this.state
 		var t = new Date(date)
-
-	    console.log("setParamsEnd1")
 		const formatted = convertDate(t)
 		const selectedDate = {[formatted]: {selected: true, selectedColor: brown, marked: true, dotColor: body}}
 		var markedDate = {}
@@ -52,6 +50,13 @@ class EntryList extends Component {
 			selected: {[formatted] : {selected: true, selectedColor: brown}}
 		}))
 	}
+	componentDidUpdate(){
+		if (this.props.navigation.getState().routes[1].params== undefined){
+			this.props.navigation.setParams({
+		      scrollToTop: this.scrollToTop,
+		    });
+		}
+	}
 
 	scrollToTop = ()=>{
 		console.log("Press")
@@ -64,7 +69,7 @@ class EntryList extends Component {
         var entryDate = convertDate(new Date(entry.timestamp))
 		const {dispatch} = this.props
         dispatch(handleAddEntry(entry))
-        console.log(entry)
+        console.log("ENtryList add function",entry)
         this.setState(()=> ({
         	showAdd: false,
         	markedDate: {
@@ -81,6 +86,7 @@ class EntryList extends Component {
     	const {dispatch} = this.props
     	const {entries} = this.props
     	const showCategory = entries[showId].category
+    	console.log("edit function", category)
     	const entry = {
     		title, 
     		category, 
@@ -91,7 +97,7 @@ class EntryList extends Component {
 		dispatch(handleAddEntry({title, category, price, timestamp}))
 		}, 100);
 		
-		dispatch(handleDeleteEntry(id = showId, category = showCategory))
+		dispatch(handleDeleteEntry(id = showId, showCategory))
 		
     	this.setState(()=> ({
         	showEdit: false,
@@ -159,16 +165,9 @@ class EntryList extends Component {
 	)}
 
 	render(){ 
-		console.log('render',this.props.navigation.getState().routes[1].params== undefined)
-		if (this.props.navigation.getState().routes[1].params== undefined){
-			this.props.navigation.setParams({
-		      scrollToTop: this.scrollToTop,
-		    });
-		}
 		const {user, entries, budgetList} = this.props
 		const {date, markedDate, selected} = this.state
 		const sDate = Object.keys(selected)
-
 		return(
 			<SafeAreaView style = {styles.container}>
 				<View style = {{width:'100%'}}>

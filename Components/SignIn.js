@@ -12,17 +12,21 @@ class Welcome extends Component {
     state = {
         email: '',
         password: '',
+        disabled: false,
     }
 
 	render() {
-        const {email, password} = this.state
-        const {next, chg} = this.props
+        const {email, password, disabled} = this.state
+        const {next, chg, err} = this.props
         	return (
                 <View style = {styles.secondContainer}>
                     <View style = {styles.inputContainer}>
                         <Ionicons name="at-circle-outline" size={24} color="#a9a9a9" />
                         <TextInput
-                            onChangeText = {(email) => this.setState(() => ({email: email}))}
+                            onChangeText = {(email) => this.setState(() => ({
+                                email: email,
+                                disabled: false
+                            }))}
                             placeholder = 'Email'
                             autoCapitalize = "none"
                             value = {email}
@@ -33,7 +37,10 @@ class Welcome extends Component {
                     <View style = {styles.inputContainer}>
                         <Ionicons name="md-lock-closed" size={24} color="#a9a9a9" />
                         <TextInput
-                            onChangeText = {(password) => this.setState(() => ({password: password}))}
+                            onChangeText = {(password) => this.setState(() => ({
+                                password: password,
+                                disabled: false
+                            }))}
                             placeholder = 'Please enter your password'
                             secureTextEntry = {true}
                             value = {password}
@@ -44,9 +51,12 @@ class Welcome extends Component {
 
                     <View style = {styles.thirdContainer}>
                         <TouchableOpacity
-                            onPress = {() => next({email, password})}
+                            onPressIn = {() => {
+                                this.setState({disabled:true})
+                                next({email, password})
+                            }}
                         >
-                            <View style = {{backgroundColor: brown, padding:9, borderRadius: 7,alignItems:'center',justifyContent: 'center'}}>
+                            <View style = {{backgroundColor: brown, opacity: disabled ? 0.2 : 1, padding:9, borderRadius: 7,alignItems:'center',justifyContent: 'center'}}>
                             <Text style = {[styles.textBeforeInput, {color: white, fontWeight: 'bold'}]}>
                                 Login
                             </Text>
@@ -60,7 +70,10 @@ class Welcome extends Component {
                                 New to Budget?
                             </Text>
                             <TouchableOpacity
-                                onPress = {() => chg()}
+                                onPress = {() => {
+                                    
+                                    chg()}
+                                }
                             >
                                 <Text style = {[styles.textBeforeInput, {color: brown, fontWeight: 'bold'}]}>
                                     Sign Up

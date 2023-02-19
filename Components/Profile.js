@@ -51,11 +51,13 @@ class Profile extends Component {
 				            setAPIBudget(budgets)
 				            dispatch(receiveEntries(entries))
 				            setAPIEntries(entries)
-							console.log('logout successful')
-							this.props.navigation.navigate('AuthLoad')
+							console.log('logout successful', this.props.navigation)
+							
 						}).catch((error) => {
 							alert(error)
 						})
+
+						this.props.navigation.navigate('AuthLoad')
                     }
                 },
             ]
@@ -160,21 +162,36 @@ class Profile extends Component {
 						<View style = {{marginTop:20}}>
 							<Text style={styles.nameText}>
 								Profile Setting / Action
+
+											<MaterialCommunityIcons name="pencil-circle" size={26} color={brown} />
+									
 							</Text>
+
 							<View style = {styles.demoView}>
 								<TouchableOpacity 
-									style = {[styles.smallView,{backgroundColor:lightYellow}]}
+									style = {styles.smallView}
 									onPress = {()=> {this.props.navigation.navigate('Change Password')}}
 								>
 									<Text style={[styles.demoText, {color:'grey'}]}>
 										Change Password
 									</Text>
+
 								</TouchableOpacity>
-								<View style = {[styles.smallView,{backgroundColor:white}]}>
-									<Text style={[styles.demoText, {color:'grey'}]}>
+								<View style = {[styles.smallView,{backgroundColor:'transparent'}]}>
+									<Text>
 
 									</Text>
 								</View>
+								{/*
+								<TouchableOpacity 
+									style = {[styles.smallView,{backgroundColor:lightYellow}]}
+									onPress = {()=> {this.props.navigation.navigate('Change Password')}}
+								>
+									<Text style={[styles.demoText, {color:'grey'}]}>
+										Get a Premium Plan
+									</Text>
+								</TouchableOpacity>
+							*/}
 							</View>
 						</View>
 						<View style = {{marginTop:20}}>
@@ -237,8 +254,8 @@ class Profile extends Component {
 									<Text style={[styles.demoText, {color:'grey'}]}>
 										Largest Portion of Spending
 									</Text>
-									<Text style={[styles.demoText, {fontSize:20, padding: 0, paddingBottom:5, paddingTop:5}]}>
-										{maxSpending().substring(0,6)}...
+									<Text numberOfLines={1} style={[styles.demoText, {fontSize:20, padding: 0, paddingBottom:5, paddingTop:5}]}>
+										{maxSpending()}
 									</Text>
 								</View>
 							</View>
@@ -359,8 +376,8 @@ function mapStateToProps({user, budgets, entries}){
     user,
     budgets,
     entries,
-    budgetList: user.budgets
-        .sort((a,b)=>budgets[b].name.toLowerCase() < budgets[a].name.toLowerCase())
+    budgetList: Object.keys(budgets).length === 0 ? [] : user.budgets.sort((a,b)=>budgets[b].name.toLowerCase() < budgets[a].name.toLowerCase())
+  
   }
 }
 

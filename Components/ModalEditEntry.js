@@ -42,7 +42,7 @@ class ModalEditEntry extends Component{
     	}
     	else{
     		edit({showId, title, category, price, timestamp})
-	    	console.log("MODAL Edit ENTRY")
+	    	console.log("MODAL Edit ENTRY",showId, title, category, price, timestamp)
 	    	this.setState(()=>({
 	    		id: '',
 				title: '',
@@ -55,7 +55,6 @@ class ModalEditEntry extends Component{
 	render(){
 		const {title, category, price, timestamp} = this.state
 		const {budgetList} = this.props
-        console.log(price, isNaN(price.toString()))
 		return(
 			<View style = {styles.container}>
 				<View style = {styles.inputContainer}>

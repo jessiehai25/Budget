@@ -27,6 +27,7 @@ export function deleteEntry (id) {
 
 export function handleAddEntry ({title, category, price, timestamp}){
 	return (dispatch, getState) => {
+		console.log("handleAddEntry",category)
 		return saveEntry({
 			title,
 			category,
@@ -43,7 +44,7 @@ export function handleAddEntry ({title, category, price, timestamp}){
 
 export function handleDeleteEntry (id, category){
 	return (dispatch, getState) => {
-		console.log('redux remove', id)
+		//console.log('redux remove', id)
 		return removeEntry(id)
 		.then((entry, budgets) => {
 			dispatch(deleteEntryToBudget(id, category))

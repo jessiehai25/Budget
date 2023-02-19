@@ -10,28 +10,40 @@ class Loading extends Component {
 		loading: true
 	}
 	componentDidMount(){
-		console.log("LOading page", this.props.user)
+		console.log("1.m. LOading mount", this.props.user, this.props.budgets)
 		const {dispatch, user} = this.props
 		/*setTimeout(() => {*/
+			
 		dispatch(handleInitialData())
+
 		.then(()=>{
+			console.log("3.m. Loading's componentDidMount")
+			
 			this.setState(()=> ({loading:false}))
-		})
+			
+			
+		}) 
+		
 	/*},2000)*/
 	}
-    componentDidUpdate(){
-	    if (this.state.loading === false){
-	    	if (this.props.user.name === null) {
-    			this.props.navigation.navigate('Landing')
-	    	}
-	    	else{
-	    		this.props.navigation.navigate('Main')
-	    	}
-	    }	    
-    }
 
   render() {
-  	console.log("LOADING")
+  	console.log("update", this.state.loading, this.props.user)
+	    if (this.state.loading === false){
+			if (this.props.user.name === null ) {
+				console.log("Welcome component")
+				setTimeout(() => {
+					this.props.navigation.navigate('Landing') //Welcome
+				},1000)
+			}
+			else{
+				console.log("Tab", this.props.navigation)
+				setTimeout(() => {
+					this.props.navigation.navigate('Main') //MyTabs
+				},2000)
+			}
+	    }  
+  	console.log("11. LOading user", this.props.user, this.props.budgets, this.props.entries)
   	return(
 	        <SafeAreaView style={{flex:1, justifyContent:'center', alignItems:'center'}}>
 	        	<Image
@@ -43,9 +55,11 @@ class Loading extends Component {
   }
 }
 
-function mapStateToProps({user}){
+function mapStateToProps({user, budgets=[], entries}){
 	return{
 	    user,
+	    budgets,
+	    entries
 	}
 }
 

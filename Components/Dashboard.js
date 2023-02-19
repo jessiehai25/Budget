@@ -181,7 +181,7 @@ class Dashboard extends Component {
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
 		const {name, salary} = this.props.user
-    console.log('gestureName', gestureName)
+    console.log('dashboard', this.props.user, budgetList, this.props.user.budgets)
     const config = {
       velocityThreshold: 0.6,
       directionalOffsetThreshold: 80
@@ -295,12 +295,12 @@ class Dashboard extends Component {
             transparent = {true}
             onBackdropPress = {() => {this.setState({showAdd:false})}}
           >
-          <KeyboardAvoidingView behavior = {Platform.OS == "ios" ? "padding" : "height"}  enabled = "true" style = {styles.container}>
-            <AddBudget
-                add = {this.add}
-                budgetList = {budgetList}
-            />
-          </KeyboardAvoidingView>
+            <KeyboardAvoidingView behavior = {Platform.OS == "ios" ? "padding" : "height"}  enabled = "true">
+              <AddBudget
+                  add = {this.add}
+                  budgetList = {budgetList}
+              />
+            </KeyboardAvoidingView>
            </Modal>
           <TouchableOpacity
              onPress = {() => {this.setState({showAdd:true})}}
@@ -526,12 +526,13 @@ const styles = StyleSheet.create({
   	},
 })
 
-function mapStateToProps({user, budgets=[], entries}){
+function mapStateToProps({user, budgets, entries}){
+  console.log("MAPPPP", user, budgets)
   return{
     user,
     budgets,
     entries,
-    budgetList: user.budgets.length == 0 ? [] : user.budgets.sort((a,b)=>budgets[b].name.toLowerCase() < budgets[a].name.toLowerCase())
+    budgetList:user.budgets === [] ? [] : user.budgets.sort((a,b)=>budgets[b].name.toLowerCase() < budgets[a].name.toLowerCase())
   }
 }
 

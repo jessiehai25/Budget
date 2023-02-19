@@ -7,6 +7,7 @@ export function handleInitialData () {
 	return (dispatch) => {
 		return getInitialData()
 			.then(({user,entries, budgets})=>{
+				console.log("2", budgets)
 				dispatch(receiveBudgets(budgets))
 				dispatch(receiveUser(user))
 				dispatch(receiveEntries(entries))

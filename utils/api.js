@@ -26,14 +26,14 @@ function formatEntry ({ timestamp, title, category, price }) {
 
 /***************SET INITIAL***************/
 export function setAPIUser (user){
-  console.log("API", user)
+  console.log("5.API", user)
   return AsyncStorage.setItem(USER_KEY, JSON.stringify({
     ...user
   }))
 }
 
 export function setAPIBudget (budgets){
-  console.log("API", budgets)
+  console.log("8. API", budgets)
   return AsyncStorage.setItem(BUDGETS_KEY, JSON.stringify({
     ...budgets
   }))
@@ -212,6 +212,7 @@ export function modifyBudget (name, budget, originalName){
 /***************ENTRY***************/
 
 export function saveEntry (entry) {
+  console.log("API", entry)
   return Promise.all([
       AsyncStorage.getItem(ENTRIES_KEY),
       AsyncStorage.getItem(BUDGETS_KEY)
@@ -231,7 +232,6 @@ export function saveEntry (entry) {
           entries: budgetsDataJ[authedBudget].entries.concat([formattedEntry.id])
         }
       }
-      console.log("ADD CHECK", entries)
       getUser()
       .then((results)=> {
         const uid = results.uid
@@ -250,7 +250,7 @@ export function saveEntry (entry) {
 }
 
 export function removeEntry (entry) {
-  console.log("API0", entry)
+  console.log("API_remove", entry)
   return Promise.all([
       AsyncStorage.getItem(ENTRIES_KEY),
       AsyncStorage.getItem(BUDGETS_KEY)
@@ -258,7 +258,7 @@ export function removeEntry (entry) {
       const entriesDataJ = JSON.parse(result[0])
       const budgetsDataJ = JSON.parse(result[1])
       const authedBudget = entriesDataJ[entry].category
-      console.log('chk b4 remove', entriesDataJ, budgetsDataJ)
+      //console.log('chk b4 remove', entriesDataJ, budgetsDataJ)
       const entries = Object.keys(entriesDataJ).reduce((object, key) => {
         if (key !== entry){
           object[key] = entriesDataJ[key]
@@ -272,7 +272,7 @@ export function removeEntry (entry) {
           entries: budgetsDataJ[authedBudget].entries.filter(ent => ent !== entry)
         }
       }
-      console.log("removeEntry", entries)
+      //console.log("removeEntry", entries)
       getUser()
       .then((results)=> {
         const uid = results.uid

@@ -19,7 +19,7 @@ class Welcome extends Component {
     state = {
         login: false,
         budgetExist: false,
-        gestureName: '',
+        gestureName: ''
     }
 
     onSignUp = ({name, salaryM, email, password}) => {
@@ -35,7 +35,6 @@ class Welcome extends Component {
             console.log(name, email)
             createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                console.log("1. signup usercredential", user)
                 user.uid = userCredential.user.uid
                 dispatch(setUser(user))
                 setAPIUser(user)
@@ -67,101 +66,119 @@ class Welcome extends Component {
         const {dispatch, user} = this.props
         
         signInWithEmailAndPassword(auth, email, password)
-        .then((authUser) => {
-            /***https://firebase.google.com/docs/database/web/read-and-write?hl=en***/
-            get(child(dbRef, `budgets/${authUser.user.uid}`)).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const APIbudgets = snapshot.val() 
-                    console.log ("5.9",APIbudgets)
-                    let budgets = {}
-                    Object.keys(APIbudgets).map((bud)=>{
-                        console.log("6. Welcome's budget",bud, APIbudgets[bud], APIbudgets[bud].entries)
-                        if (APIbudgets[bud].entries !== undefined) {
-                            console.log("6.1 entries not undefined")
-                            budgets = {
-                                ...budgets,
-                                [bud]: APIbudgets[bud]
-                            }
-                            console.log("6.2", budgets)
-                        }
-                        else{
-                            console.log("6NA entries undefined", APIbudgets[bud])
-                            const addEnt = {
-                                ...APIbudgets[bud],
-                                entries: []
-                            }
-                            console.log("6.3", addEnt)
-                            budgets = {
-                                ...budgets,
-                                [bud]: addEnt
-                            }
-                        }
-                    })
-                    console.log("7. welcome budget end",budgets)
-                    setAPIBudget(budgets)
-                    dispatch(receiveBudgets(budgets))
-                    
-                }
-                else{
-                    const budgets = {}
-                    console.log("0.B")
-                    dispatch(receiveBudgets(budgets))
-                    setAPIBudget(budgets)
-                }
-                get(child(dbRef, `entries/${authUser.user.uid}`)).then((snapshot) => {
-                    console.log("entries exist checking")
+            .then((authUser) => {
+                /***https://firebase.google.com/docs/database/web/read-and-write?hl=en***/
+                console.log("4. ONsignIn user", authUser)
+                get(child(dbRef, `users/${authUser.user.uid}`)).then((snapshot) => {
+                    let list = ["budgets"]
                     if (snapshot.exists()) {
-                        console.log("8 enr")
+                        let user = snapshot.val(); 
+                        let budgetExist = Object.keys(user).filter((key)=>{
+                            return list.includes(key)
+                        })
+                        budgetExist.length>0
+                            ? console.log("4.1 has budget", user, user.budgets)
+                            : user.budgets = []
+                        dispatch(setUser(user))
+                        setAPIUser(user)
+                    } 
+                }).catch((error) => {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    console.log(errorCode)
+                    console.log(errorMessage)
+                    if (errorCode == 'auth/user-not-found'){
+                    alert('User not found. Please try again.')
+                    }
+                    else{
+                        alert( errorCode);
+                        console.log(errorCode)
+                    } 
+                });
+                get(child(dbRef, `budgets/${authUser.user.uid}`)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const APIbudgets = snapshot.val() 
+                        console.log ("5.9",APIbudgets)
+                        let budgets = {}
+                        Object.keys(APIbudgets).map((bud)=>{
+                            console.log("6. Welcome's budget",bud, APIbudgets[bud], APIbudgets[bud].entries)
+                            if (APIbudgets[bud].entries !== undefined) {
+                                console.log("6.1 entries not undefined")
+                                budgets = {
+                                    ...budgets,
+                                    [bud]: APIbudgets[bud]
+                                }
+                                console.log("6.2", budgets)
+                            }
+                            else{
+                                console.log("6NA entries undefined", APIbudgets[bud])
+                                addEnt = {
+                                    ...APIbudgets[bud],
+                                    entries: []
+                                }
+                                console.log("6.3", addEnt)
+                                budgets = {
+                                    ...budgets,
+                                    [bud]: addEnt
+                                }
+                            }
+                        })
+                        console.log("7. welcome budget end",budgets)
+                        dispatch(receiveBudgets(budgets))
+                        setAPIBudget(budgets)
+                    }
+                    else{
+                        const budgets = {}
+                        console.log("0.B")
+                        dispatch(receiveBudgets(budgets))
+                        setAPIBudget(budgets)
+                    }
+                }).catch((error) => {
+                    alert(error);
+                });
+                
+                get(child(dbRef, `entries/${authUser.user.uid}`)).then((snapshot) => {
+                    if (snapshot.exists()) {
                         const entries = snapshot.val()
-                        console.log("E1,", entries)
+                        console.log("E1", entries)
                         setAPIEntries(entries) 
                         dispatch(receiveEntries(entries))
-                           
+                        
                     }
                     else{
                         const entries = {}
-                        console.log("E2, ", entries)
+                        console.log("E2", entries)
                         dispatch(receiveEntries(entries))
-                         
                         setAPIEntries(entries)
                     }
-                    console.log("4. ONsignIn user", authUser)
-                    get(child(dbRef, `users/${authUser.user.uid}`)).then((snapshot) => {
-                        let list = ["budgets"]
-                        if (snapshot.exists()) {
-                            let user = snapshot.val(); 
-                            let budgetExist = Object.keys(user).filter((key)=>{
-                                return list.includes(key)
-                            })
-                            budgetExist.length>0
-                                ? console.log("4.1 has budget", user, user.budgets)
-                                : user.budgets = []
-                            dispatch(setUser(user))
-                            setAPIUser(user)
-                        }
-
-                    })  
-                })
+                    
+                }).catch((error) => {
+                    Alert.alert("Entries",error);
+                });
+                
             })
-        })
-        .catch((error) => {
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            if (errorCode == 'auth/user-not-found' || errorCode == 'auth/invalid-email'){
-                alert('User not found. Please try again.')
-            }
-            else{
-                if (errorCode == 'auth/wrong-password'){
-                    alert('Wrong Password. Please try again.')
+
+            .catch((error) => {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                if (errorCode == 'auth/user-not-found' || errorCode == 'auth/invalid-email'){
+                    alert('User not found. Please try again.')
                 }
                 else{
-                   alert(errorMessage)
+                    if (errorCode == 'auth/wrong-password'){
+                        alert('Wrong Password. Please try again.')
+                    }
+                    else{
+                       alert(errorMessage)
+                    }
+                    
                 }
                 
-            }
-        }
-        )
-        
+            })
+
+            setTimeout(() => {
+            this.props.navigation.navigate('AuthLoad')
+            }, 500);
     }      
 
     chg = () => {
