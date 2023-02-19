@@ -10,7 +10,7 @@ An application used to set your budget and mark your expense, built with React, 
 
 
 
-#### Version 1.2.0
+#### Version 1.3.0
 
  - Add 'Change Password' and 'Change Salary' function, update the presentation of 'Profile'
 
@@ -37,7 +37,13 @@ An application used to set your budget and mark your expense, built with React, 
 
 4. Roll Over Budget
 
-5. Swipe Left/Right Animation
+5. Swipe Left/Right Animation (completed)
+
+6. Change Password (completed)
+
+7. Export Entries
+
+8. Forget Password
 
 
 ## Reflection
