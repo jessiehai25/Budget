@@ -26,6 +26,11 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.jessie.budget",
       "buildNumber": "1.3.0"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "cdb0eb0b-3dfb-479a-a405-e5038765d687"
+      }
     }
   }
 }
